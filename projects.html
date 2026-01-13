@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos — Juan David Parra Cantor</title>
+
+    <!-- CSS global -->
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Fuentes locales -->
+    <style>
+        @font-face {
+            font-family: 'Bricolage Grotesque';
+            src: url('assets/fonts/BricolageGrotesque/BricolageGrotesque-Regular.ttf');
+        }
+        @font-face {
+            font-family: 'Dancing Script';
+            src: url('assets/fonts/DancingScript/DancingScript-Regular.ttf');
+        }
+        @font-face {
+            font-family: 'Myriad Bengali';
+            src: url('assets/fonts/MyriadBengali/MyriadBengali-Regular.ttf');
+        }
+    </style>
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon/favicon-16x16.png">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-container">
+                <a href="/">
+                <img src="assets/img/perfil/logo.png" alt="Logo" class="logo">
+                </a>
+                <nav class="nav">
+                    <a href="index.html">Inicio</a>
+                    <a href="about.html">Sobre mí</a>
+                    <a href="projects.html" class="active">Proyectos</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contacto.html">Contacto</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <!-- HERO / TÍTULO PRINCIPAL -->
+            <section class="hero" style="padding: 60px 40px;">
+                <div class="hero-text">
+                    <h1>Mis Proyectos</h1>
+                    <p>Una colección de herramientas, aplicaciones, experimentos y desarrollos personales.  
+                    Todos organizados y documentados de manera clara.</p>
+                </div>
+            </section>
+
+            <!-- GRID DE PROYECTOS -->
+            <section class="projects-section">
+                <div class="projects-container">
+
+                    <!-- Aquí se renderizan los proyectos -->
+                    <div id="projectsGrid" class="projects-grid"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer simple  -->
+        <footer class="footer">
+            <p class="footer-texto">© 2026 Juan David Parra Cantor</p>
+        </footer>
+    </div>  
+    
+    <script src="assets/js/projects.js"></script>
+</body>
+</html>

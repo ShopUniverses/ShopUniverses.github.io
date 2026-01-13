@@ -1,0 +1,629 @@
+/* ==========================================================
+    STYLES.CSS — Estilos globales, layout y componentes
+    Autor: Juan David Parra Cantor
+    Fecha: 15 de Diciembre de 2025
+   ========================================================== */
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: var(--font-title);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+/*Encapsula toda la página*/
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1;
+}
+
+/* HEADER */
+.header {
+    background: var(--color-white);
+    padding: 15px 40px;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    height: 60px;
+}
+
+.nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: var(--transition-medium);
+}
+
+.nav a:hover,
+.nav .active {
+    color: var(--color-primary);
+}
+
+/* HERO */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.hero-text {
+    max-width: 600px;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: var(--font-title);
+}
+
+.hero-text h1 span {
+    color: var(--color-primary);
+}
+
+.hero-text p {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: var(--color-muted);
+    font-family: var(--font-body);
+}
+
+.hero-buttons {
+    margin-top: 25px;
+}
+
+/* BOTONES */
+.btn-primary,
+.btn-secondary {
+    padding: 12px 22px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-medium);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+    margin-right: 10px;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* HERO IMG */
+.hero-image img {
+    width: 420px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-strong);
+}
+
+/* PROYECTOS DESTACADOS */
+.highlight {
+    margin-top: 80px;
+    text-align: center;
+    padding-bottom: 80px;
+}
+
+.highlight h2 {
+    font-size: 2.3rem;
+    font-family: var(--font-title);
+}
+
+.cards {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: var(--color-white);
+    width: 300px;
+    padding: 25px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    text-align: left;
+}
+
+.card h3 {
+    font-size: 1.4rem;
+    font-family: var(--font-title);
+}
+
+.card p {
+    margin: 10px 0;
+    color: var(--color-muted);
+    font-family: var(--font-body);
+}
+
+.card-btn {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.card-btn:hover {
+    text-decoration: underline;
+}
+
+/* ================================
+    PROJECT TEMPLATE
+================================ */
+
+/* Mismo hero pero con menos padding */
+.project-hero {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+/* Contenido general del proyecto */
+.project-content {
+    max-width: 1200px;
+    margin: auto;
+    padding: 60px 40px;
+}
+
+.project-content h2 {
+    font-size: 1.9rem;
+    margin-top: 40px;
+}
+
+.project-content p {
+    margin-top: 10px;
+    color: #444;
+    line-height: 1.7;
+}
+
+/* Listas coherentes con tu diseño */
+.project-list {
+    margin-top: 10px;
+    color: #444;
+    padding-left: 20px;
+    line-height: 1.7;
+}
+
+/* Galería */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.gallery img {
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Estado del proyecto */
+.project-status {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* ============================
+    ESTILOS PARA LOS POSTS
+   ============================ */
+
+.blog-post-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.blog-post {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.post-title {
+    font-size: 2.3rem;
+    font-weight: 700;
+}
+
+.post-meta {
+    margin-top: 8px;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.post-cover {
+    width: 100%;
+    margin: 25px 0;
+    border-radius: 12px;
+}
+
+.post-content {
+    margin-top: 25px;
+    line-height: 1.75;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.post-content h2 {
+    margin-top: 30px;
+    font-size: 1.6rem;
+}
+
+.post-content p {
+    margin: 15px 0;
+}
+
+/* ==========================================================
+    FOOTER — Estilo global del sitio
+   ========================================================== */
+
+.footer {
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.footer-texto {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-family: var(--font-body);
+}
+
+
+/* ==========================================================
+    404.HTML — Página de error
+    Estilos específicos para la vista de página no encontrada
+   ========================================================== */
+
+.error-404 {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+
+.error-contenido {
+    text-align: center;
+    max-width: 520px;
+}
+
+.error-codigo {
+    font-size: 6rem;
+    font-family: var(--font-title);
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+.error-titulo {
+    font-size: 2rem;
+    font-family: var(--font-title);
+    margin-bottom: 10px;
+}
+
+.error-descripcion {
+    font-family: var(--font-body);
+    color: var(--color-muted);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.error-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================
+   CONTACTO — Formulario de contacto
+   ========================================================== */
+
+.contact-section {
+    padding: 80px 20px;
+    background-color: var(--color-bg);
+}
+
+.contact-container {
+    max-width: 700px;
+    margin: auto;
+    background: var(--color-white);
+    padding: 50px 40px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.contact-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-family: var(--font-title);
+    margin-bottom: 40px;
+}
+
+/* Formulario */
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-light);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Estado del formulario */
+
+.form-status {
+    min-height: 20px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+/* Botón */
+
+.form-submit {
+    width: 100%;
+    font-size: 1.05rem;
+    padding: 14px;
+}
+
+/* ==========================================================
+    PROYECTOS — Listado
+   ========================================================== */
+
+.projects-section {
+    padding: 80px 40px;
+}
+
+.projects-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.project-card {
+    background: var(--color-white);
+    padding: 25px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+/* ==========================================================
+    PROJECT — Hero
+   ========================================================== */
+
+.project-hero {
+    background-color: var(--color-bg);
+    padding: 80px 40px 40px;
+}
+
+.project-hero-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.project-hero h1 {
+    font-size: 3rem;
+    font-family: var(--font-title);
+    margin-bottom: 10px;
+}
+
+#projectShortDescription {
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+    color: var(--color-muted);
+    max-width: 700px;
+}
+
+
+/* ==========================================================
+    PROJECT — Contenido
+   ========================================================== */
+
+.project-content {
+    max-width: 1200px;
+    margin: auto;
+    padding: 60px 40px;
+}
+
+.project-section {
+    margin-bottom: 60px;
+}
+
+.project-section h2 {
+    font-size: 1.9rem;
+    font-family: var(--font-title);
+    margin-bottom: 15px;
+}
+
+.project-section p {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #444;
+}
+
+/* ==========================================================
+    PROJECT — Tecnologías
+   ========================================================== */
+
+#projectTechnologies {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#projectTechnologies li {
+    background-color: var(--color-bg);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    color: var(--color-text);
+}
+
+
+/* ==========================================================
+    PROJECT — Descargas
+   ========================================================== */
+
+#projectDownloads {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.download-item {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.download-item strong {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.download-item a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.download-item a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================
+    PROJECT — Repositorio
+   ========================================================== */
+
+.project-section a.btn-secondary {
+    margin-top: 10px;
+    display: inline-block;
+}
+
+/* ==========================================================
+    PROJECTS — Cards mejoradas
+   ========================================================== */
+
+.project-card {
+    background: var(--color-white);
+    padding: 30px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-strong);
+}
+
+.project-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.project-card p {
+    font-family: var(--font-body);
+    color: var(--color-muted);
+    margin-bottom: 15px;
+}
+
+/* ==========================================================
+    PROJECT — Galería
+   ========================================================== */
+
+.project-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.project-gallery img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
