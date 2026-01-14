@@ -177,6 +177,7 @@
     }, 
     { "id": "lapiceros-flores", 
         "nombre": "Lapiceros Flores", 
+        "imagen": "assets/img/img_catalogo/lapiceros_flores.png",
         "precio_referencia": 3000, 
         "costo": 1531, 
         "stock": 92, 
@@ -229,7 +230,8 @@
         "peso_spin": 1 
     }, 
     { "id": "patica-x-6pcs", 
-        "nombre": "Patica x 6pcs", 
+        "nombre": "Patica x 6pcs",
+        "imagen": "assets/img/img_catalogo/patica_x_6pcs.jpg",
         "precio_referencia": 15000, 
         "costo": 4864, 
         "stock": 10, 
@@ -307,7 +309,8 @@
         "peso_spin": 1 
     }, 
     { "id": "set-x12-pcs", 
-        "nombre": "Set x12 pcs", 
+        "nombre": "Set x12 pcs",
+        "imagen": "assets/img/img_catalogo/set_x12_pcs.jpg",
         "precio_referencia": 20000, 
         "costo": 10304, 
         "stock": 1, 
