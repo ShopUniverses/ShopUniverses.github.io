@@ -1,9 +1,9 @@
-    /**************************************************
-     * CATALOGO.JS
-     * Render básico del catálogo
-     **************************************************/
+/*
+CATALOGO.JS
+Render del catálogo con imagen
+*/
 
-    document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     await cargarInventario();
     inicializarCarrito();
     renderCatalogo();
@@ -21,23 +21,36 @@
     }
 
     productos.forEach(producto => {
-        const div = document.createElement("div");
-        div.className = "producto";
+        const stockActual = obtenerStock()[producto.id];
 
-        div.innerHTML = `
-        <h3>${producto.nombre}</h3>
-        <p><strong>Precio:</strong> $${producto.precio_referencia}</p>
-        <small>Stock disponible: ${obtenerStock()[producto.id]}</small><br>
-        <button>Agregar al carrito</button>
+        if (stockActual <= 0) return;
+
+        const card = document.createElement("div");
+        card.className = "card producto-card";
+
+        card.innerHTML = `
+        <div class="producto-imagen">
+            <img src="./${producto.imagen}" alt="${producto.nombre}">
+        </div>
+
+        <div class="producto-info">
+            <h3>${producto.nombre}</h3>
+            <p><strong>$${producto.precio_referencia}</strong></p>
+            <small>Stock disponible: ${stockActual}</small>
+        </div>
+
+        <div class="producto-accion">
+            <button>Agregar al carrito</button>
+        </div>
         `;
 
-        const boton = div.querySelector("button");
+        const boton = card.querySelector("button");
         boton.addEventListener("click", () => {
         agregarProductoCatalogo(producto);
-        renderCatalogo(); // 🔄 refrescar stock
+        renderCatalogo(); // 🔄 refresca stock
         alert("Producto agregado al carrito");
         });
 
-        contenedor.appendChild(div);
+        contenedor.appendChild(card);
     });
 }
