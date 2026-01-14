@@ -2,60 +2,79 @@
 <html lang="es">
     <head>
     <meta charset="UTF-8">
-    <title>Spin ShopUniverses</title>
+    <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <p>
-    <a href="./index.html">Inicio</a> |
-    <a href="./catalogo.html">Catálogo</a> |
-    <a href="./carrito.html">Carrito</a>
-    </p>
 
     <!-- CSS mínimo temporal -->
     <style>
         body {
         font-family: Arial, sans-serif;
         padding: 20px;
-        max-width: 700px;
+        max-width: 800px;
         margin: auto;
+        }
+        nav {
+        margin-bottom: 20px;
+        }
+        nav a {
+        margin-right: 10px;
+        text-decoration: none;
         }
         button {
         padding: 10px 16px;
-        margin: 5px 0;
+        margin: 5px 5px 5px 0;
         cursor: pointer;
+        }
+        button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
         }
         .box {
         border: 1px solid #ccc;
-        padding: 10px;
-        margin-top: 10px;
+        padding: 12px;
+        margin-top: 15px;
         }
         .log {
         background: #f7f7f7;
         padding: 10px;
         min-height: 80px;
+        font-size: 14px;
         }
     </style>
     </head>
 
     <body>
 
+    <!-- NAVEGACIÓN -->
+    <nav>
+    <a href="./index.html">Inicio</a>
+    <a href="./catalogo.html">Catálogo</a>
+    <a href="./carrito.html">Carrito</a>
+    </nav>
+
     <h1>🎡 Spin ShopUniverses</h1>
+    <p>
+    Por <strong>$25.000 COP</strong> obtén <strong>5 productos sorpresa</strong>.
+    </p>
 
     <!-- CONTROLES -->
     <div class="box">
-        <button onclick="iniciarCompra()">Iniciar Spin ($25.000)</button>
-        <button onclick="girarSpin()">Girar</button>
-        <button onclick="aceptarPremiumSpin()">Aceptar Premium (+$8.000)</button>
-        <button onclick="cancelarTodo()">Cancelar Compra</button>
+    <button id="btnIniciar" onclick="iniciarCompra()">Iniciar Spin</button>
+    <button id="btnGirar" onclick="girarSpin()">Girar</button>
+    <button id="btnPremium" onclick="aceptarPremiumSpin()">Aceptar Premium (+$8.000)</button>
+    <button id="btnCancelar" onclick="cancelarTodo()">Cancelar Compra</button>
     </div>
 
     <!-- ESTADO -->
     <div class="box">
     <h3>Estado del Spin</h3>
-    <p><strong>Giros restantes:</strong> <span id="giros">-</span></p>
+    <p>
+        <strong>Giros restantes:</strong>
+        <span id="giros">-</span>
+    </p>
     </div>
 
-    <!-- PRODUCTOS -->
+    <!-- PRODUCTOS GANADOS -->
     <div class="box">
     <h3>Productos ganados</h3>
     <ul id="productos"></ul>
@@ -65,7 +84,10 @@
     <div class="box">
     <h3>Carrito</h3>
     <ul id="carrito"></ul>
-    <p><strong>Total:</strong> $<span id="total">0</span></p>
+    <p>
+        <strong>Total:</strong> $
+        <span id="total">0</span>
+    </p>
     </div>
 
     <!-- WHATSAPP -->
@@ -80,14 +102,14 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="/assets/js/data.js"></script>
-    <script src="/assets/js/spin.js"></script>
-    <script src="/assets/js/carrito.js"></script>
-    <script src="/assets/js/main.js"></script>
+    <script src="./assets/js/data.js"></script>
+    <script src="./assets/js/spin.js"></script>
+    <script src="./assets/js/carrito.js"></script>
+    <script src="./assets/js/main.js"></script>
 
     <script>
     /**************************************************
-    * UI BÁSICA (solo conexión)
+    * UTILIDADES UI
     **************************************************/
 
     function log(msg) {
@@ -101,6 +123,7 @@
     document.getElementById("giros").innerText =
         spin ? spin.girosRestantes : "-";
 
+    // Productos ganados
     const ulProductos = document.getElementById("productos");
     ulProductos.innerHTML = "";
     if (spin) {
@@ -111,6 +134,7 @@
         });
     }
 
+    // Carrito
     const ulCarrito = document.getElementById("carrito");
     ulCarrito.innerHTML = "";
     items.forEach(item => {
@@ -120,6 +144,28 @@
     });
 
     document.getElementById("total").innerText = getTotal();
+
+    actualizarBotones();
+    }
+
+    function actualizarBotones() {
+    const spin = getSpinState();
+
+    const btnIniciar = document.getElementById("btnIniciar");
+    const btnGirar = document.getElementById("btnGirar");
+    const btnPremium = document.getElementById("btnPremium");
+
+    if (!spin || !spin.activo) {
+        btnIniciar.disabled = false;
+        btnGirar.disabled = true;
+        btnPremium.disabled = true;
+        return;
+    }
+
+    btnIniciar.disabled = true;
+    btnGirar.disabled = spin.girosRestantes <= 0;
+    btnPremium.disabled =
+        spin.girosRestantes > 0 || spin.premiumAceptado;
     }
 
     /**************************************************
@@ -127,34 +173,56 @@
     **************************************************/
 
     function iniciarCompra() {
+    const spin = getSpinState();
+
+    if (spin && spin.activo) {
+        log("⚠️ Ya tienes un Spin activo");
+        refrescarUI();
+        return;
+    }
+
     iniciarCompraSpin();
-    log("Spin iniciado");
+    log("🎡 Spin iniciado");
     refrescarUI();
     }
 
     function girarSpin() {
     const ganador = girar();
     if (ganador) {
-        log("Ganaste: " + ganador.nombre);
+        log("🎁 Ganaste: " + ganador.nombre);
     }
     refrescarUI();
     }
 
     function aceptarPremiumSpin() {
-    aceptarPremium();
-    log("Premium ejecutado");
+    const ganador = aceptarPremium();
+    if (ganador) {
+        log("💎 Premium ganado: " + ganador.nombre);
+    }
     refrescarUI();
     }
 
     function cancelarTodo() {
     cancelarCompraCompleta();
-    log("Compra cancelada y stock restaurado");
+    log("❌ Compra cancelada y stock restaurado");
     refrescarUI();
     }
 
     function enviarPedidoWA() {
-    enviarPedido("573207096148"); // ← CAMBIA EL NÚMERO
+    enviarPedido("573207096148"); // tu número
     }
+
+    /**************************************************
+    * REHIDRATACIÓN AUTOMÁTICA
+    **************************************************/
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const spin = getSpinState();
+    if (spin && spin.activo) {
+        log("🔄 Spin activo restaurado");
+    }
+    refrescarUI();
+    });
     </script>
 
     </body>
