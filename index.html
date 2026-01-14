@@ -1,14 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8" />
     <title>ShopUniverses</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script src="/assets/js/data.js"></script>
-<script src="/assets/js/spin.js"></script>
-<script src="/assets/js/carrito.js"></script>
-<script src="/assets/js/main.js"></script>
+    <!-- CSS mínimo temporal -->
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #333;
+        }
+
+        header {
+        padding: 30px 20px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        }
+
+        section {
+        padding: 30px 20px;
+        max-width: 900px;
+        margin: auto;
+        }
+
+        .banner {
+        border: 1px solid #ccc;
+        padding: 30px;
+        margin-bottom: 30px;
+        text-align: center;
+        }
+
+        .actions {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        }
+
+        button {
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        }
+    </style>
+    </head>
+
+    <body>
+
+    <header>
+    <h1>ShopUniverses</h1>
+    <p>Importaciones • Experiencias • Productos únicos</p>
+    </header>
+
+    <section>
+
+    <!-- Banner principal -->
+    <div class="banner">
+        <h2>🎡 Prueba nuestra Ruleta</h2>
+        <p>
+        Por <strong>$25.000 COP</strong> recibe <strong>5 productos sorpresa</strong>.
+        </p>
+        <button onclick="irASpin()">Ir a la Ruleta</button>
+    </div>
+
+    <!-- Banner catálogo -->
+    <div class="banner">
+        <h2>🛍️ Catálogo</h2>
+        <p>
+        Prefieres elegir tus productos uno a uno?  
+        Explora nuestro catálogo completo.
+        </p>
+        <button onclick="irACatalogo()">Ver Catálogo</button>
+    </div>
+
+</section>
+
+<!-- SCRIPTS BASE -->
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/spin.js"></script>
+<script src="./assets/js/carrito.js"></script>
+<script src="./assets/js/main.js"></script>
+
+<script>
+/**************************************************
+ * Navegación básica
+ **************************************************/
+
+function irASpin() {
+    window.location.href = "./spin.html";
+}
+
+function irACatalogo() {
+    window.location.href = "./catalogo.html";
+}
+</script>
 
 </body>
 </html>
