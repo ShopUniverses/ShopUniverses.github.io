@@ -164,3 +164,8 @@ function seleccionarProductoPonderado(productos) {
 function getConfigSpin() {
   return INVENTARIO.config.spin;
 }
+
+function getInventario() {
+  return INVENTARIO;
+}
+

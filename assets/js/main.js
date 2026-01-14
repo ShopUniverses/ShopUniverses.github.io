@@ -16,7 +16,7 @@
   console.log("✔ App inicializada correctamente");
 
   // Debug opcional
-  console.log("Inventario:", INVENTARIO);
+  console.log("Inventario:", getInventario());
   console.log("Carrito:", getItemsCarrito());
   console.log("Spin:", getSpinState());
 })();
@@ -30,12 +30,6 @@ function iniciarCompraSpin() {
   agregarSpinBase();
   console.log("🎡 Spin iniciado");
 }
-
-function cancelarCompraUI() {
-  cancelarCompraCompleta();
-  console.log("❌ Compra cancelada");
-}
-
 
 function girar() {
   const ganador = girarSpinEstandar();
