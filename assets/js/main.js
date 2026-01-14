@@ -26,10 +26,16 @@
  **************************************************/
 
 function iniciarCompraSpin() {
+  if (haySpinActivo()) {
+    console.log("⚠️ Ya hay un Spin activo");
+    return;
+  }
+
   iniciarSpin();
   agregarSpinBase();
   console.log("🎡 Spin iniciado");
 }
+
 
 function girar() {
   const ganador = girarSpinEstandar();

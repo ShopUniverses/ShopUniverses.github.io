@@ -174,3 +174,9 @@ function getSpinState() {
 function spinCompletado() {
   return spinState && spinState.girosRestantes === 0;
 }
+
+/*Validación si existe algún giro activo*/
+
+function haySpinActivo() {
+  return spinState && spinState.activo;
+}
