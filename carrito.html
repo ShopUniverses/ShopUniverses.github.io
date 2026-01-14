@@ -1,106 +1,138 @@
 <!DOCTYPE html>
-<html lang = "es">
+<html lang="es">
     <head>
-        <meta charset = "UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE = edge">
-        <meta name = "viewport" content = "width = device-width, initial-scale =1.0">
-        <title> Shop Universes</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="stylesheet" href="./css/main.css">
+    <meta charset="UTF-8">
+    <title>Carrito | ShopUniverses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
+
     <body>
-        <div class="wrapper">
-            <aside>
-                <header>
-                    <h1 class="logo">Shop Universes</h1>
-                </header>
-                <nav>
-                    <ul>
-                        <li>
-                            <a class="boton-menu boton-volver" href="./index.html ">
-                                <i class="bi bi-arrow-return-left"></i>
-                                Seguir Comprando 
-                            </a>
-                        </li>
-                        <li>
-                            <a class="boton-menu boton-carrito active" href="./carrito.html ">
-                                <i class="bi bi-cart-check-fill"></i>
-                                Carrito
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <footer>4
-                    <p class=""texto-footer>© 2024 Shop Universes</p>
-                </footer>
-            </aside>
-            <main>
-                <h2 class="Titulo Principal">Carrito</h2>
-                <div class="contenedorcarrito">
-                    <p class="carrito-vacio">Tú carritto está vacío
-                        <i class="bi bi-emoji-frown"></i>
-                    </p>
-                    <div class="carrito-productos">
-                        <div class="carrito-producto">
-                            <img src="./img/agm01.jpg" alt="">
-                            <div class="carrito-producto-titulo">
-                                <small>Titulo</small>
-                                <h3>Marcador Base Agua x 12 pcs</h3>
-                            </div>
-                            <div class="carrito-producto-cantidad">
-                                <small>Cantidad</small>
-                                <p>1</p>
-                            </div>
-                            <div class="carrito-producto-precio">
-                                <small>Precio</small>
-                                <p>$15.000 COP</p>
-                            </div>
-                            <div class="carrito-producto subtotal">
-                                <small>Subtotal</small>
-                                <p>$15.000 COP</p>
-                            </div>
-                            <button class="carrito-producto-eliminar">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </div>
-                        <div class="carrito-producto">
-                            <img src="./img/bp01.jpg" alt="">
-                            <div class="carrito-producto-titulo">
-                                <small>Titulo</small>
-                                <h3>Borrador</h3>
-                            </div>
-                            <div class="carrito-producto-cantidad">
-                                <small>Cantidad</small>
-                                <p>2</p>
-                            </div>
-                            <div class="carrito-producto-precio">
-                                <small>Precio</small>
-                                <p>$7.000 COP</p>
-                            </div>
-                            <div class="carrito-producto subtotal">
-                                <small>Subtotal</small>
-                                <p>$14.000 COP</p>
-                            </div>
-                            <button class="carrito-producto-eliminar">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="carrito-acciones">
-                        <div class="carrito-acciones-izquierda">
-                            <button class="carrito-acciones-vaciar">Vaciar Carrito</button>
-                        </div>
-                        <div class="carrito-acciones-derecha">
-                            <div class="carrito-acciones-total">
-                                <p>Total</p>
-                                <p id="Total">$29.000 COP</p>
-                            </div>
-                            <button class="carrito-acciones-comprar">Comprar Ahora</button>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-        <script src="./js/main.js"></script>
+
+    <!-- NAVEGACIÓN -->
+    <nav>
+    <a href="./index.html">Inicio</a> |
+    <a href="./catalogo.html">Catálogo</a> |
+    <a href="./spin.html">Spin</a>
+    </nav>
+
+    <h1>🛒 Carrito de Compras</h1>
+
+    <p>
+    Revisa tu pedido antes de enviarlo por WhatsApp.
+    </p>
+
+    <hr>
+
+    <!-- LISTADO DEL CARRITO -->
+    <h3>Productos en el carrito</h3>
+    <ul id="lista-carrito"></ul>
+
+    <p>
+    <strong>Total:</strong> $
+    <span id="total">0</span>
+    </p>
+
+    <hr>
+
+    <!-- ACCIONES -->
+    <button onclick="enviarPedidoWA()">Enviar pedido por WhatsApp</button>
+    <button onclick="cancelarCompra()">Cancelar compra</button>
+
+    <!-- LOG -->
+    <hr>
+    <h3>Log</h3>
+    <div id="log"></div>
+
+    <!-- SCRIPTS -->
+    <script src="./assets/js/data.js"></script>
+    <script src="./assets/js/spin.js"></script>
+    <script src="./assets/js/carrito.js"></script>
+    <script src="./assets/js/main.js"></script>
+
+    <script>
+    /**************************************************
+    * UTILIDADES
+    **************************************************/
+
+    function log(msg) {
+    document.getElementById("log").innerHTML += msg + "<br>";
+    }
+
+    /**************************************************
+    * RENDER
+    **************************************************/
+
+    function renderCarrito() {
+    const ul = document.getElementById("lista-carrito");
+    const items = getItemsCarrito();
+
+    ul.innerHTML = "";
+
+    if (items.length === 0) {
+        ul.innerHTML = "<li>El carrito está vacío.</li>";
+    } else {
+        items.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.nombre} — $${item.precio}`;
+
+        // Permitir eliminar SOLO productos de catálogo
+        if (item.tipo === "producto" && item.origen === "catalogo") {
+            const btn = document.createElement("button");
+            btn.textContent = "Quitar";
+            btn.style.marginLeft = "10px";
+
+            btn.onclick = () => {
+            eliminarProducto(index, item.id);
+            };
+
+            li.appendChild(btn);
+        }
+
+        ul.appendChild(li);
+        });
+    }
+
+    document.getElementById("total").innerText = getTotal();
+    }
+
+    /**************************************************
+    * ACCIONES
+    **************************************************/
+
+    function eliminarProducto(index, productoId) {
+    eliminarItem(index);
+    restaurarStock([productoId]);
+    log("Producto eliminado del carrito");
+    renderCarrito();
+    }
+
+    function cancelarCompra() {
+    cancelarCompraCompleta();
+    log("❌ Compra cancelada y stock restaurado");
+    renderCarrito();
+    }
+
+    function enviarPedidoWA() {
+    const items = getItemsCarrito();
+
+    if (items.length === 0) {
+        alert("El carrito está vacío");
+        return;
+    }
+
+    enviarPedido("573207096148"); // ← tu número
+    }
+
+    /**************************************************
+    * INIT
+    **************************************************/
+
+    document.addEventListener("DOMContentLoaded", async () => {
+    await cargarInventario();
+    inicializarCarrito();
+    renderCarrito();
+    });
+    </script>
+
     </body>
 </html>
