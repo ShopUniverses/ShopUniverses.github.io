@@ -53,8 +53,8 @@
         "categoria": "Borrador", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
-            "spin_premium": false 
+            "spin_estandar": false, 
+            "spin_premium": true 
         }, 
         "peso_spin": 2 
     }, 
@@ -66,8 +66,8 @@
     "categoria": "Cuidado Personal", 
     "flags": { 
         "catalogo": true, 
-        "spin_estandar": true, 
-        "spin_premium": false 
+        "spin_estandar": false, 
+        "spin_premium": true 
         }, 
         "peso_spin": 1 
     }, 
@@ -79,7 +79,7 @@
         "categoria": "Cuidado Personal", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 1 
@@ -144,7 +144,7 @@
         "categoria": "Marcador", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 1 
@@ -209,7 +209,7 @@
         "categoria": "Otros", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 1 
@@ -235,7 +235,7 @@
         "categoria": "Resaltador", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 3
@@ -261,7 +261,7 @@
         "categoria": "Resaltador", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 1 
@@ -313,7 +313,7 @@
         "categoria": "Marcador", 
         "flags": { 
             "catalogo": true, 
-            "spin_estandar": true, 
+            "spin_estandar": false, 
             "spin_premium": true 
         }, 
         "peso_spin": 1 
