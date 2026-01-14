@@ -131,8 +131,8 @@ function getItemsCarrito() {
  * CANCELACIÓN
  **************************************************/
 
-function cancelarCompra() {
-  // Restaurar stock SOLO de productos
+function cancelarCompraCompleta() {
+  // Restaurar stock SOLO de productos reales
   const productos = carrito.items
     .filter(i => i.tipo === "producto")
     .map(i => i.id);
@@ -141,11 +141,12 @@ function cancelarCompra() {
 
   limpiarCarrito();
 
-  // Cancelar spin si existe
-  if (typeof cancelarSpin === "function") {
-    cancelarSpin();
+  // Limpiar spin correctamente
+  if (typeof limpiarSpinState === "function") {
+    limpiarSpinState();
   }
 }
+
 
 /**************************************************
  * WHATSAPP

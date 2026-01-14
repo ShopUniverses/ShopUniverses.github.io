@@ -15,6 +15,9 @@ let spinState = null;
  **************************************************/
 
 function iniciarSpin() {
+  //  limpiar cualquier spin previo
+  localStorage.removeItem(SPIN_STATE_KEY);
+
   const config = getConfigSpin();
 
   spinState = {
@@ -29,6 +32,12 @@ function iniciarSpin() {
 
   guardarSpinState();
 }
+
+function limpiarSpinState() {
+  localStorage.removeItem(SPIN_STATE_KEY);
+  spinState = null;
+}
+
 
 /**
  * Carga el estado del spin si existe

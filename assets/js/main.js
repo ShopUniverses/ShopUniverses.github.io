@@ -31,6 +31,12 @@ function iniciarCompraSpin() {
   console.log("🎡 Spin iniciado");
 }
 
+function cancelarCompraUI() {
+  cancelarCompraCompleta();
+  console.log("❌ Compra cancelada");
+}
+
+
 function girar() {
   const ganador = girarSpinEstandar();
 
