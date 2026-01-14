@@ -1,61 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/theme.css">
-
 <head>
     <meta charset="UTF-8" />
     <title>Catálogo | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- CSS mínimo temporal -->
-    <style>
-        body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        max-width: 1000px;
-        margin: auto;
-        }
+<!-- CSS GLOBAL -->
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
+</head>
 
-        header {
-        margin-bottom: 30px;
-        }
+<body>
 
-        .producto {
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin-bottom: 15px;
-        }
+<!-- NAVEGACIÓN -->
+<nav>
+    <a href="./index.html">Inicio</a>
+    <a href="./spin.html">Spin</a>
+    <a href="./carrito.html">Carrito</a>
+</nav>
 
-        .producto h3 {
-        margin: 0 0 10px;
-        }
-
-        .producto small {
-        color: #666;
-        }
-
-        button {
-        margin-top: 10px;
-        padding: 8px 14px;
-        cursor: pointer;
-        }
-    </style>
-    </head>
-
-    <body>
-
-    <header>
+<header class="container section">
     <h1>🛍️ Catálogo ShopUniverses</h1>
     <p>
-        Explora nuestros productos disponibles.  
-        <a href="./spin.html">Ir a la ruleta</a> |
-        <a href="./carrito.html">Ver carrito</a>
+        Explora nuestros productos disponibles con stock actualizado en tiempo real.
     </p>
 </header>
 
-<div id="catalogo"></div>
+<main class="container">
+
+<!-- GRID DE PRODUCTOS -->
+    <section
+        id="catalogo"
+        class="grid"
+        style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+    </section>
+
+</main>
 
 <!-- SCRIPTS -->
 <script src="./assets/js/data.js"></script>
