@@ -1,7 +1,7 @@
 { 
     "config": 
     { "spin": { 
-        "precio_base": 30000, 
+        "precio_base": 25000, 
         "productos_por_spin": 5, 
         "premium_precio": 8000 
         } 
