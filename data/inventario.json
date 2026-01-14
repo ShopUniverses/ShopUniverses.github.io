@@ -203,6 +203,7 @@
     }, 
     { "id": "lonchera-térmica", 
         "nombre": "Lonchera Térmica", 
+        "imagen": "assets/img/img_catalogo/lonchera_termica.png",
         "precio_referencia": 15000, 
         "costo": 10872, 
         "stock": 2, 
