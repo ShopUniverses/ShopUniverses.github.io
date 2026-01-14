@@ -1,87 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/theme.css">
-
 <head>
     <meta charset="UTF-8" />
     <title>ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- CSS mínimo temporal -->
-    <style>
-        body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #ffffff;
-        color: #333;
-        }
+    <!-- CSS GLOBAL -->
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
+</head>
 
-        header {
-        padding: 30px 20px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-        }
+<body>
 
-        section {
-        padding: 30px 20px;
-        max-width: 900px;
-        margin: auto;
-        }
+<!-- NAVEGACIÓN -->
+<nav>
+    <a href="./index.html">Inicio</a>
+    <a href="./catalogo.html">Catálogo</a>
+    <a href="./spin.html">Spin</a>
+    <a href="./carrito.html">Carrito</a>
+</nav>
 
-        .banner {
-        border: 1px solid #ccc;
-        padding: 30px;
-        margin-bottom: 30px;
-        text-align: center;
-        }
-
-        .actions {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-        }
-
-        button {
-        padding: 12px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        }
-    </style>
-    </head>
-
-    <body>
-
-    <header>
+<!-- HERO / HEADER -->
+<header class="container section">
     <h1>ShopUniverses</h1>
-    <p>Importaciones • Experiencias • Productos únicos</p>
-    </header>
+    <p>
+        Importaciones • Experiencias • Productos únicos  
+        <br>
+        Compra el universo, un producto a la vez.
+    </p>
+</header>
 
-    <section>
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container">
 
-    <!-- Banner principal -->
-    <div class="banner">
-        <h2>🎡 Prueba nuestra Ruleta</h2>
-        <p>
-        Por <strong>$25.000 COP</strong> recibe <strong>5 productos sorpresa</strong>.
-        </p>
-        <button onclick="irASpin()">Ir a la Ruleta</button>
-    </div>
+<!-- BANNER SPIN -->
+    <section class="section">
+        <div class="card">
+            <h2>🎡 Prueba nuestra Ruleta</h2>
+            <p>
+                Por <strong>$25.000 COP</strong> recibe  
+                <strong>5 productos sorpresa</strong> seleccionados del universo ShopUniverses.
+            </p>
+            <button onclick="irASpin()">Ir a la Ruleta</button>
+        </div>
+    </section>
 
-    <!-- Banner catálogo -->
-    <div class="banner">
-        <h2>🛍️ Catálogo</h2>
-        <p>
-        Prefieres elegir tus productos uno a uno?  
-        Explora nuestro catálogo completo.
-        </p>
-        <button onclick="irACatalogo()">Ver Catálogo</button>
-    </div>
+<!-- BANNER CATALOGO -->
+    <section class="section">
+        <div class="card">
+            <h2>🛍️ Catálogo</h2>
+                <p>
+                    ¿Prefieres elegir tus productos uno a uno?  
+                    Explora nuestro catálogo completo con stock actualizado en tiempo real.
+                </p>
+            <button onclick="irACatalogo()">Ver Catálogo</button>
+        </div>
+    </section>
 
-</section>
+</main>
+
+<!-- FOOTER SIMPLE -->
+<footer class="container section">
+    <small>
+    © ShopUniverses — Importaciones & Ventas Online
+    </small>
+</footer>
 
 <!-- SCRIPTS BASE -->
 <script src="./assets/js/data.js"></script>
@@ -90,9 +73,7 @@
 <script src="./assets/js/main.js"></script>
 
 <script>
-/**************************************************
- * Navegación básica
- **************************************************/
+/* Navegación básica*/
 
 function irASpin() {
     window.location.href = "./spin.html";
