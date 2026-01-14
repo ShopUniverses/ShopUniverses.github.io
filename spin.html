@@ -36,10 +36,10 @@
 
     <!-- CONTROLES -->
     <div class="box">
-    <button onclick="iniciarCompra()">Iniciar Spin ($30.000)</button>
-    <button onclick="girarSpin()">Girar</button>
-    <button onclick="aceptarPremiumSpin()">Aceptar Premium (+$8.000)</button>
-    <button onclick="cancelarTodo()">Cancelar Compra</button>
+        <button onclick="iniciarCompraSpin()">Iniciar Spin ($30.000)</button>
+        <button onclick="girar()">Girar</button>
+        <button onclick="aceptarPremium()">Aceptar Premium (+$8.000)</button>
+        <button onclick="cancelarCompraUI()">Cancelar Compra</button>
     </div>
 
     <!-- ESTADO -->
@@ -140,13 +140,13 @@
     }
 
     function cancelarTodo() {
-    cancelarCompra();
+    cancelarCompraCompleta();
     log("Compra cancelada y stock restaurado");
     refrescarUI();
     }
 
     function enviarPedidoWA() {
-    enviarPedido("57XXXXXXXXXX"); // ← CAMBIA EL NÚMERO
+    enviarPedido("573207096148"); // ← CAMBIA EL NÚMERO
     }
     </script>
 
