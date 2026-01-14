@@ -1,0 +1,31 @@
+{
+    "config": {
+        "spin": {
+        "precio_base": 30000,
+        "productos_por_spin": 5,
+        "premium_precio": 8000
+        }
+    },
+
+    "productos": [
+        {
+        "id": "lapicero-stitch",
+        "nombre": "Lapicero Stitch",
+
+        "precio_referencia": 3000,
+        "costo": 1800,
+
+        "stock": 12,
+
+        "categoria": "papeleria",
+
+        "flags": {
+            "catalogo": true,
+            "spin_estandar": true,
+            "spin_premium": false
+        },
+
+        "peso_spin": 3
+        }
+    ]
+}
