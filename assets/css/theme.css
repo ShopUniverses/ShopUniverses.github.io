@@ -1,0 +1,127 @@
+    /* ======================================================
+    THEME.CSS
+    Identidad visual ShopUniverses
+    ====================================================== */
+
+    /* VARIABLES DE MARCA */
+    :root {
+    /* TIPOGRAFÍAS */
+    --font-title: 'Horizon', sans-serif;
+    --font-body: 'Tan Buster', system-ui, sans-serif;
+
+    /* COLORES PRINCIPALES */
+    --color-primary: #6b3fa0;        /* Morado principal */
+    --color-primary-light: #8b5fc9;
+    --color-accent: #3dd6d0;         /* Acento futurista */
+
+    /* NEUTROS */
+    --color-bg: #07070d;             /* Fondo espacio */
+    --color-bg-alt: #0d0d1a;
+    --color-card: rgba(255,255,255,0.06);
+    --color-border: rgba(255,255,255,0.12);
+
+    --color-text: #eaeaf0;
+    --color-text-muted: #b3b3c6;
+
+    /* SOMBRAS */
+    --shadow-soft: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    /* FONDO UNIVERSO */
+    body {
+    background:
+        radial-gradient(
+        circle at top,
+        rgba(107,63,160,0.25),
+        transparent 60%
+        ),
+        radial-gradient(
+        circle at bottom,
+        rgba(61,214,208,0.12),
+        transparent 55%
+        ),
+        linear-gradient(
+        to bottom,
+        var(--color-bg),
+        var(--color-bg-alt)
+        );
+    color: var(--color-text);
+    }
+
+    /* NAVEGACIÓN */
+    nav {
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border);
+    }
+
+    nav a {
+    color: var(--color-text);
+    }
+
+    nav a:hover {
+    color: var(--color-accent);
+    }
+
+    /* TÍTULOS */
+    h1 {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    }
+
+    h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    }
+
+    h3 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    }
+
+    /* TARJETAS */
+    .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+    }
+
+    /* BOTONES */
+    button {
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-primary-light)
+    );
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(107,63,160,0.45);
+    }
+
+    button:hover {
+    box-shadow: 0 8px 26px rgba(107,63,160,0.6);
+    }
+
+    /* BOTÓN SECUNDARIO */
+    button.secondary {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    box-shadow: none;
+    }
+
+    /* TEXTO */
+    p, li {
+    color: var(--color-text);
+    }
+
+    small {
+    color: var(--color-text-muted);
+    }
+
+    /* LINKS */
+    a {
+    color: var(--color-primary-light);
+    }
+
+    a:hover {
+    color: var(--color-accent);
+    }
