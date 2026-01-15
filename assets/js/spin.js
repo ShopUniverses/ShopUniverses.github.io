@@ -257,3 +257,47 @@ function updateStatus(msg) {
     const el = document.getElementById('spinStatus');
     if (el) el.textContent = msg;
 }
+
+function openModal() {
+    const modal = document.getElementById('modalPremios');
+    const ul = document.getElementById('modalListaPremios');
+    if (!modal || !ul) return;
+
+    ul.innerHTML = '';
+
+    const premios = SPIN_STATE[SPIN_STATE.currentMode].premiosTemporales;
+
+    premios.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p.nombre;
+        if (p.premium) li.classList.add('premium');
+        ul.appendChild(li);
+    });
+
+    modal.classList.add('is-open');
+}
+
+function toggleLista() {
+    const cont = document.getElementById('lista-productos');
+    if (!cont) return;
+
+    const mode = SPIN_STATE.currentMode;
+    const productos = getProductosDisponibles(mode);
+
+    cont.innerHTML = '';
+
+    if (productos.length === 0) {
+        cont.innerHTML = '<li class="empty-msg">Sin productos disponibles</li>';
+    } else {
+        productos.forEach(p => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${p.nombre}</span>
+                <small>Stock: ${p.stock}</small>
+            `;
+            cont.appendChild(li);
+        });
+    }
+
+    cont.classList.toggle('is-hidden');
+}
