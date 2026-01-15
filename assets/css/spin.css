@@ -1,98 +1,239 @@
-    /* =======================
-    SPIN — ShopUniverses
+/* =======================
+    SPIN.CSS — Estilos específicos del juego
     ======================= */
 
-    .spin {
+.spin {
     margin-top: 24px;
-    }
+}
 
-    .spin__layout {
+.spin__layout {
     display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 24px;
-    }
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    align-items: start;
+}
 
-    /* ---------- WHEELS ---------- */
-    .spin-wheel {
-    height: 420px;
+@media (max-width: 900px) {
+    .spin__layout { grid-template-columns: 1fr; }
+}
+
+/* --- ÁREA VISUAL --- */
+.spin-visual-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spin-mode-selector {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 30px;
+    padding: 5px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
+}
+
+.spin-tab {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    font-family: var(--font-body);
+}
+
+.spin-tab.active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(107,63,160,0.4);
+}
+
+/* Estilo especial para pestaña Premium activa */
+.spin-tab[data-mode="premium"].active {
+    background: var(--color-accent);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(61,214,208,0.4);
+}
+
+/* --- RULETA (CANVAS) --- */
+.wheel-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    border: 6px solid var(--color-border);
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); /* Easing suave */
+}
+
+.wheel-arrow {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid var(--color-accent);
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.wheel-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px;
+    background: white;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    background:
-        conic-gradient(
-        var(--color-primary),
-        var(--color-accent),
-        var(--color-primary-light),
-        var(--color-primary)
-        );
-    transition: transform 1s ease-out;
-    }
+    font-weight: 900;
+    color: var(--color-bg);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 5;
+    font-family: var(--font-title);
+    pointer-events: none;
+}
 
-    .spin-wheel--premium {
-    border-color: gold;
-    box-shadow: 0 0 25px rgba(255,215,0,0.6);
-    }
+.spin-status-message {
+    font-size: 1.1rem;
+    color: var(--color-accent);
+    min-height: 1.5em;
+    text-align: center;
+    font-weight: bold;
+}
 
-    .spin-wheel.is-spinning {
-    transform: rotate(1080deg);
-    }
-
-    /* ---------- PANEL ---------- */
-    .spin-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    }
-
-    /* ---------- LIST ---------- */
-    .spin-list {
+/* --- PANEL LATERAL --- */
+.spin-panel__header {
+    background: var(--color-card);
+    padding: 1.5rem;
+    border-radius: 12px;
     border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 10px;
-    max-height: 260px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.spin-panel__counter {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+.spin-panel__counter strong { color: var(--color-accent); }
+
+.btn-spin-action {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* Variantes de botón de acción */
+.btn-spin-action[data-state="idle"] { background: var(--color-border); color: var(--color-text-muted); }
+.btn-spin-action[data-state="ready"] { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; box-shadow: 0 4px 15px rgba(107,63,160,0.4); }
+.btn-spin-action[data-state="spinning"] { opacity: 0.7; cursor: wait; }
+
+/* --- LISTAS Y PREMIOS --- */
+.spin-rewards, .spin-info { margin-top: 1rem; }
+
+.spin-list {
+    list-style: none;
+    margin-top: 10px;
+    max-height: 200px;
     overflow-y: auto;
-    }
+    padding-right: 5px;
+}
 
-    .spin-list.is-hidden {
-    display: none;
-    }
-
-    /* ---------- REWARDS ---------- */
-    .spin-rewards li.premium {
-    border: 2px solid gold;
-    padding: 6px;
+.spin-list li {
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 6px;
+    padding: 8px 12px;
     border-radius: 6px;
-    }
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+}
 
-    /* ---------- MODAL ---------- */
-    .spin-modal {
+/* Marco Dorado para Premium */
+.spin-list li.premium {
+    border: 1px solid #FFD700;
+    box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.2);
+    color: #fff;
+    font-weight: 500;
+}
+
+.spin-list .empty-msg { color: var(--color-text-muted); text-align: center; font-style: italic; padding: 10px; }
+.spin-list.is-hidden { display: none; }
+
+/* --- MODAL --- */
+.spin-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    }
+    opacity: 0;
+    transition: opacity 0.3s;
+}
 
-    .spin-modal.is-open {
+.spin-modal.is-open {
     display: flex;
-    }
+    opacity: 1;
+}
 
-    .spin-modal__content {
-    background: #111;
-    border-radius: 16px;
-    padding: 24px;
-    width: 90%;
-    max-width: 420px;
+.spin-modal__content {
+    background: var(--color-bg-alt);
     border: 1px solid var(--color-border);
-    }
+    border-radius: 16px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    text-align: center;
+}
 
-    .spin-modal__list li.premium {
-    border: 2px solid gold;
-    padding: 6px;
-    border-radius: 6px;
-    }
+.spin-modal__list {
+    text-align: left;
+    background: rgba(0,0,0,0.3);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.spin-modal__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-premium-link {
+    background: transparent;
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+}
+.btn-premium-link:hover { background: rgba(61,214,208,0.1); }
+
+.btn-accept {
+    background: var(--color-accent);
+    color: #000;
+    font-weight: 900;
+    padding: 14px;
+}

@@ -5,15 +5,15 @@
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS global -->
+    <!-- CSS global (Respetando tu estructura existente) -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
-
-    <!-- CSS del Spin -->
+    
+    <!-- CSS específico del Spin -->
     <link rel="stylesheet" href="./assets/css/spin.css">
-    </head>
+</head>
 
-    <body>
+<body>
 
     <!-- ================= NAV ================= -->
     <nav>
@@ -25,144 +25,104 @@
     <!-- ================= HEADER ================= -->
     <header class="container section">
         <h1>🎡 Spin ShopUniverses</h1>
-        <p>Gira la ruleta estándar o premium y gana productos.</p>
+        <p>Gira la ruleta estándar o premium y gana productos exclusivos.</p>
     </header>
 
     <!-- ================= MAIN ================= -->
     <main class="container spin">
 
         <div class="spin__layout">
+            
+            <!-- ===== ÁREA VISUAL DE LA RULETA ===== -->
+            <div class="spin-visual-area">
+                
+                <!-- Selector de Modo (Pestañas) -->
+                <div class="spin-mode-selector">
+                    <button class="spin-tab active" data-mode="estandar" onclick="switchMode('estandar')">
+                        Estándar ($25.000)
+                    </button>
+                    <button class="spin-tab" data-mode="premium" onclick="switchMode('premium')">
+                        Premium ($8.000)
+                    </button>
+                </div>
 
-        <!-- ===== RULETAS ===== -->
-        <div class="spin-wheels">
+                <!-- Contenedor de la Ruleta -->
+                <div class="wheel-wrapper">
+                    <div class="wheel-arrow"></div>
+                    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                    <!-- Centro decorativo -->
+                    <div class="wheel-center">SPIN</div>
+                </div>
 
-            <div class="spin-wheel spin-wheel--standard">
-            <span>Estándar</span>
+                <!-- Mensaje de estado -->
+                <div id="spinStatus" class="spin-status-message">
+                    Selecciona un modo para comenzar
+                </div>
             </div>
 
-            <div class="spin-wheel spin-wheel--premium">
-            <span>Premium</span>
-            </div>
+            <!-- ===== PANEL DE CONTROL Y RESULTADOS ===== -->
+            <aside class="spin-panel">
+                
+                <div class="spin-panel__header">
+                    <h3 class="spin-panel__title" id="panelTitle">Ruleta Estándar</h3>
+                    <div class="spin-panel__counter">
+                        Giros restantes: <strong id="girosCounter">5</strong>
+                    </div>
+                </div>
 
+                <button id="btnSpinAction" class="btn-spin-action">
+                    Iniciar Juego
+                </button>
+
+                <hr>
+
+                <!-- Lista de premios obtenidos en la sesión actual -->
+                <div class="spin-rewards">
+                    <h4>🎁 Premios en esta sesión</h4>
+                    <p class="small">No confirmados hasta aceptar.</p>
+                    <ul id="listaPremiosTemporales" class="spin-list">
+                        <!-- Se llena con JS -->
+                        <li class="empty-msg">Aún no has girado</li>
+                    </ul>
+                </div>
+
+                <!-- Lista de posibles productos (Accordion) -->
+                <div class="spin-info">
+                    <button class="secondary small" onclick="toggleLista()">Ver productos posibles</button>
+                    <div id="lista-productos" class="spin-list is-hidden">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+
+            </aside>
         </div>
-
-        <!-- ===== PANEL DE CONTROL ===== -->
-        <aside class="spin-panel">
-
-            <!-- -------- ESTÁNDAR -------- -->
-            <div class="spin-panel__section">
-            <h3 class="spin-panel__title">Ruleta Estándar</h3>
-
-            <div class="spin-panel__counter">
-                Giros restantes: <strong id="girosEstandar">5</strong>
-            </div>
-
-            <button onclick="iniciar('estandar')">
-                Iniciar estándar ($25.000)
-            </button>
-
-            <button onclick="girar()">
-                Girar estándar
-            </button>
-            </div>
-
-            <hr>
-
-            <!-- -------- PREMIUM -------- -->
-            <div class="spin-panel__section">
-            <h3 class="spin-panel__title">Ruleta Premium</h3>
-
-            <div class="spin-panel__counter">
-                Giros restantes: <strong id="girosPremium">1</strong>
-            </div>
-
-            <button onclick="iniciar('premium')">
-                Iniciar premium ($8.000)
-            </button>
-
-            <button onclick="girar()">
-                Girar premium
-            </button>
-            </div>
-
-            <hr>
-
-            <!-- -------- LISTA DE PRODUCTOS POSIBLES -------- -->
-            <button onclick="toggleLista()">Ver productos posibles</button>
-
-            <div id="lista-productos" class="spin-list is-hidden">
-            <!-- Se llena dinámicamente desde JS -->
-            </div>
-
-        </aside>
-        </div>
-
-        <!-- ===== PREMIOS OBTENIDOS (RESUMEN) ===== -->
-        <section class="spin-rewards">
-        <h3>🎁 Premios obtenidos</h3>
-        <ul id="productos">
-            <!-- Se renderizan premios estándar y premium -->
-        </ul>
-        </section>
 
     </main>
 
-    <!-- ================= MODAL ================= -->
+    <!-- ================= MODAL DE RESULTADOS FINALES ================= -->
     <div id="modalPremios" class="spin-modal">
         <div class="spin-modal__content">
-        <h2>🎁 Premios obtenidos</h2>
+            <h2>🎁 ¡Sesión Completada!</h2>
+            <p id="modalDescription">Has completado tus giros. ¿Qué deseas hacer?</p>
+            
+            <ul id="modalListaPremios" class="spin-modal__list">
+                <!-- Resumen final -->
+            </ul>
 
-        <ul id="listaPendientes" class="spin-modal__list">
-            <!-- Premios temporales -->
-        </ul>
-
-        <div class="spin-modal__actions">
-            <button onclick="aceptar()">Aceptar premios</button>
-            <button onclick="repetir()">Volver a girar</button>
-        </div>
+            <div class="spin-modal__actions">
+                <button class="secondary" onclick="resetActualMode()">Volver a girar (Descartar)</button>
+                <button id="btnGoPremium" class="btn-premium-link" style="display:none;" onclick="transitionToPremium()">Añadir Premium (+$8.000)</button>
+                <button class="btn-accept" onclick="acceptarPremios()">Aceptar y Agregar al Carrito</button>
+            </div>
         </div>
     </div>
 
     <!-- ================= SCRIPTS ================= -->
+    <!-- Mock de carrito y datos principales para funcionamiento -->
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/carrito.js"></script>
+    <!-- Lógica del Spin reescrita -->
     <script src="./assets/js/spin.js"></script>
 
-    <!-- ================= UI HELPERS ================= -->
-    <script>
-        /* Toggle lista de productos posibles */
-        function toggleLista() {
-        const l = document.getElementById("lista-productos");
-        l.classList.toggle("is-hidden");
-
-        if (!l.classList.contains("is-hidden")) {
-            renderLista();
-        }
-        }
-
-        /* Render lista de productos (estándar + premium) */
-        function renderLista() {
-        const cont = document.getElementById("lista-productos");
-        cont.innerHTML = "";
-
-        const productos = [
-            ...getProductosSpinEstandar(),
-            ...getProductosSpinPremium()
-        ];
-
-        productos.forEach(p => {
-            if (obtenerStock()[p.id] <= 0) return;
-
-            const div = document.createElement("div");
-            div.className = "spin-list__item";
-            div.innerHTML = `
-            <strong>${p.nombre}</strong>
-            <small>Stock: ${obtenerStock()[p.id]}</small>
-            `;
-            cont.appendChild(div);
-        });
-        }
-    </script>
-
-    </body>
+</body>
 </html>
