@@ -1,4 +1,3 @@
-
 ## ShopUniverses — Web Oficial
 
 Este repositorio contiene el desarrollo de la página web oficial de  **ShopUniverses** , un negocio de importaciones enfocado en la venta de productos mediante catálogo tradicional y una experiencia interactiva de compra basada en  **Spin Wheel (ruleta de productos)** .
@@ -124,12 +123,12 @@ Gracias.
 │
 ├── /assets
 │   ├── /css
-│   │   ├── variables.css
-│   │   ├── base.css
-│   │   ├── catalogo.css
-│   │   ├── spin.css
-│   │   ├── carrito.css
-│   │
+│   │   ├── styles.css
+│   │   ├── theme.css
+│   /fonts
+|   |   ├── horizon_outlined.otf
+│   │   ├── horizon.otf
+│   │   ├── TAN-b.otf
 │   ├── /js
 │   │   ├── data.js
 │   │   ├── stock.js
@@ -139,7 +138,15 @@ Gracias.
 │   │   ├── whatsapp.js
 │   │
 │   └── /img
-│
+│   │   ├── /favicon
+│   │   |    ├── favicon-16x16.png
+│   │   |    ├── favicon-32x32.png
+│   │   |    ├── favicon.ico
+│   │   ├── /img_catalogo
+│   │   |    ├── Acá están todas las imagenés necesarias para el catalogo
+│   │   ├── /perfil
+│   │   |    ├── logos en nomb4re del 1 al 10 con formato png para uso
+|
 └── /data
     └── inventario.json
 </span></span></code></div></div></pre>
