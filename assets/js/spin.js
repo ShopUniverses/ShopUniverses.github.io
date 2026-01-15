@@ -69,10 +69,12 @@ function switchMode(mode) {
 
 // ---------- DATOS ----------
 function getProductosDisponibles(mode) {
-    const inventario = getInventario();
-    if (!Array.isArray(inventario)) return [];
+    const data = getInventario();
 
-    return inventario.filter(p => {
+    // CLAVE: los productos están en data.productos
+    if (!data || !Array.isArray(data.productos)) return [];
+
+    return data.productos.filter(p => {
         const flag = mode === 'estandar'
             ? p.flags?.spin_estandar
             : p.flags?.spin_premium;
@@ -80,6 +82,7 @@ function getProductosDisponibles(mode) {
         return flag && p.stock > 0;
     });
 }
+
 
 // ---------- DIBUJO ----------
 function drawWheel(mode) {
