@@ -123,11 +123,9 @@
     */
 
     .producto-card {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        height: 100%; /* Obliga a la tarjeta a llenar el alto del contenedor grid */
-        justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     }
 
     /* Para asegurar que todas las tarjetas en la misma fila midan lo mismo */
@@ -138,9 +136,10 @@
         align-items: stretch; 
     }
 
+    /* IMAGEN */
     .producto-imagen {
     width: 100%;
-    aspect-ratio: 1 / 1;        /* cuadrado perfecto */
+    aspect-ratio: 1 / 1;
     background: rgba(255,255,255,0.04);
     border-radius: 10px;
     overflow: hidden;
@@ -153,12 +152,49 @@
     .producto-imagen img {
     width: 100%;
     height: 100%;
-    object-fit: contain;        /* CLAVE */
+    object-fit: contain;
     padding: 10px;
     }
 
-    .producto-card button {
-        margin-top: auto; /* Esta es la clave: empuja el botón hacia abajo */
-        width: 100%;      /* Opcional: para que todos los botones midan lo mismo */
+    /* INFO (zona central normalizada) */
+    .producto-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    min-height: 110px; /* 🔑 CLAVE: iguala alturas */
+    }
+
+    .producto-info h3 {
+    font-size: 1.1rem;
+    line-height: 1.3;
+    }
+
+    /* ACCIÓN (siempre abajo) */
+    .producto-accion {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    }
+
+    /* CONTROL DE CANTIDAD */
+    .cantidad-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    }
+
+    .cantidad-control button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    }
+
+    .cantidad-control .cantidad {
+    min-width: 24px;
+    text-align: center;
+    font-weight: bold;
     }
 
