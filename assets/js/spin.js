@@ -103,7 +103,7 @@ function drawWheel(mode) {
     }
 
     const center = canvas.width / 2;
-    const radius = canvas.width / 2;
+    const radius = canvas.width / 2 - 10;
     const step = (2 * Math.PI) / productos.length;
 
     const colors = ['#6b3fa0', '#3dd6d0', '#2a1b4e', '#FFD700', '#FF4C4C'];
@@ -201,7 +201,7 @@ function finalizeSpin(producto) {
     updateUI();
 
     if (session.girosRestantes === 0) {
-        setTimeout(openModal, 800);
+        setTimeout(openModal, 1800);
     }
 }
 
