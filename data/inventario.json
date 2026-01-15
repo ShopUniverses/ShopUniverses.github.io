@@ -12,7 +12,8 @@
         "nombre": "Lapíz 11 Minas de BTS", 
         "imagen": "assets/img/img_catalogo/Bt21.jpg",
         "precio_referencia": 3000, 
-        "costo": 1320, "stock": 3, 
+        "costo": 1320, 
+        "stock": 3, 
         "categoria": "Lapiz y Portaminas",  
         "flags": { 
             "catalogo": true, 
