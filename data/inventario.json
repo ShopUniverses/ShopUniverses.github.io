@@ -10,10 +10,10 @@
     "productos": [ 
     { "id": "11-minas-bts", 
         "nombre": "11 Minas BTS", 
-
+        "imagen": "assets/img/img_catalogo/Bt21.jpg",
         "precio_referencia": 3000, 
         "costo": 1320, "stock": 3, 
-        "categoria": "Lapiz y Portaminas", 
+        "categoria": "Lapiz y Portaminas",  
         "flags": { 
             "catalogo": true, 
             "spin_estandar": true, 
@@ -23,7 +23,7 @@
     }, 
     { "id": "11-minas-carita-feliz", 
         "nombre": "11 Minas Carita Feliz", 
-        "imagen": "assets/img/img_catalogo/Bt21.jpg",
+        "imagen": "assets/img/img_catalogo/cara.jpg",
         "precio_referencia": 3000, 
         "costo": 1320, "stock": 4, 
         "categoria": "Lapiz y Portaminas", 
