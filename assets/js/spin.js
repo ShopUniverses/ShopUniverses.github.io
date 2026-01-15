@@ -201,6 +201,7 @@ function finalizeSpin(producto) {
     updateUI();
 
     if (session.girosRestantes === 0) {
+        SPIN_STATE.lastcompletedMode = mode;
         setTimeout(openModal, 1800);
     }
 }
@@ -331,41 +332,38 @@ function resetActualMode() {
 
 
 function aceptarPremios() {
-    const mode = SPIN_STATE.currentMode;
-    const session = SPIN_STATE[mode];
+  const mode = SPIN_STATE.lastCompletedMode;
+  const session = SPIN_STATE[mode];
 
-    if (!session.premiosTemporales.length) {
-        closeModal();
-        return;
-    }
-
-    // Agregar paquete Spin al carrito
-    if (mode === 'estandar') {
-        agregarSpinBase();       // $25.000
-    } else {
-        agregarSpinPremium();    // $8.000
-    }
-
-    // Agregar productos ganados (precio $0)
-    session.premiosTemporales.forEach(p => {
-        agregarProductoDesdeSpin({
-            ...p,
-            precio: 0
-        });
-        descontarStock(p.id);
-    });
-
-    // LIMPIAR ESTADO (CLAVE)
-    session.premiosTemporales = [];
-    session.completed = true;
-
-    // Resetear flags globales
-    SPIN_STATE.isSpinning = false;
-
-    // Feedback y UI
-    updateStatus('✅ Premios agregados al carrito');
-    updateUI();
-
-    // Cerrar modal
+  if (!session || session.premiosTemporales.length === 0) {
     closeModal();
+    return;
+  }
+
+  // Agregar paquete Spin
+  if (mode === "estandar") {
+    agregarSpinBase();
+  } else {
+    agregarSpinPremium();
+  }
+
+  // Agregar productos reales
+  session.premiosTemporales.forEach(p => {
+    agregarProductoDesdeSpin({
+      id: p.id,
+      nombre: p.nombre
+    });
+    descontarStock(p.id);
+  });
+
+  // Limpiar estado
+  session.premiosTemporales = [];
+  session.completed = true;
+  SPIN_STATE.isSpinning = false;
+  SPIN_STATE.lastCompletedMode = null;
+
+  updateStatus("✅ Premios agregados al carrito");
+  updateUI();
+  closeModal();
 }
+
