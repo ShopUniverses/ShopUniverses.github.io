@@ -348,7 +348,7 @@ function aceptarPremios() {
 
     // Agregar productos ganados (precio $0)
     session.premiosTemporales.forEach(p => {
-        agregarProductoAlCarrito({
+        agregarProductoDesdeSpin({
             ...p,
             precio: 0
         });
