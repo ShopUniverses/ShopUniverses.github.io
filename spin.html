@@ -1,108 +1,138 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/theme.css">
-    <head>
+<head>
     <meta charset="UTF-8">
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS mínimo temporal -->
+    <!-- CSS GLOBAL -->
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
+
     <style>
-        body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        max-width: 800px;
-        margin: auto;
+        /* ===== LAYOUT SPIN ===== */
+        .spin-layout {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 24px;
+        margin-top: 24px;
         }
-        nav {
-        margin-bottom: 20px;
+
+        /* ===== RULETA ===== */
+        .ruleta {
+        height: 420px;
+        border-radius: 16px;
+        border: 1px solid var(--color-border);
+        background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 60%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
         }
-        nav a {
-        margin-right: 10px;
-        text-decoration: none;
+
+        /* ===== PANEL LATERAL ===== */
+        .side-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         }
-        button {
-        padding: 10px 16px;
-        margin: 5px 5px 5px 0;
-        cursor: pointer;
-        }
-        button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        }
-        .box {
-        border: 1px solid #ccc;
-        padding: 12px;
-        margin-top: 15px;
-        }
-        .log {
-        background: #f7f7f7;
+
+        .side-item {
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
         padding: 10px;
-        min-height: 80px;
-        font-size: 14px;
+        display: flex;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: rgba(255,255,255,0.04);
+        }
+
+        .side-item:hover {
+        transform: translateX(-4px);
+        border-color: var(--color-accent);
+        }
+
+        .side-item img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        background: rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 4px;
+        }
+
+        .side-info {
+        font-size: 0.9rem;
+        }
+
+        /* ===== SIDE CARD EXPANDIDA ===== */
+        .side-preview {
+        position: fixed;
+        top: 50%;
+        right: 380px;
+        transform: translateY(-50%);
+        width: 260px;
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid var(--color-border);
+        background: rgba(0,0,0,0.85);
+        display: none;
+        z-index: 10;
+        }
+
+        .side-preview img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        margin-bottom: 10px;
         }
     </style>
     </head>
 
     <body>
 
-    <!-- NAVEGACIÓN -->
     <nav>
     <a href="./index.html">Inicio</a>
     <a href="./catalogo.html">Catálogo</a>
     <a href="./carrito.html">Carrito</a>
     </nav>
 
+    <header class="container section">
     <h1>🎡 Spin ShopUniverses</h1>
-    <p>
-    Por <strong>$25.000 COP</strong> obtén <strong>5 productos sorpresa</strong>.
-    </p>
+    <p>Por <strong>$25.000 COP</strong> obtén <strong>5 productos sorpresa</strong>.</p>
+    </header>
+
+    <main class="container">
 
     <!-- CONTROLES -->
-    <div class="box">
-    <button id="btnIniciar" onclick="iniciarCompra()">Iniciar Spin</button>
-    <button id="btnGirar" onclick="girarSpin()">Girar</button>
-    <button id="btnPremium" onclick="aceptarPremiumSpin()">Aceptar Premium (+$8.000)</button>
-    <button id="btnCancelar" onclick="cancelarTodo()">Cancelar Compra</button>
+    <div class="section">
+        <button id="btnIniciar" onclick="iniciarCompra()">Iniciar Spin</button>
+        <button id="btnGirar" onclick="girarSpin()">Girar</button>
+        <button id="btnPremium" onclick="aceptarPremiumSpin()">Premium (+$8.000)</button>
+        <button onclick="cancelarTodo()">Cancelar</button>
     </div>
 
-    <!-- ESTADO -->
-    <div class="box">
-    <h3>Estado del Spin</h3>
-    <p>
-        <strong>Giros restantes:</strong>
-        <span id="giros">-</span>
-    </p>
+    <!-- LAYOUT -->
+    <div class="spin-layout">
+
+        <!-- RULETA -->
+        <div class="ruleta">
+        🎯 Ruleta (animación siguiente fase)
+        </div>
+
+        <!-- PANEL PRODUCTOS -->
+        <div class="side-panel">
+        <h3>Productos posibles</h3>
+        <div id="lista-productos"></div>
+        </div>
+
     </div>
 
-    <!-- PRODUCTOS GANADOS -->
-    <div class="box">
-    <h3>Productos ganados</h3>
-    <ul id="productos"></ul>
-    </div>
+    </main>
 
-    <!-- CARRITO -->
-    <div class="box">
-    <h3>Carrito</h3>
-    <ul id="carrito"></ul>
-    <p>
-        <strong>Total:</strong> $
-        <span id="total">0</span>
-    </p>
-    </div>
-
-    <!-- WHATSAPP -->
-    <div class="box">
-    <button onclick="enviarPedidoWA()">Enviar pedido por WhatsApp</button>
-    </div>
-
-    <!-- LOG -->
-    <div class="box">
-    <h3>Log</h3>
-    <div id="log" class="log"></div>
-    </div>
+    <!-- PREVIEW -->
+    <div id="preview" class="side-preview"></div>
 
     <!-- SCRIPTS -->
     <script src="./assets/js/data.js"></script>
@@ -111,120 +141,76 @@
     <script src="./assets/js/main.js"></script>
 
     <script>
-    /**************************************************
-    * UTILIDADES UI
-    **************************************************/
+    /* ===============================
+    RENDER PRODUCTOS ESTÁNDAR
+    =============================== */
 
-    function log(msg) {
-    document.getElementById("log").innerHTML += msg + "<br>";
-    }
+    function renderProductosSpin() {
+    const cont = document.getElementById("lista-productos");
+    const preview = document.getElementById("preview");
+    cont.innerHTML = "";
 
-    function refrescarUI() {
-    const spin = getSpinState();
-    const items = getItemsCarrito();
+    const productos = getProductosSpinEstandar();
 
-    document.getElementById("giros").innerText =
-        spin ? spin.girosRestantes : "-";
+    productos.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "side-item";
 
-    // Productos ganados
-    const ulProductos = document.getElementById("productos");
-    ulProductos.innerHTML = "";
-    if (spin) {
-        spin.productosGanados.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
-        ulProductos.appendChild(li);
-        });
-    }
+        item.innerHTML = `
+        <img src="./${p.imagen}">
+        <div class="side-info">
+            <strong>${p.nombre}</strong><br>
+            <small>Stock: ${obtenerStock()[p.id]}</small>
+        </div>
+        `;
 
-    // Carrito
-    const ulCarrito = document.getElementById("carrito");
-    ulCarrito.innerHTML = "";
-    items.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.nombre} — $${item.precio}`;
-        ulCarrito.appendChild(li);
+        item.onmouseenter = () => {
+        preview.innerHTML = `
+            <img src="./${p.imagen}">
+            <h4>${p.nombre}</h4>
+            <p>$${p.precio_referencia.toLocaleString("es-CO")}</p>
+        `;
+        preview.style.display = "block";
+        };
+
+        item.onmouseleave = () => {
+        preview.style.display = "none";
+        };
+
+        cont.appendChild(item);
     });
-
-    document.getElementById("total").innerText = getTotal();
-
-    actualizarBotones();
     }
 
-    function actualizarBotones() {
-    const spin = getSpinState();
-
-    const btnIniciar = document.getElementById("btnIniciar");
-    const btnGirar = document.getElementById("btnGirar");
-    const btnPremium = document.getElementById("btnPremium");
-
-    if (!spin || !spin.activo) {
-        btnIniciar.disabled = false;
-        btnGirar.disabled = true;
-        btnPremium.disabled = true;
-        return;
-    }
-
-    btnIniciar.disabled = true;
-    btnGirar.disabled = spin.girosRestantes <= 0;
-    btnPremium.disabled =
-        spin.girosRestantes > 0 || spin.premiumAceptado;
-    }
-
-    /**************************************************
-    * ACCIONES
-    **************************************************/
+    /* ===============================
+    UI EXISTENTE
+    =============================== */
 
     function iniciarCompra() {
-    const spin = getSpinState();
-
-    if (spin && spin.activo) {
-        log("⚠️ Ya tienes un Spin activo");
-        refrescarUI();
-        return;
-    }
-
+    if (haySpinActivo()) return;
     iniciarCompraSpin();
-    log("🎡 Spin iniciado");
-    refrescarUI();
+    renderProductosSpin();
     }
 
     function girarSpin() {
     const ganador = girar();
-    if (ganador) {
-        log("🎁 Ganaste: " + ganador.nombre);
-    }
-    refrescarUI();
+    if (ganador) renderProductosSpin();
     }
 
     function aceptarPremiumSpin() {
-    const ganador = aceptarPremium();
-    if (ganador) {
-        log("💎 Premium ganado: " + ganador.nombre);
-    }
-    refrescarUI();
+    aceptarPremium();
     }
 
     function cancelarTodo() {
     cancelarCompraCompleta();
-    log("❌ Compra cancelada y stock restaurado");
-    refrescarUI();
+    renderProductosSpin();
     }
 
-    function enviarPedidoWA() {
-    enviarPedido("573207096148"); // tu número
-    }
-
-    /**************************************************
-    * REHIDRATACIÓN AUTOMÁTICA
-    **************************************************/
-
+    /* ===============================
+    INIT
+    =============================== */
     document.addEventListener("DOMContentLoaded", () => {
-    const spin = getSpinState();
-    if (spin && spin.activo) {
-        log("🔄 Spin activo restaurado");
-    }
-    refrescarUI();
+    cargarSpinState();
+    renderProductosSpin();
     });
     </script>
 
