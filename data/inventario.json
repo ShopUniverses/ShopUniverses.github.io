@@ -330,7 +330,7 @@
     }, 
     { "id": "set-x12-pcs", 
         "nombre": "Set x12 pcs",
-        "imagen": "assets/img/img_catalogo/set_x12_pcs.jpg",
+        "imagen": "assets/img/img_catalogo/set_12x_pcs.jpg",
         "precio_referencia": 20000, 
         "costo": 10304, 
         "stock": 1, 

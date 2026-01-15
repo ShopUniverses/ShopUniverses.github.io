@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         <div class="producto-info">
             <h3>${producto.nombre}</h3>
-            <p><strong>$${producto.precio_referencia}</strong></p>
+            <p><strong>$${producto.precio_referencia} COP</strong></p>
             <small>Stock disponible: ${stockActual}</small>
         </div>
 
