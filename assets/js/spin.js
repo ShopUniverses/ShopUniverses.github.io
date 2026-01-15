@@ -304,3 +304,61 @@ function toggleLista() {
 
     cont.classList.toggle('is-hidden');
 }
+
+function closeModal() {
+    const modal = document.getElementById('modalPremios');
+    if (modal) {
+        modal.classList.remove('is-open');
+    }
+}
+
+function resetActualMode() {
+    const mode = SPIN_STATE.currentMode;
+    const session = SPIN_STATE[mode];
+
+    session.girosRestantes = session.maxGiros;
+    session.premiosTemporales = [];
+    session.completed = false;
+
+    updateStatus('🔄 Puedes girar de nuevo');
+    updateUI();
+    drawWheel(mode);
+
+    closeModal();
+}
+
+function aceptarPremios() {
+    const mode = SPIN_STATE.currentMode;
+    const session = SPIN_STATE[mode];
+
+    if (!session.premiosTemporales.length) {
+        closeModal();
+        return;
+    }
+
+    // 1️⃣ Agregar paquete Spin al carrito
+    if (mode === 'estandar') {
+        agregarSpinBase();      // $25.000
+    } else {
+        agregarSpinPremium();   // $8.000
+    }
+
+    // 2️⃣ Agregar productos ganados (precio $0)
+    session.premiosTemporales.forEach(p => {
+        agregarProductoAlCarrito({
+            ...p,
+            precio: 0
+        });
+
+        // Descontar stock real
+        descontarStock(p.id);
+    });
+
+    // 3️⃣ Marcar sesión como completada
+    session.completed = true;
+
+    updateStatus('✅ Premios agregados al carrito');
+    updateUI();
+
+    closeModal();
+}
