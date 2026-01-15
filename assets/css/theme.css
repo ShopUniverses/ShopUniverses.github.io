@@ -27,25 +27,36 @@
     --shadow-soft: 0 8px 24px rgba(0,0,0,0.35);
     }
 
-    /* FONDO UNIVERSO */
+    /* FONDO UNIVERSO CON ESTRELLAS */
     body {
-    background:
+    background-color: var(--color-bg);
+    background-image: 
+        /* Capa de estrellas pequeñas */
+        radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 50px 160px, #ddd, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+        /* Tus gradientes de color originales */
         radial-gradient(
-        circle at top,
-        rgba(107,63,160,0.25),
-        transparent 60%
+            circle at top,
+            rgba(107,63,160,0.25),
+            transparent 60%
         ),
         radial-gradient(
-        circle at bottom,
-        rgba(61,214,208,0.12),
-        transparent 55%
+            circle at bottom,
+            rgba(61,214,208,0.12),
+            transparent 55%
         ),
         linear-gradient(
-        to bottom,
-        var(--color-bg),
-        var(--color-bg-alt)
+            to bottom,
+            var(--color-bg),
+            var(--color-bg-alt)
         );
+    background-size: 200px 200px, 150px 150px, 300px 300px, 250px 250px, 180px 180px, 100% 100%, 100% 100%, 100% 100%;
+    background-repeat: repeat, repeat, repeat, repeat, repeat, no-repeat, no-repeat, no-repeat;
     color: var(--color-text);
+    min-height: 100vh;
     }
 
     /* NAVEGACIÓN */

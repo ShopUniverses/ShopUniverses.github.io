@@ -75,8 +75,14 @@
 
     /* TARJETAS */
     .card {
-    padding: 20px;
-    border-radius: 12px;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        transition: border-color 0.3s ease;
+    }
+
+    .card:hover {
+        border-color: var(--color-accent); /* Brillo turquesa al pasar el mouse */
     }
 
     /* LISTAS */
@@ -110,16 +116,26 @@
         flex-direction: column;
         align-items: flex-start;
     }
-}
+    }
 
-/* 
-    PRODUCTOS - IMÁGENES DE CATÁLOGO
-*/
+    /* 
+        PRODUCTOS - IMÁGENES DE CATÁLOGO
+    */
 
-.producto-card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    .producto-card {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        height: 100%; /* Obliga a la tarjeta a llenar el alto del contenedor grid */
+        justify-content: flex-start;
+    }
+
+    /* Para asegurar que todas las tarjetas en la misma fila midan lo mismo */
+    .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajusta según tu diseño */
+        align-items: stretch; 
     }
 
     .producto-imagen {
@@ -139,5 +155,10 @@
     height: 100%;
     object-fit: contain;        /* CLAVE */
     padding: 10px;
-}
+    }
+
+    .producto-card button {
+        margin-top: auto; /* Esta es la clave: empuja el botón hacia abajo */
+        width: 100%;      /* Opcional: para que todos los botones midan lo mismo */
+    }
 
