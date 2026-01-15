@@ -76,6 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+function handleSpinAction() {
+  const mode = SPIN_STATE.currentMode;
+  const session = SPIN_STATE[mode];
+
+  if (session.girosRestantes > 0 && !SPIN_STATE.isSpinning) {
+    spinWheel();
+  }
+}
+
+
 // --- 4. LÓGICA DE UI Y CONTROL ---
 
 // Cambiar entre Ruleta Estándar y Premium
