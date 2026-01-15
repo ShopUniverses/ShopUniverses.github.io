@@ -1,107 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+    <head>
     <meta charset="UTF-8">
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
-
-    <style>
-        .spin-grid {
-        display: grid;
-        grid-template-columns: 1fr 420px;
-        gap: 24px;
-        margin-top: 24px;
-        }
-
-        .ruleta-box {
-        height: 420px;
-        border-radius: 16px;
-        border: 1px solid var(--color-border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
-        }
-
-        .panel {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        }
-
-        .contador {
-        font-size: 0.95rem;
-        opacity: 0.85;
-        }
-
-        .lista {
-        display: none;
-        border: 1px solid var(--color-border);
-        border-radius: 12px;
-        padding: 10px;
-        max-height: 260px;
-        overflow-y: auto;
-        background: rgba(0,0,0,0.6);
-        }
-
-        .side-item {
-        display: flex;
-        gap: 10px;
-        padding: 8px;
-        border-bottom: 1px solid var(--color-border);
-        }
-
-        .side-item img {
-        width: 38px;
-        height: 38px;
-        object-fit: contain;
-        border-radius: 6px;
-        background: rgba(255,255,255,0.08);
-        padding: 4px;
-        }
-
-        .premios {
-        margin-top: 32px;
-        border-top: 1px solid var(--color-border);
-        padding-top: 16px;
-        }
-
-        /* ===== MODAL ===== */
-        .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 999;
-        }
-
-        .modal {
-        background: #111;
-        border-radius: 16px;
-        padding: 24px;
-        width: 90%;
-        max-width: 420px;
-        border: 1px solid var(--color-border);
-        text-align: center;
-        }
-
-        .modal ul {
-        margin: 16px 0;
-        }
-
-        .modal-actions {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 16px;
-        }
-    </style>
+    <link rel="stylesheet" href="./assets/css/spin.css">
     </head>
 
     <body>
@@ -117,59 +23,63 @@
     <p>Gira estándar o premium y gana productos.</p>
     </header>
 
-    <main class="container">
+    <main class="container spin">
 
-    <!-- GRID PRINCIPAL -->
-    <div class="spin-grid">
+    <div class="spin__layout">
 
-        <!-- ESPACIO ANIMACIÓN -->
-        <div id="ruleta" class="ruleta-box">
+        <!-- Ruleta -->
+        <div id="ruleta" class="spin-wheel spin-wheel--standard">
         🎯 Animación de Ruleta aquí
         </div>
 
-        <!-- PANEL DERECHO -->
-        <div class="panel">
+        <!-- Panel -->
+        <aside class="spin-panel">
 
-        <strong>Ruleta Estándar</strong>
-        <div class="contador">
+        <div class="spin-panel__section">
+            <div class="spin-panel__title">Ruleta Estándar</div>
+            <div class="spin-panel__counter">
             Giros restantes: <span id="girosEstandar">–</span>
+            </div>
+            <button onclick="iniciarEstandar()">Iniciar estándar</button>
+            <button onclick="girarEstandar()">Girar estándar</button>
         </div>
-        <button onclick="iniciarEstandar()">Iniciar estándar</button>
-        <button onclick="girarEstandar()">Girar estándar</button>
 
         <hr>
 
-        <strong>Ruleta Premium</strong>
-        <div class="contador">
+        <div class="spin-panel__section">
+            <div class="spin-panel__title">Ruleta Premium</div>
+            <div class="spin-panel__counter">
             Giros premium disponibles: <span id="girosPremium">0</span>
+            </div>
+            <button onclick="iniciarPremium()">Iniciar premium ($8.000)</button>
+            <button onclick="girarPremium()">Girar premium</button>
         </div>
-        <button onclick="iniciarPremium()">Iniciar premium ($8.000)</button>
-        <button onclick="girarPremium()">Girar premium</button>
 
         <hr>
 
         <button onclick="toggleLista()">Ver productos posibles</button>
-        <div id="lista-productos" class="lista"></div>
+        <div id="lista-productos" class="spin-list is-hidden"></div>
 
         <button onclick="cancelarTodo()">Cancelar</button>
-        </div>
+        </aside>
+
     </div>
 
-    <!-- PREMIOS ACEPTADOS -->
-    <div class="premios">
+    <!-- Premios -->
+    <section class="spin-rewards">
         <h3>🎁 Premios obtenidos</h3>
         <ul id="productos"></ul>
-    </div>
+    </section>
 
     </main>
 
-    <!-- MODAL PREMIOS -->
-    <div id="modalPremios" class="modal-overlay">
-    <div class="modal">
+    <!-- Modal -->
+    <div id="modalPremios" class="spin-modal">
+    <div class="spin-modal__content">
         <h2>🎁 Premio obtenido</h2>
-        <ul id="listaPendientes"></ul>
+        <ul id="listaPendientes" class="spin-modal__list"></ul>
 
-        <div class="modal-actions">
+        <div class="spin-modal__actions">
         <button onclick="confirmarPremios()">Aceptar premio</button>
         <button onclick="cerrarModal()">Volver a girar</button>
         </div>
@@ -182,137 +92,21 @@
     <script src="./assets/js/main.js"></script>
 
     <script>
-    /* ===============================
-    LISTA DE PRODUCTOS
-    =============================== */
+    /* LISTA */
     function toggleLista() {
     const l = document.getElementById("lista-productos");
-    l.style.display = l.style.display === "block" ? "none" : "block";
+    l.classList.toggle("is-hidden");
+    l.classList.toggle("is-visible");
     }
 
-    function renderLista() {
-    const cont = document.getElementById("lista-productos");
-    cont.innerHTML = "";
-
-    const productos = [
-        ...getProductosSpinEstandar(),
-        ...getProductosSpinPremium()
-    ];
-
-    productos.forEach(p => {
-        if (obtenerStock()[p.id] <= 0) return;
-
-        const div = document.createElement("div");
-        div.className = "side-item";
-        div.innerHTML = `
-        <img src="./${p.imagen}">
-        <div>
-            <strong>${p.nombre}</strong><br>
-            <small>Stock: ${obtenerStock()[p.id]}</small>
-        </div>
-        `;
-        cont.appendChild(div);
-    });
-    }
-
-    /* ===============================
-    PREMIOS ACEPTADOS
-    =============================== */
-    function renderPremios() {
-    const ul = document.getElementById("productos");
-    ul.innerHTML = "";
-
-    const spin = getSpinState();
-    if (!spin) return;
-
-    spin.productosGanados.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
-        ul.appendChild(li);
-    });
-    }
-
-    /* ===============================
-    MODAL
-    =============================== */
+    /* MODAL */
     function mostrarModalPremios() {
-    const modal = document.getElementById("modalPremios");
-    const lista = document.getElementById("listaPendientes");
-    lista.innerHTML = "";
-
-    const spin = getSpinState();
-    spin.premiosPendientes.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
-        lista.appendChild(li);
-    });
-
-    modal.style.display = "flex";
+    document.getElementById("modalPremios").classList.add("is-open");
     }
 
     function cerrarModal() {
-    document.getElementById("modalPremios").style.display = "none";
+    document.getElementById("modalPremios").classList.remove("is-open");
     }
-
-    function confirmarPremios() {
-    aceptarPremios();
-    cerrarModal();
-    renderPremios();
-    renderLista();
-    actualizarContadores();
-    }
-
-    /* ===============================
-    CONTADORES
-    =============================== */
-    function actualizarContadores() {
-    const spin = getSpinState();
-    document.getElementById("girosEstandar").textContent =
-        spin ? spin.girosRestantes : "–";
-    document.getElementById("girosPremium").textContent =
-        spin ? spin.girosPremium : 0;
-    }
-
-    /* ===============================
-    ACCIONES
-    =============================== */
-    function iniciarEstandar() {
-    iniciarSpin("estandar");
-    actualizarContadores();
-    }
-
-    function girarEstandar() {
-    const g = girarSpinEstandar();
-    if (!g) return;
-    mostrarModalPremios();
-    }
-
-    function iniciarPremium() {
-    iniciarSpin("premium");
-    actualizarContadores();
-    }
-
-    function girarPremium() {
-    const g = girarSpinPremiumUnico();
-    if (!g) return;
-    mostrarModalPremios();
-    }
-
-    function cancelarTodo() {
-    cancelarSpin();
-    location.reload();
-    }
-
-    /* ===============================
-    INIT
-    =============================== */
-    document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();
-    cargarSpinState();
-    renderLista();
-    renderPremios();
-    actualizarContadores();
-    });
     </script>
 
     </body>
