@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
+<head>
     <meta charset="UTF-8">
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,13 +17,13 @@
         }
 
         .ruleta {
-        height: 420px;
+        height: 380px;
         border-radius: 16px;
         border: 1px solid var(--color-border);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
         }
 
@@ -43,8 +43,8 @@
         }
 
         .side-item img {
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         object-fit: contain;
         border-radius: 8px;
         background: rgba(255,255,255,0.08);
@@ -67,16 +67,16 @@
 
     <header class="container section">
     <h1>🎡 Spin ShopUniverses</h1>
-    <p>Por <strong>$25.000 COP</strong> obtén <strong>5 productos sorpresa</strong>.</p>
+    <p>Elige cómo girar: estándar o premium.</p>
     </header>
 
     <main class="container">
 
     <!-- CONTROLES -->
     <div class="section">
-        <button onclick="iniciarCompra()">Iniciar Spin</button>
-        <button onclick="girar()">Girar</button>
-        <button onclick="activarPremium()">Cambiar a Premium</button>
+        <button onclick="iniciarEstandar()">Iniciar Spin Estándar</button>
+        <button onclick="girarEstandar()">Girar Estándar</button>
+        <button onclick="girarPremium()">Giro Premium ($8.000)</button>
         <button onclick="cancelarTodo()">Cancelar</button>
     </div>
 
@@ -84,12 +84,12 @@
 
         <!-- RULETA -->
         <div id="ruleta" class="ruleta">
-        Ruleta Estándar
+        Ruleta activa
         </div>
 
         <!-- LISTA -->
         <div class="side-panel">
-        <h3 id="tituloLista">Productos Estándar</h3>
+        <h3 id="tituloLista">Productos disponibles</h3>
         <div id="lista-productos"></div>
         </div>
 
@@ -109,19 +109,17 @@
     <script src="./assets/js/main.js"></script>
 
     <script>
-    let modo = "estandar";
-
     /* ===============================
-    RENDER LISTA
+    RENDER LISTA SIEMPRE
     =============================== */
     function renderLista() {
     const cont = document.getElementById("lista-productos");
     cont.innerHTML = "";
 
-    const productos =
-        modo === "estandar"
-        ? getProductosSpinEstandar()
-        : getProductosSpinPremium();
+    const productos = [
+        ...getProductosSpinEstandar(),
+        ...getProductosSpinPremium()
+    ];
 
     productos.forEach(p => {
         if (obtenerStock()[p.id] <= 0) return;
@@ -140,45 +138,44 @@
     }
 
     /* ===============================
-    FLUJO
+    RENDER PREMIOS DESDE ESTADO
     =============================== */
-    function iniciarCompra() {
+    function renderPremios() {
+    const ul = document.getElementById("productos");
+    ul.innerHTML = "";
+
+    const spin = getSpinState();
+    if (!spin) return;
+
+    spin.productosGanados.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
+        ul.appendChild(li);
+    });
+    }
+
+    /* ===============================
+    ACCIONES
+    =============================== */
+    function iniciarEstandar() {
     iniciarSpin();
-    modo = "estandar";
-    document.getElementById("ruleta").textContent = "Ruleta Estándar";
-    document.getElementById("tituloLista").textContent = "Productos Estándar";
+    renderPremios();
+    }
+
+    function girarEstandar() {
+    const ganador = girarSpinEstandar();
+    if (!ganador) return;
+    renderPremios();
     renderLista();
     }
 
-    function girar() {
-    let ganador = null;
+    function girarPremium() {
+    if (!haySpinActivo()) iniciarSpin();
 
-    if (modo === "estandar") {
-        ganador = girarSpinEstandar();
-        if (spinCompletado()) {
-        alert("🎯 Giros estándar completados. Puedes pasar a Premium.");
-        }
-    } else {
-        ganador = girarSpinPremium();
-    }
-
+    const ganador = girarSpinPremiumUnico();
     if (!ganador) return;
 
-    const li = document.createElement("li");
-    li.textContent = ganador.nombre + (modo === "premium" ? " (Premium)" : "");
-    document.getElementById("productos").appendChild(li);
-
-    renderLista();
-    }
-
-    function activarPremium() {
-    if (!spinCompletado()) {
-        alert("Debes completar los giros estándar primero");
-        return;
-    }
-    modo = "premium";
-    document.getElementById("ruleta").textContent = "Ruleta Premium";
-    document.getElementById("tituloLista").textContent = "Productos Premium";
+    renderPremios();
     renderLista();
     }
 
@@ -190,9 +187,11 @@
     /* ===============================
     INIT
     =============================== */
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
+    await cargarInventario();
     cargarSpinState();
     renderLista();
+    renderPremios();
     });
     </script>
 

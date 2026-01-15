@@ -177,3 +177,25 @@ function spinCompletado() {
 function haySpinActivo() {
   return spinState && spinState.activo;
 }
+
+/*Giro de Premium*/
+function girarSpinPremiumUnico() {
+  if (!spinState || !spinState.activo) return null;
+
+  const disponibles = getProductosSpinPremium();
+  if (disponibles.length === 0) return null;
+
+  const ganador = seleccionarProductoPonderado(disponibles);
+  if (!ganador) return null;
+
+  descontarStock(ganador.id);
+
+  spinState.productosGanados.push({
+    id: ganador.id,
+    nombre: ganador.nombre,
+    premium: true
+  });
+
+  guardarSpinState();
+  return ganador;
+}
