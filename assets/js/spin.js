@@ -26,8 +26,7 @@ function iniciarSpin() {
     productosObjetivo: config.productos_por_spin,
     productosGanados: [],
     girosRestantes: config.productos_por_spin,
-    premiumOfrecido: false,
-    premiumAceptado: false
+    girosPremium: 0
   };
 
   guardarSpinState();
@@ -196,6 +195,7 @@ function girarSpinPremiumUnico() {
     premium: true
   });
 
+  spinState.girosPremium++;
   guardarSpinState();
   return ganador;
 }

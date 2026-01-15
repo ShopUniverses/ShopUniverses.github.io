@@ -9,50 +9,65 @@
     <link rel="stylesheet" href="./assets/css/theme.css">
 
     <style>
-        .spin-layout {
+        .spin-grid {
         display: grid;
-        grid-template-columns: 1fr 360px;
+        grid-template-columns: 1fr 420px;
         gap: 24px;
         margin-top: 24px;
         }
 
-        .ruleta {
-        height: 380px;
+        .ruleta-box {
+        height: 420px;
         border-radius: 16px;
         border: 1px solid var(--color-border);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
         }
 
-        .side-panel {
+        .panel {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 14px;
+        }
+
+        .contador {
+        font-size: 0.95rem;
+        opacity: 0.85;
+        }
+
+        .lista {
+        display: none;
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 10px;
+        max-height: 260px;
+        overflow-y: auto;
+        background: rgba(0,0,0,0.6);
         }
 
         .side-item {
         display: flex;
         gap: 10px;
-        padding: 10px;
-        border-radius: 12px;
-        border: 1px solid var(--color-border);
-        background: rgba(255,255,255,0.04);
+        padding: 8px;
+        border-bottom: 1px solid var(--color-border);
         }
 
         .side-item img {
-        width: 44px;
-        height: 44px;
+        width: 38px;
+        height: 38px;
         object-fit: contain;
-        border-radius: 8px;
+        border-radius: 6px;
         background: rgba(255,255,255,0.08);
         padding: 4px;
         }
 
         .premios {
         margin-top: 32px;
+        border-top: 1px solid var(--color-border);
+        padding-top: 16px;
         }
     </style>
     </head>
@@ -67,37 +82,49 @@
 
     <header class="container section">
     <h1>🎡 Spin ShopUniverses</h1>
-    <p>Elige cómo girar: estándar o premium.</p>
+    <p>Gira estándar o premium y gana productos.</p>
     </header>
 
     <main class="container">
 
-    <!-- CONTROLES -->
-    <div class="section">
-        <button onclick="iniciarEstandar()">Iniciar Spin Estándar</button>
-        <button onclick="girarEstandar()">Girar Estándar</button>
+    <!-- GRID PRINCIPAL -->
+    <div class="spin-grid">
+
+        <!-- ESPACIO ANIMACIÓN -->
+        <div id="ruleta" class="ruleta-box">
+        🎯 Animación de Ruleta aquí
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="panel">
+
+        <strong>Ruleta Estándar</strong>
+        <div class="contador">
+            Giros restantes: <span id="girosEstandar">–</span>
+        </div>
+        <button onclick="iniciarEstandar()">Iniciar estándar</button>
+        <button onclick="girarEstandar()">Girar estándar</button>
+
+        <hr>
+
+        <strong>Ruleta Premium</strong>
+        <div class="contador">
+            Giros premium: <span id="girosPremium">0</span>
+        </div>
         <button onclick="girarPremium()">Giro Premium ($8.000)</button>
+
+        <hr>
+
+        <button onclick="toggleLista()">Ver productos posibles</button>
+        <div id="lista-productos" class="lista"></div>
+
         <button onclick="cancelarTodo()">Cancelar</button>
+        </div>
     </div>
 
-    <div class="spin-layout">
-
-        <!-- RULETA -->
-        <div id="ruleta" class="ruleta">
-        Ruleta activa
-        </div>
-
-        <!-- LISTA -->
-        <div class="side-panel">
-        <h3 id="tituloLista">Productos disponibles</h3>
-        <div id="lista-productos"></div>
-        </div>
-
-    </div>
-
-    <!-- HISTORIAL -->
+    <!-- PREMIOS -->
     <div class="premios">
-        <h3>🎁 Productos ganados</h3>
+        <h3>🎁 Premios obtenidos</h3>
         <ul id="productos"></ul>
     </div>
 
@@ -110,8 +137,13 @@
 
     <script>
     /* ===============================
-    RENDER LISTA SIEMPRE
+    LISTA
     =============================== */
+    function toggleLista() {
+    const l = document.getElementById("lista-productos");
+    l.style.display = l.style.display === "block" ? "none" : "block";
+    }
+
     function renderLista() {
     const cont = document.getElementById("lista-productos");
     cont.innerHTML = "";
@@ -138,7 +170,7 @@
     }
 
     /* ===============================
-    RENDER PREMIOS DESDE ESTADO
+    PREMIOS
     =============================== */
     function renderPremios() {
     const ul = document.getElementById("productos");
@@ -155,16 +187,29 @@
     }
 
     /* ===============================
+    CONTADORES
+    =============================== */
+    function actualizarContadores() {
+    const spin = getSpinState();
+    document.getElementById("girosEstandar").textContent =
+        spin ? spin.girosRestantes : "–";
+    document.getElementById("girosPremium").textContent =
+        spin ? spin.girosPremium : 0;
+    }
+
+    /* ===============================
     ACCIONES
     =============================== */
     function iniciarEstandar() {
     iniciarSpin();
+    actualizarContadores();
     renderPremios();
     }
 
     function girarEstandar() {
-    const ganador = girarSpinEstandar();
-    if (!ganador) return;
+    const g = girarSpinEstandar();
+    if (!g) return;
+    actualizarContadores();
     renderPremios();
     renderLista();
     }
@@ -172,9 +217,10 @@
     function girarPremium() {
     if (!haySpinActivo()) iniciarSpin();
 
-    const ganador = girarSpinPremiumUnico();
-    if (!ganador) return;
+    const g = girarSpinPremiumUnico();
+    if (!g) return;
 
+    actualizarContadores();
     renderPremios();
     renderLista();
     }
@@ -192,6 +238,7 @@
     cargarSpinState();
     renderLista();
     renderPremios();
+    actualizarContadores();
     });
     </script>
 
