@@ -338,9 +338,9 @@ function aceptarPremios() {
 
     // 1️⃣ Agregar paquete Spin al carrito
     if (mode === 'estandar') {
-        agregarSpinBase();      // $25.000
+        agregarSpinBase();       // $25.000
     } else {
-        agregarSpinPremium();   // $8.000
+        agregarSpinPremium();    // $8.000
     }
 
     // 2️⃣ Agregar productos ganados (precio $0)
@@ -349,16 +349,20 @@ function aceptarPremios() {
             ...p,
             precio: 0
         });
-
-        // Descontar stock real
         descontarStock(p.id);
     });
 
-    // 3️⃣ Marcar sesión como completada
+    // 3️⃣ LIMPIAR ESTADO (CLAVE)
+    session.premiosTemporales = [];
     session.completed = true;
 
+    // 4️⃣ Resetear flags globales
+    SPIN_STATE.isSpinning = false;
+
+    // 5️⃣ Feedback y UI
     updateStatus('✅ Premios agregados al carrito');
     updateUI();
 
+    // 6️⃣ Cerrar modal
     closeModal();
 }
