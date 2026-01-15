@@ -9,7 +9,7 @@
     
     "productos": [ 
     { "id": "11-minas-bts", 
-        "nombre": "11 Minas BTS", 
+        "nombre": "Lapíz 11 Minas de BTS", 
         "imagen": "assets/img/img_catalogo/Bt21.jpg",
         "precio_referencia": 3000, 
         "costo": 1320, "stock": 3, 
@@ -22,7 +22,7 @@
         "peso_spin": 1 
     }, 
     { "id": "11-minas-carita-feliz", 
-        "nombre": "11 Minas Carita Feliz", 
+        "nombre": "Lapíz 11 Minas Carita Felíz", 
         "imagen": "assets/img/img_catalogo/cara.jpg",
         "precio_referencia": 3000, 
         "costo": 1320, "stock": 4, 
@@ -49,7 +49,7 @@
         "peso_spin": 1 
     }, 
     { "id": "blister-bts-x5pcs", 
-        "nombre": "Blister Bts x5pcs", 
+        "nombre": "Blister de Borradores BTS x5pcs", 
         "imagen": "assets/img/img_catalogo/bts.jpg",
         "precio_referencia": 10000, 
         "costo": 6860, 
@@ -119,7 +119,7 @@
         "peso_spin": 1 
     }, 
     { "id": "carpeta-pandas", 
-        "nombre": "Carpeta Pandas", 
+        "nombre": "Carpeta Pandas - Tamaño Carta", 
         "imagen": "assets/img/img_catalogo/carpeta_pandas.jpg",
         "precio_referencia": 3000, 
         "costo": 1500, 
@@ -133,7 +133,7 @@
         "peso_spin": 3 
     }, 
     { "id": "carpeta-van-gogh", 
-        "nombre": "Carpeta Van Gogh", 
+        "nombre": "Carpeta Van Gogh - Tamaño Carta", 
         "imagen": "assets/img/img_catalogo/carpeta_van_gogh.jpg",
         "precio_referencia": 5000, 
         "costo": 2581, 
@@ -147,7 +147,7 @@
         "peso_spin": 2 
     }, 
     { "id": "degrade", 
-        "nombre": "Degrade", 
+        "nombre": "Resaltador Degrade", 
         "imagen": "assets/img/img_catalogo/degrade.png",
         "precio_referencia": 15000, 
         "costo": 9659, 
@@ -161,7 +161,7 @@
         "peso_spin": 1 
     }, 
     { "id": "dinosaurio", 
-        "nombre": "Dinosaurio", 
+        "nombre": "Sacapuntas Dinosaurio", 
         "imagen": "assets/img/img_catalogo/dino.jpg",
         "precio_referencia": 5000, 
         "costo": 1820, 
@@ -175,7 +175,7 @@
             "peso_spin": 1 
     }, 
     { "id": "hello-kitty--borrador", 
-        "nombre": "Hello Kitty + Borrador",
+        "nombre": "Hello Kitty - Sacapuntas y Borrador en 1",
         "imagen": "assets/img/img_catalogo/kitty.jpg", 
         "precio_referencia": 6000, 
         "costo": 3860, 
@@ -189,7 +189,7 @@
         "peso_spin": 1 
     }, 
     { "id": "lapiceros-flores", 
-        "nombre": "Lapiceros Flores", 
+        "nombre": "Lapiceros Flores (Tinta Gel Negra)", 
         "imagen": "assets/img/img_catalogo/lapiceros_flores.png",
         "precio_referencia": 3000, 
         "costo": 1531, 
@@ -203,7 +203,7 @@
         "peso_spin": 9 
     }, 
     { "id": "lapiceros-stitch", 
-        "nombre": "Lapiceros Stitch", 
+        "nombre": "Lapiceros Stitch (Tinta Gel Negra)", 
         "imagen": "assets/img/img_catalogo/stitch.jpg",
         "precio_referencia": 2500, 
         "costo": 243, 
@@ -231,7 +231,7 @@
         "peso_spin": 1 
     }, 
     { "id": "mina-infinita-kuromi", 
-        "nombre": "Mina Infinita kuromi", 
+        "nombre": "Lapíz Mina Infinita kuromi", 
         "imagen": "assets/img/img_catalogo/IKuromi.jpg",
         "precio_referencia": 5000, 
         "costo": 2860, 
@@ -245,7 +245,7 @@
         "peso_spin": 1 
     }, 
     { "id": "patica-x-6pcs", 
-        "nombre": "Patica x 6pcs",
+        "nombre": "Resaltador Patica x 6pcs",
         "imagen": "assets/img/img_catalogo/Pata2.jpg",
         "precio_referencia": 15000, 
         "costo": 4864, 
@@ -259,7 +259,7 @@
         "peso_spin": 3
     }, 
     { "id": "retractil--repuesto", 
-        "nombre": "Retractil + Repuesto", 
+        "nombre": "Borrador Retráctil + Repuesto", 
         "imagen": "assets/img/img_catalogo/retractil_repuesto.jpg",
         "precio_referencia": 7000, 
         "costo": 2978, 
@@ -273,7 +273,7 @@
         "peso_spin": 4 
     }, 
     { "id": "rodillo-x6-pcs", 
-        "nombre": "Rodillo x6 pcs", 
+        "nombre": "Resaltador decorativo de Rodillo x6 pcs", 
         "imagen": "assets/img/img_catalogo/Rodillo.jpg",
         "precio_referencia": 12000, 
         "costo": 4864, 
@@ -287,7 +287,7 @@
         "peso_spin": 1 
     }, 
     { "id": "separador-magnético-animalitos", 
-        "nombre": "Separador Magnético Animalitos", 
+        "nombre": "Separador Magnético Animalitos 6 pcs", 
         "imagen": "assets/img/img_catalogo/separador_animalitos.jpg",
         "precio_referencia": 5000, 
         "costo": 2081, 
@@ -301,7 +301,7 @@
         "peso_spin": 1 
     }, 
     { "id": "separador-magnético-constelaciones", 
-        "nombre": "Separador Magnético Constelaciones", 
+        "nombre": "Separador Magnético Constelaciones 6 pcs", 
         "imagen": "assets/img/img_catalogo/separador_constelaciones.jpg",
         "precio_referencia": 5000, 
         "costo": 2081, 
@@ -315,7 +315,7 @@
         "peso_spin": 1 
     }, 
     { "id": "separador-magnético-patica", 
-        "nombre": "Separador Magnético Patica",
+        "nombre": "Separador Magnético Patica 6 pcs",
         "imagen": "assets/img/img_catalogo/separador_patica.jpg", 
         "precio_referencia": 5000, 
         "costo": 2081, 
@@ -329,7 +329,7 @@
         "peso_spin": 1 
     }, 
     { "id": "set-x12-pcs", 
-        "nombre": "Set x12 pcs",
+        "nombre": "Marcadores base Agua x 12pcs",
         "imagen": "assets/img/img_catalogo/set_12x_pcs.jpg",
         "precio_referencia": 20000, 
         "costo": 10304, 
