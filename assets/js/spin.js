@@ -14,19 +14,24 @@ let spinState = null;
  * INICIALIZACIÓN
  **************************************************/
 
-function iniciarSpin() {
-  //  limpiar cualquier spin previo
+function iniciarSpin(tipo = "estandar") {
   localStorage.removeItem(SPIN_STATE_KEY);
 
   const config = getConfigSpin();
 
   spinState = {
     activo: true,
-    precio: config.precio_base,
-    productosObjetivo: config.productos_por_spin,
-    productosGanados: [],
-    girosRestantes: config.productos_por_spin,
-    girosPremium: 0
+    tipoActivo: tipo,                 // "estandar" | "premium"
+    precio: tipo === "estandar" ? config.precio_base : 8000,
+
+    girosRestantes: tipo === "estandar"
+      ? config.productos_por_spin
+      : 0,
+
+    girosPremium: tipo === "premium" ? 1 : 0,
+
+    productosGanados: [],             // aceptados
+    premiosPendientes: []             // 👈 NUEVO (clave)
   };
 
   guardarSpinState();
@@ -37,33 +42,30 @@ function limpiarSpinState() {
   spinState = null;
 }
 
-
 /**
  * Carga el estado del spin si existe
  */
 function cargarSpinState() {
   const saved = localStorage.getItem(SPIN_STATE_KEY);
-
-  if (saved) {
-    spinState = JSON.parse(saved);
-  }
+  if (saved) spinState = JSON.parse(saved);
 }
 
 /**
  * Guarda el estado del spin
  */
 function guardarSpinState() {
-  localStorage.setItem(
-    SPIN_STATE_KEY,
-    JSON.stringify(spinState)
-  );
+  localStorage.setItem(SPIN_STATE_KEY, JSON.stringify(spinState));
 }
 
 /**************************************************
- * GIRO
+ * VALIDACIONES
  **************************************************/
 
-function puedeGirar() {
+function haySpinActivo() {
+  return spinState && spinState.activo;
+}
+
+function puedeGirarEstandar() {
   return (
     spinState &&
     spinState.activo &&
@@ -71,30 +73,31 @@ function puedeGirar() {
   );
 }
 
-/**
- * Ejecuta un giro estándar
- */
+function puedeGirarPremium() {
+  return (
+    spinState &&
+    spinState.activo &&
+    spinState.girosPremium > 0
+  );
+}
+
+/**************************************************
+ * GIRO ESTÁNDAR (NO descuenta stock)
+ **************************************************/
+
 function girarSpinEstandar() {
-  if (!puedeGirar()) return null;
+  if (!puedeGirarEstandar()) return null;
 
-  // 🔄 recalcular productos disponibles ANTES del giro
   const disponibles = getProductosSpinEstandar();
-
-  if (disponibles.length === 0) {
-    return null;
-  }
+  if (disponibles.length === 0) return null;
 
   const ganador = seleccionarProductoPonderado(disponibles);
-
   if (!ganador) return null;
 
-  // Descontar stock
-  descontarStock(ganador.id);
-
-  // Registrar producto ganado
-  spinState.productosGanados.push({
+  spinState.premiosPendientes.push({
     id: ganador.id,
-    nombre: ganador.nombre
+    nombre: ganador.nombre,
+    premium: false
   });
 
   spinState.girosRestantes--;
@@ -104,18 +107,17 @@ function girarSpinEstandar() {
 }
 
 /**************************************************
- * PREMIUM
+ * GIRO PREMIUM (1 por inicio, NO descuenta stock)
  **************************************************/
 
-function puedeGirarPremium() {
-  return (
-    spinState &&
-    spinState.activo &&
-    spinState.girosRestantes === 0
-  );
+function iniciarPremium() {
+  if (!spinState) iniciarSpin("premium");
+
+  spinState.girosPremium += 1;
+  guardarSpinState();
 }
 
-function girarSpinPremium() {
+function girarSpinPremiumUnico() {
   if (!puedeGirarPremium()) return null;
 
   const disponibles = getProductosSpinPremium();
@@ -124,39 +126,55 @@ function girarSpinPremium() {
   const ganador = seleccionarProductoPonderado(disponibles);
   if (!ganador) return null;
 
-  descontarStock(ganador.id);
-
-  spinState.productosGanados.push({
+  spinState.premiosPendientes.push({
     id: ganador.id,
     nombre: ganador.nombre,
     premium: true
   });
 
+  spinState.girosPremium--;
   guardarSpinState();
+
   return ganador;
 }
 
-
 /**************************************************
- * FINALIZACIÓN / CANCELACIÓN
+ * ACEPTAR / CANCELAR PREMIOS
  **************************************************/
 
-function finalizarSpin() {
-  if (!spinState) return;
+function aceptarPremios() {
+  if (!spinState || spinState.premiosPendientes.length === 0) return;
 
-  spinState.activo = false;
+  spinState.premiosPendientes.forEach(p => {
+    // ✔ aquí SÍ se toca inventario y carrito
+    descontarStock(p.id);
+    agregarProductoCatalogoPorId(p.id);
+
+    spinState.productosGanados.push(p);
+  });
+
+  spinState.premiosPendientes = [];
   guardarSpinState();
 }
+
+function descartarPremiosPendientes() {
+  if (!spinState) return;
+  spinState.premiosPendientes = [];
+  guardarSpinState();
+}
+
+/**************************************************
+ * CANCELACIÓN TOTAL
+ **************************************************/
 
 function cancelarSpin() {
   if (!spinState) return;
 
-  // Restaurar stock
+  // Restaurar SOLO productos aceptados
   const ids = spinState.productosGanados.map(p => p.id);
   restaurarStock(ids);
 
-  localStorage.removeItem(SPIN_STATE_KEY);
-  spinState = null;
+  limpiarSpinState();
 }
 
 /**************************************************
@@ -165,37 +183,4 @@ function cancelarSpin() {
 
 function getSpinState() {
   return spinState;
-}
-
-function spinCompletado() {
-  return spinState && spinState.girosRestantes === 0;
-}
-
-/*Validación si existe algún giro activo*/
-
-function haySpinActivo() {
-  return spinState && spinState.activo;
-}
-
-/*Giro de Premium*/
-function girarSpinPremiumUnico() {
-  if (!spinState || !spinState.activo) return null;
-
-  const disponibles = getProductosSpinPremium();
-  if (disponibles.length === 0) return null;
-
-  const ganador = seleccionarProductoPonderado(disponibles);
-  if (!ganador) return null;
-
-  descontarStock(ganador.id);
-
-  spinState.productosGanados.push({
-    id: ganador.id,
-    nombre: ganador.nombre,
-    premium: true
-  });
-
-  spinState.girosPremium++;
-  guardarSpinState();
-  return ganador;
 }

@@ -69,6 +69,38 @@
         border-top: 1px solid var(--color-border);
         padding-top: 16px;
         }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        }
+
+        .modal {
+        background: #111;
+        border-radius: 16px;
+        padding: 24px;
+        width: 90%;
+        max-width: 420px;
+        border: 1px solid var(--color-border);
+        text-align: center;
+        }
+
+        .modal ul {
+        margin: 16px 0;
+        }
+
+        .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 16px;
+        }
     </style>
     </head>
 
@@ -109,9 +141,10 @@
 
         <strong>Ruleta Premium</strong>
         <div class="contador">
-            Giros premium: <span id="girosPremium">0</span>
+            Giros premium disponibles: <span id="girosPremium">0</span>
         </div>
-        <button onclick="girarPremium()">Giro Premium ($8.000)</button>
+        <button onclick="iniciarPremium()">Iniciar premium ($8.000)</button>
+        <button onclick="girarPremium()">Girar premium</button>
 
         <hr>
 
@@ -122,13 +155,26 @@
         </div>
     </div>
 
-    <!-- PREMIOS -->
+    <!-- PREMIOS ACEPTADOS -->
     <div class="premios">
         <h3>🎁 Premios obtenidos</h3>
         <ul id="productos"></ul>
     </div>
 
     </main>
+
+    <!-- MODAL PREMIOS -->
+    <div id="modalPremios" class="modal-overlay">
+    <div class="modal">
+        <h2>🎁 Premio obtenido</h2>
+        <ul id="listaPendientes"></ul>
+
+        <div class="modal-actions">
+        <button onclick="confirmarPremios()">Aceptar premio</button>
+        <button onclick="cerrarModal()">Volver a girar</button>
+        </div>
+    </div>
+    </div>
 
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/spin.js"></script>
@@ -137,7 +183,7 @@
 
     <script>
     /* ===============================
-    LISTA
+    LISTA DE PRODUCTOS
     =============================== */
     function toggleLista() {
     const l = document.getElementById("lista-productos");
@@ -170,7 +216,7 @@
     }
 
     /* ===============================
-    PREMIOS
+    PREMIOS ACEPTADOS
     =============================== */
     function renderPremios() {
     const ul = document.getElementById("productos");
@@ -184,6 +230,36 @@
         li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
         ul.appendChild(li);
     });
+    }
+
+    /* ===============================
+    MODAL
+    =============================== */
+    function mostrarModalPremios() {
+    const modal = document.getElementById("modalPremios");
+    const lista = document.getElementById("listaPendientes");
+    lista.innerHTML = "";
+
+    const spin = getSpinState();
+    spin.premiosPendientes.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.nombre + (p.premium ? " (Premium)" : "");
+        lista.appendChild(li);
+    });
+
+    modal.style.display = "flex";
+    }
+
+    function cerrarModal() {
+    document.getElementById("modalPremios").style.display = "none";
+    }
+
+    function confirmarPremios() {
+    aceptarPremios();
+    cerrarModal();
+    renderPremios();
+    renderLista();
+    actualizarContadores();
     }
 
     /* ===============================
@@ -201,28 +277,25 @@
     ACCIONES
     =============================== */
     function iniciarEstandar() {
-    iniciarSpin();
+    iniciarSpin("estandar");
     actualizarContadores();
-    renderPremios();
     }
 
     function girarEstandar() {
     const g = girarSpinEstandar();
     if (!g) return;
+    mostrarModalPremios();
+    }
+
+    function iniciarPremium() {
+    iniciarSpin("premium");
     actualizarContadores();
-    renderPremios();
-    renderLista();
     }
 
     function girarPremium() {
-    if (!haySpinActivo()) iniciarSpin();
-
     const g = girarSpinPremiumUnico();
     if (!g) return;
-
-    actualizarContadores();
-    renderPremios();
-    renderLista();
+    mostrarModalPremios();
     }
 
     function cancelarTodo() {
