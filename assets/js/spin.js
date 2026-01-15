@@ -2,47 +2,18 @@
 // SPIN.JS - Lógica del Juego
 // ==========================================
 
-// --- 1. DATOS (Inventario Simulado) ---
-// En producción esto viene de data.js, pero lo incluyo aquí para funcionamiento autónomo.
-const INVENTARIO = {
-    "config": { 
-        "spin": { 
-            "precio_base": 25000, 
-            "productos_por_spin": 5, 
-            "premium_precio": 8000 
-        } 
-    },
-    "productos": [
-        { "id": "11-minas-bts", "nombre": "Lapíz 11 Minas de BTS", "precio_referencia": 3000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "11-minas-carita", "nombre": "Lapíz 11 Minas Carita", "precio_referencia": 3000, "stock": 4, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 2 },
-        { "id": "atari-sapito", "nombre": "Atari Sapito", "precio_referencia": 5000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "blister-bts", "nombre": "Blister Borradores BTS", "precio_referencia": 10000, "stock": 4, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 2 },
-        { "id": "bolsa-250ml", "nombre": "Bolsa térmica 250 ml", "precio_referencia": 10000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "bolsa-350ml", "nombre": "Bolsa térmica 350 ml", "precio_referencia": 15000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "borrador-aguacate", "nombre": "Borrador Aguacate", "precio_referencia": 2500, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "capybara-post-it", "nombre": "Capybara Post-it", "precio_referencia": 4000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "carpeta-pandas", "nombre": "Carpeta Pandas", "precio_referencia": 3000, "stock": 15, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 3 },
-        { "id": "carpeta-van-gogh", "nombre": "Carpeta Van Gogh", "precio_referencia": 5000, "stock": 6, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 2 },
-        { "id": "degrade", "nombre": "Resaltador Degrade", "precio_referencia": 15000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "dinosaurio", "nombre": "Sacapuntas Dinosaurio", "precio_referencia": 5000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "hello-kitty", "nombre": "Hello Kitty Set", "precio_referencia": 6000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "lapiceros-flores", "nombre": "Lapiceros Flores", "precio_referencia": 3000, "stock": 92, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 9 },
-        { "id": "lapiceros-stitch", "nombre": "Lapiceros Stitch", "precio_referencia": 2500, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "lonchera-termica", "nombre": "Lonchera Térmica", "precio_referencia": 15000, "stock": 2, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "mina-infinita-kuromi", "nombre": "Mina Infinita Kuromi", "precio_referencia": 5000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "patica-x6", "nombre": "Resaltador Patica x6", "precio_referencia": 15000, "stock": 10, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 3 },
-        { "id": "retractil", "nombre": "Borrador Retráctil", "precio_referencia": 7000, "stock": 24, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 4 },
-        { "id": "rodillo", "nombre": "Rodillo x6 pcs", "precio_referencia": 12000, "stock": 2, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "sep-animalitos", "nombre": "Separador Animalitos", "precio_referencia": 5000, "stock": 2, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "sep-constelaciones", "nombre": "Separador Constelaciones", "precio_referencia": 5000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "sep-patica", "nombre": "Separador Patica", "precio_referencia": 5000, "stock": 2, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "set-marcadores", "nombre": "Marcadores Base Agua", "precio_referencia": 20000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": false, "spin_premium": true }, "peso_spin": 1 },
-        { "id": "sticker-cristal", "nombre": "Sticker Cristal", "precio_referencia": 5000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "sticker-snoopy", "nombre": "Sticker Snoopy", "precio_referencia": 4000, "stock": 2, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "tijeras-aguacate", "nombre": "Tijeras Aguacate", "precio_referencia": 6000, "stock": 3, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 },
-        { "id": "tijeras-mario", "nombre": "Tijeras Mario", "precio_referencia": 6000, "stock": 1, "flags": { "catalogo": true, "spin_estandar": true, "spin_premium": false }, "peso_spin": 1 }
-    ]
-};
+// --- 1. DATOS (Inventario) ---
+function getProductosDisponibles(mode) {
+  const inventario = getInventario();
+
+  return inventario.filter(p => {
+    const flag = mode === 'estandar'
+      ? p.flags.spin_estandar
+      : p.flags.spin_premium;
+
+    return flag && p.stock > 0;
+  });
+}
 
 // --- 2. ESTADO GLOBAL ---
 const SPIN_STATE = {
