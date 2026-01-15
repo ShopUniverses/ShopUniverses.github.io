@@ -108,16 +108,16 @@ function girarSpinEstandar() {
  * PREMIUM
  **************************************************/
 
-function puedeOfrecerPremium() {
+function puedeGirarPremium() {
   return (
     spinState &&
-    spinState.girosRestantes === 0 &&
-    !spinState.premiumOfrecido
+    spinState.activo &&
+    spinState.girosRestantes === 0
   );
 }
 
-function aceptarSpinPremium() {
-  if (!puedeOfrecerPremium()) return null;
+function girarSpinPremium() {
+  if (!puedeGirarPremium()) return null;
 
   const disponibles = getProductosSpinPremium();
   if (disponibles.length === 0) return null;
@@ -133,13 +133,10 @@ function aceptarSpinPremium() {
     premium: true
   });
 
-  spinState.premiumOfrecido = true;
-  spinState.premiumAceptado = true;
-
   guardarSpinState();
-
   return ganador;
 }
+
 
 /**************************************************
  * FINALIZACIÓN / CANCELACIÓN

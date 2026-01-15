@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+    <head>
     <meta charset="UTF-8">
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS GLOBAL -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
 
     <style>
-        /* ===== LAYOUT SPIN ===== */
         .spin-layout {
         display: grid;
         grid-template-columns: 1fr 360px;
@@ -18,74 +16,43 @@
         margin-top: 24px;
         }
 
-        /* ===== RULETA ===== */
         .ruleta {
         height: 420px;
         border-radius: 16px;
         border: 1px solid var(--color-border);
-        background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 60%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
+        background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
         }
 
-        /* ===== PANEL LATERAL ===== */
         .side-panel {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         }
 
         .side-item {
-        border: 1px solid var(--color-border);
-        border-radius: 12px;
-        padding: 10px;
         display: flex;
         gap: 10px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
         background: rgba(255,255,255,0.04);
-        }
-
-        .side-item:hover {
-        transform: translateX(-4px);
-        border-color: var(--color-accent);
         }
 
         .side-item img {
         width: 48px;
         height: 48px;
         object-fit: contain;
-        background: rgba(255,255,255,0.08);
         border-radius: 8px;
+        background: rgba(255,255,255,0.08);
         padding: 4px;
         }
 
-        .side-info {
-        font-size: 0.9rem;
-        }
-
-        /* ===== SIDE CARD EXPANDIDA ===== */
-        .side-preview {
-        position: fixed;
-        top: 50%;
-        right: 380px;
-        transform: translateY(-50%);
-        width: 260px;
-        padding: 16px;
-        border-radius: 16px;
-        border: 1px solid var(--color-border);
-        background: rgba(0,0,0,0.85);
-        display: none;
-        z-index: 10;
-        }
-
-        .side-preview img {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        object-fit: contain;
-        margin-bottom: 10px;
+        .premios {
+        margin-top: 32px;
         }
     </style>
     </head>
@@ -107,102 +74,117 @@
 
     <!-- CONTROLES -->
     <div class="section">
-        <button id="btnIniciar" onclick="iniciarCompra()">Iniciar Spin</button>
-        <button id="btnGirar" onclick="girarSpin()">Girar</button>
-        <button id="btnPremium" onclick="aceptarPremiumSpin()">Premium (+$8.000)</button>
+        <button onclick="iniciarCompra()">Iniciar Spin</button>
+        <button onclick="girar()">Girar</button>
+        <button onclick="activarPremium()">Cambiar a Premium</button>
         <button onclick="cancelarTodo()">Cancelar</button>
     </div>
 
-    <!-- LAYOUT -->
     <div class="spin-layout">
 
         <!-- RULETA -->
-        <div class="ruleta">
-        🎯 Ruleta (animación siguiente fase)
+        <div id="ruleta" class="ruleta">
+        Ruleta Estándar
         </div>
 
-        <!-- PANEL PRODUCTOS -->
+        <!-- LISTA -->
         <div class="side-panel">
-        <h3>Productos posibles</h3>
+        <h3 id="tituloLista">Productos Estándar</h3>
         <div id="lista-productos"></div>
         </div>
 
     </div>
 
+    <!-- HISTORIAL -->
+    <div class="premios">
+        <h3>🎁 Productos ganados</h3>
+        <ul id="productos"></ul>
+    </div>
+
     </main>
 
-    <!-- PREVIEW -->
-    <div id="preview" class="side-preview"></div>
-
-    <!-- SCRIPTS -->
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/spin.js"></script>
     <script src="./assets/js/carrito.js"></script>
     <script src="./assets/js/main.js"></script>
 
     <script>
-    /* ===============================
-    RENDER PRODUCTOS ESTÁNDAR
-    =============================== */
+    let modo = "estandar";
 
-    function renderProductosSpin() {
+    /* ===============================
+    RENDER LISTA
+    =============================== */
+    function renderLista() {
     const cont = document.getElementById("lista-productos");
-    const preview = document.getElementById("preview");
     cont.innerHTML = "";
 
-    const productos = getProductosSpinEstandar();
+    const productos =
+        modo === "estandar"
+        ? getProductosSpinEstandar()
+        : getProductosSpinPremium();
 
     productos.forEach(p => {
-        const item = document.createElement("div");
-        item.className = "side-item";
+        if (obtenerStock()[p.id] <= 0) return;
 
-        item.innerHTML = `
+        const div = document.createElement("div");
+        div.className = "side-item";
+        div.innerHTML = `
         <img src="./${p.imagen}">
-        <div class="side-info">
+        <div>
             <strong>${p.nombre}</strong><br>
             <small>Stock: ${obtenerStock()[p.id]}</small>
         </div>
         `;
-
-        item.onmouseenter = () => {
-        preview.innerHTML = `
-            <img src="./${p.imagen}">
-            <h4>${p.nombre}</h4>
-            <p>$${p.precio_referencia.toLocaleString("es-CO")}</p>
-        `;
-        preview.style.display = "block";
-        };
-
-        item.onmouseleave = () => {
-        preview.style.display = "none";
-        };
-
-        cont.appendChild(item);
+        cont.appendChild(div);
     });
     }
 
     /* ===============================
-    UI EXISTENTE
+    FLUJO
     =============================== */
-
     function iniciarCompra() {
-    if (haySpinActivo()) return;
-    iniciarCompraSpin();
-    renderProductosSpin();
+    iniciarSpin();
+    modo = "estandar";
+    document.getElementById("ruleta").textContent = "Ruleta Estándar";
+    document.getElementById("tituloLista").textContent = "Productos Estándar";
+    renderLista();
     }
 
-    function girarSpin() {
-    const ganador = girar();
-    if (ganador) renderProductosSpin();
+    function girar() {
+    let ganador = null;
+
+    if (modo === "estandar") {
+        ganador = girarSpinEstandar();
+        if (spinCompletado()) {
+        alert("🎯 Giros estándar completados. Puedes pasar a Premium.");
+        }
+    } else {
+        ganador = girarSpinPremium();
     }
 
-    function aceptarPremiumSpin() {
-    aceptarPremium();
+    if (!ganador) return;
+
+    const li = document.createElement("li");
+    li.textContent = ganador.nombre + (modo === "premium" ? " (Premium)" : "");
+    document.getElementById("productos").appendChild(li);
+
+    renderLista();
+    }
+
+    function activarPremium() {
+    if (!spinCompletado()) {
+        alert("Debes completar los giros estándar primero");
+        return;
+    }
+    modo = "premium";
+    document.getElementById("ruleta").textContent = "Ruleta Premium";
+    document.getElementById("tituloLista").textContent = "Productos Premium";
+    renderLista();
     }
 
     function cancelarTodo() {
-    cancelarCompraCompleta();
-    renderProductosSpin();
+    cancelarSpin();
+    location.reload();
     }
 
     /* ===============================
@@ -210,7 +192,7 @@
     =============================== */
     document.addEventListener("DOMContentLoaded", () => {
     cargarSpinState();
-    renderProductosSpin();
+    renderLista();
     });
     </script>
 
