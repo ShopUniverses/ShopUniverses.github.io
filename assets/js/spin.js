@@ -66,9 +66,14 @@ const SPIN_STATE = {
 
 // --- 3. INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Dibujar ruleta inicial
-    drawWheel(SPIN_STATE.currentMode);
-    updateUI();
+
+  drawWheel(SPIN_STATE.currentMode);
+  updateUI();
+
+  document
+    .getElementById('btnSpinAction')
+    .addEventListener('click', handleSpinAction);
+
 });
 
 // --- 4. LÓGICA DE UI Y CONTROL ---
