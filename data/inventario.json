@@ -1,9 +1,9 @@
 { 
     "config": 
     { "spin": { 
-        "precio_base": 25.000, 
+        "precio_base": 25000, 
         "productos_por_spin": 5, 
-        "premium_precio": 8.000 
+        "premium_precio": 8000 
         } 
     }, 
     
@@ -11,7 +11,7 @@
     { "id": "11-minas-bts", 
         "nombre": "11 Minas BTS", 
         "imagen": "assets/img/img_catalogo/Bt21.jpg",
-        "precio_referencia": 3.000, 
+        "precio_referencia": 3000, 
         "costo": 1320, "stock": 3, 
         "categoria": "Lapiz y Portaminas",  
         "flags": { 
