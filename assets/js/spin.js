@@ -1,188 +1,113 @@
-/**************************************************
- * SPIN.JS
- * Lógica del Spin Wheel - ShopUniverses
- **************************************************/
+const SPIN_KEY = "shopuniverses_spin_v2";
 
-const SPIN_STATE_KEY = "shopuniverses_spin_state";
-let spinState = null;
+let spin = {
+  estandar: { giros: 5, premios: [] },
+  premium: { giros: 1, premios: [] },
+  actual: null
+};
 
-/**************************************************
- * INICIALIZACIÓN
- **************************************************/
-
-function iniciarSpin() {
-  const config = getConfigSpin();
-
-  spinState = {
-    activo: true,
-    precio: config.precio_base,
-
-    girosRestantes: config.productos_por_spin,
-    girosPremium: 0,
-
-    productosGanados: [],
-    premiosPendientes: []
-  };
-
-  guardarSpinState();
+function guardarSpin() {
+  localStorage.setItem(SPIN_KEY, JSON.stringify(spin));
 }
 
-function cargarSpinState() {
-  const saved = localStorage.getItem(SPIN_STATE_KEY);
-  if (saved) spinState = JSON.parse(saved);
+function cargarSpin() {
+  const s = localStorage.getItem(SPIN_KEY);
+  if (s) spin = JSON.parse(s);
 }
 
-function guardarSpinState() {
-  localStorage.setItem(SPIN_STATE_KEY, JSON.stringify(spinState));
+function iniciar(tipo) {
+  spin.actual = tipo;
+  spin[tipo].giros = tipo === "estandar" ? 5 : 1;
+  spin[tipo].premios = [];
+  guardarSpin();
+  actualizarUI();
 }
 
-function limpiarSpinState() {
-  localStorage.removeItem(SPIN_STATE_KEY);
-  spinState = null;
+function girar() {
+  const tipo = spin.actual;
+  if (!tipo || spin[tipo].giros <= 0) return;
+
+  const prod = seleccionarProductoPonderado(
+    tipo === "estandar"
+      ? getProductosSpinEstandar()
+      : getProductosSpinPremium()
+  );
+
+  spin[tipo].premios.push({ ...prod, premium: tipo === "premium" });
+  spin[tipo].giros--;
+  animar(tipo);
+  guardarSpin();
+
+  if (spin[tipo].giros === 0) mostrarModal();
+  actualizarUI();
 }
 
-/**************************************************
- * VALIDACIONES
- **************************************************/
+function aceptar() {
+  const tipo = spin.actual;
 
-function haySpinActivo() {
-  return spinState && spinState.activo;
-}
-
-function puedeGirarEstandar() {
-  return haySpinActivo() && spinState.girosRestantes > 0;
-}
-
-function puedeOfrecerPremium() {
-  return haySpinActivo() && spinState.girosRestantes === 0 && spinState.girosPremium === 0;
-}
-
-function puedeGirarPremium() {
-  return haySpinActivo() && spinState.girosPremium > 0;
-}
-
-/**************************************************
- * GIRO ESTÁNDAR
- **************************************************/
-
-function girarSpinEstandar() {
-  if (!puedeGirarEstandar()) return null;
-
-  const disponibles = getProductosSpinEstandar();
-  if (!disponibles.length) return null;
-
-  const ganador = seleccionarProductoPonderado(disponibles);
-
-  spinState.premiosPendientes.push({
-    id: ganador.id,
-    nombre: ganador.nombre,
-    premium: false
-  });
-
-  spinState.girosRestantes--;
-  guardarSpinState();
-
-  return ganador;
-}
-
-/**************************************************
- * PREMIUM
- **************************************************/
-
-function habilitarPremium() {
-  if (!puedeOfrecerPremium()) return false;
-
-  spinState.girosPremium = 1;
-  guardarSpinState();
-  return true;
-}
-
-function girarSpinPremiumUnico() {
-  if (!puedeGirarPremium()) return null;
-
-  const disponibles = getProductosSpinPremium();
-  if (!disponibles.length) return null;
-
-  const ganador = seleccionarProductoPonderado(disponibles);
-
-  spinState.premiosPendientes.push({
-    id: ganador.id,
-    nombre: ganador.nombre,
-    premium: true
-  });
-
-  spinState.girosPremium = 0;
-  guardarSpinState();
-
-  return ganador;
-}
-
-/**************************************************
- * PREMIOS
- **************************************************/
-
-function aceptarPremios() {
-  if (!spinState || !spinState.premiosPendientes.length) return;
-
-  spinState.premiosPendientes.forEach(p => {
+  spin[tipo].premios.forEach(p => {
     descontarStock(p.id);
-    agregarProductoCatalogoPorId(p.id);
-    spinState.productosGanados.push(p);
+    agregarProductoDesdeSpin(p);
   });
 
-  spinState.premiosPendientes = [];
-  guardarSpinState();
+  tipo === "estandar" ? agregarSpinBase() : agregarSpinPremium();
+  spin.actual = null;
+  guardarSpin();
+  cerrarModal();
+  actualizarUI();
 }
 
-/**************************************************
- * CANCELACIÓN
- **************************************************/
-
-function cancelarSpin() {
-  if (!spinState) return;
-
-  const ids = spinState.productosGanados.map(p => p.id);
-  restaurarStock(ids);
-
-  limpiarSpinState();
+function repetir() {
+  iniciar(spin.actual);
+  cerrarModal();
 }
 
-/**************************************************
- * CONSULTA
- **************************************************/
-
-function getSpinState() {
-  return spinState;
+function animar(tipo) {
+  const el = document.querySelector(
+    tipo === "estandar"
+      ? ".spin-wheel--standard"
+      : ".spin-wheel--premium"
+  );
+  el.classList.add("is-spinning");
+  setTimeout(() => el.classList.remove("is-spinning"), 1000);
 }
 
-/**************************************************
- * PUENTES PARA UI (HTML)
- * Mantienen compatibilidad sin ensuciar lógica
- **************************************************/
+/* ---------- UI ---------- */
+function actualizarUI() {
+  document.getElementById("girosEstandar").textContent = spin.estandar.giros;
+  document.getElementById("girosPremium").textContent = spin.premium.giros;
 
-function iniciarEstandar() {
-  if (!haySpinActivo()) {
-    iniciarSpin();
-  }
+  const ul = document.getElementById("productos");
+  ul.innerHTML = "";
+
+  [...spin.estandar.premios, ...spin.premium.premios].forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = p.nombre;
+    if (p.premium) li.classList.add("premium");
+    ul.appendChild(li);
+  });
 }
 
-function girarEstandar() {
-  const ganador = girarSpinEstandar();
-  if (ganador) {
-    mostrarModalPremios();
-  }
+/* ---------- MODAL ---------- */
+function mostrarModal() {
+  const ul = document.getElementById("listaPendientes");
+  ul.innerHTML = "";
+
+  spin[spin.actual].premios.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = p.nombre;
+    if (p.premium) li.classList.add("premium");
+    ul.appendChild(li);
+  });
+
+  document.getElementById("modalPremios").classList.add("is-open");
 }
 
-function iniciarPremium() {
-  const ok = habilitarPremium();
-  if (!ok) {
-    console.warn("⚠️ Premium no disponible aún");
-  }
+function cerrarModal() {
+  document.getElementById("modalPremios").classList.remove("is-open");
 }
 
-function girarPremium() {
-  const ganador = girarSpinPremiumUnico();
-  if (ganador) {
-    mostrarModalPremios();
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  cargarSpin();
+  actualizarUI();
+});

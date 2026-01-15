@@ -1,112 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
+<head>
     <meta charset="UTF-8">
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- CSS global -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
+
+    <!-- CSS del Spin -->
     <link rel="stylesheet" href="./assets/css/spin.css">
     </head>
 
     <body>
 
+    <!-- ================= NAV ================= -->
     <nav>
-    <a href="./index.html">Inicio</a>
-    <a href="./catalogo.html">Catálogo</a>
-    <a href="./carrito.html">Carrito</a>
+        <a href="./index.html">Inicio</a>
+        <a href="./catalogo.html">Catálogo</a>
+        <a href="./carrito.html">Carrito</a>
     </nav>
 
+    <!-- ================= HEADER ================= -->
     <header class="container section">
-    <h1>🎡 Spin ShopUniverses</h1>
-    <p>Gira estándar o premium y gana productos.</p>
+        <h1>🎡 Spin ShopUniverses</h1>
+        <p>Gira la ruleta estándar o premium y gana productos.</p>
     </header>
 
+    <!-- ================= MAIN ================= -->
     <main class="container spin">
 
-    <div class="spin__layout">
+        <div class="spin__layout">
 
-        <!-- Ruleta -->
-        <div id="ruleta" class="spin-wheel spin-wheel--standard">
-        🎯 Animación de Ruleta aquí
+        <!-- ===== RULETAS ===== -->
+        <div class="spin-wheels">
+
+            <div class="spin-wheel spin-wheel--standard">
+            <span>Estándar</span>
+            </div>
+
+            <div class="spin-wheel spin-wheel--premium">
+            <span>Premium</span>
+            </div>
+
         </div>
 
-        <!-- Panel -->
+        <!-- ===== PANEL DE CONTROL ===== -->
         <aside class="spin-panel">
 
-        <div class="spin-panel__section">
-            <div class="spin-panel__title">Ruleta Estándar</div>
+            <!-- -------- ESTÁNDAR -------- -->
+            <div class="spin-panel__section">
+            <h3 class="spin-panel__title">Ruleta Estándar</h3>
+
             <div class="spin-panel__counter">
-            Giros restantes: <span id="girosEstandar">–</span>
+                Giros restantes: <strong id="girosEstandar">5</strong>
             </div>
-            <button onclick="iniciarEstandar()">Iniciar estándar</button>
-            <button onclick="girarEstandar()">Girar estándar</button>
-        </div>
 
-        <hr>
+            <button onclick="iniciar('estandar')">
+                Iniciar estándar ($25.000)
+            </button>
 
-        <div class="spin-panel__section">
-            <div class="spin-panel__title">Ruleta Premium</div>
+            <button onclick="girar()">
+                Girar estándar
+            </button>
+            </div>
+
+            <hr>
+
+            <!-- -------- PREMIUM -------- -->
+            <div class="spin-panel__section">
+            <h3 class="spin-panel__title">Ruleta Premium</h3>
+
             <div class="spin-panel__counter">
-            Giros premium disponibles: <span id="girosPremium">0</span>
+                Giros restantes: <strong id="girosPremium">1</strong>
             </div>
-            <button onclick="iniciarPremium()">Iniciar premium ($8.000)</button>
-            <button onclick="girarPremium()">Girar premium</button>
-        </div>
 
-        <hr>
+            <button onclick="iniciar('premium')">
+                Iniciar premium ($8.000)
+            </button>
 
-        <button onclick="toggleLista()">Ver productos posibles</button>
-        <div id="lista-productos" class="spin-list is-hidden"></div>
+            <button onclick="girar()">
+                Girar premium
+            </button>
+            </div>
 
-        <button onclick="cancelarTodo()">Cancelar</button>
+            <hr>
+
+            <!-- -------- LISTA DE PRODUCTOS POSIBLES -------- -->
+            <button onclick="toggleLista()">Ver productos posibles</button>
+
+            <div id="lista-productos" class="spin-list is-hidden">
+            <!-- Se llena dinámicamente desde JS -->
+            </div>
+
         </aside>
+        </div>
 
-    </div>
-
-    <!-- Premios -->
-    <section class="spin-rewards">
+        <!-- ===== PREMIOS OBTENIDOS (RESUMEN) ===== -->
+        <section class="spin-rewards">
         <h3>🎁 Premios obtenidos</h3>
-        <ul id="productos"></ul>
-    </section>
+        <ul id="productos">
+            <!-- Se renderizan premios estándar y premium -->
+        </ul>
+        </section>
 
     </main>
 
-    <!-- Modal -->
+    <!-- ================= MODAL ================= -->
     <div id="modalPremios" class="spin-modal">
-    <div class="spin-modal__content">
-        <h2>🎁 Premio obtenido</h2>
-        <ul id="listaPendientes" class="spin-modal__list"></ul>
+        <div class="spin-modal__content">
+        <h2>🎁 Premios obtenidos</h2>
+
+        <ul id="listaPendientes" class="spin-modal__list">
+            <!-- Premios temporales -->
+        </ul>
 
         <div class="spin-modal__actions">
-        <button onclick="confirmarPremios()">Aceptar premio</button>
-        <button onclick="cerrarModal()">Volver a girar</button>
+            <button onclick="aceptar()">Aceptar premios</button>
+            <button onclick="repetir()">Volver a girar</button>
+        </div>
         </div>
     </div>
-    </div>
 
+    <!-- ================= SCRIPTS ================= -->
     <script src="./assets/js/data.js"></script>
-    <script src="./assets/js/spin.js"></script>
     <script src="./assets/js/carrito.js"></script>
-    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/spin.js"></script>
 
+    <!-- ================= UI HELPERS ================= -->
     <script>
-    /* LISTA */
-    function toggleLista() {
-    const l = document.getElementById("lista-productos");
-    l.classList.toggle("is-hidden");
-    l.classList.toggle("is-visible");
-    }
+        /* Toggle lista de productos posibles */
+        function toggleLista() {
+        const l = document.getElementById("lista-productos");
+        l.classList.toggle("is-hidden");
 
-    /* MODAL */
-    function mostrarModalPremios() {
-    document.getElementById("modalPremios").classList.add("is-open");
-    }
+        if (!l.classList.contains("is-hidden")) {
+            renderLista();
+        }
+        }
 
-    function cerrarModal() {
-    document.getElementById("modalPremios").classList.remove("is-open");
-    }
+        /* Render lista de productos (estándar + premium) */
+        function renderLista() {
+        const cont = document.getElementById("lista-productos");
+        cont.innerHTML = "";
+
+        const productos = [
+            ...getProductosSpinEstandar(),
+            ...getProductosSpinPremium()
+        ];
+
+        productos.forEach(p => {
+            if (obtenerStock()[p.id] <= 0) return;
+
+            const div = document.createElement("div");
+            div.className = "spin-list__item";
+            div.innerHTML = `
+            <strong>${p.nombre}</strong>
+            <small>Stock: ${obtenerStock()[p.id]}</small>
+            `;
+            cont.appendChild(div);
+        });
+        }
     </script>
 
     </body>
