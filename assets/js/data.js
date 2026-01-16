@@ -246,4 +246,5 @@ export {
   getProductosCatalogo,
   getProductosSpinEstandar,
   getProductosSpinPremium,
+  getConfigSpin,
 };
