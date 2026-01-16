@@ -24,13 +24,14 @@ const SPIN_STATE = {
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
-    drawWheel(SPIN_STATE.currentMode);
-    updateUI();
-
-    const btn = document.getElementById('btnSpinAction');
-    if (btn) {
-        btn.addEventListener('click', handleSpinAction);
-    }
+    const interval = setInterval(() => {
+        const inv = getInventario();
+        if (inv && Array.isArray(inv.productos)) {
+            clearInterval(interval);
+            drawWheel(SPIN_STATE.currentMode);
+            updateUI();
+        }
+    }, 50);
 });
 
 // ---------- HANDLERS ----------
@@ -385,4 +386,4 @@ function resetActualMode() {
 
     closeModal();
     }
-
+}
