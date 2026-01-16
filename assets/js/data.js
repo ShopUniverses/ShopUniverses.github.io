@@ -26,6 +26,7 @@ async function cargarInventario() {
   INVENTARIO = await response.json();
 
   inicializarStock();
+  validarStockContraInventario(); // 🔐 ajuste clave
 
   return INVENTARIO;
 }
@@ -46,6 +47,34 @@ function inicializarStock() {
     STORAGE_STOCK_KEY,
     JSON.stringify(stockInicial)
   );
+}
+
+/**************************************************
+ * VALIDACIÓN DE INTEGRIDAD
+ **************************************************/
+
+/**
+ * Valida el stock activo contra el inventario base
+ * - NO repone unidades vendidas
+ * - SOLO inicializa faltantes
+ * - Limita al stock máximo del JSON
+ */
+function validarStockContraInventario() {
+  const stock = obtenerStock();
+
+  INVENTARIO.productos.forEach(producto => {
+    // Si no existe, se inicializa
+    if (stock[producto.id] === undefined) {
+      stock[producto.id] = producto.stock;
+    }
+
+    // Nunca permitir más que el máximo teórico
+    if (stock[producto.id] > producto.stock) {
+      stock[producto.id] = producto.stock;
+    }
+  });
+
+  guardarStock(stock);
 }
 
 /**************************************************
@@ -168,4 +197,3 @@ function getConfigSpin() {
 function getInventario() {
   return INVENTARIO;
 }
-

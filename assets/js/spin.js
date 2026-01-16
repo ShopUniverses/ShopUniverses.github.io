@@ -86,7 +86,9 @@ function getProductosDisponibles(mode) {
             ? p.flags?.spin_estandar
             : p.flags?.spin_premium;
 
-        return flag && p.stock > 0;
+        const stock = obtenerStock();
+        return flag && stock[p.id] > 0;
+
     });
 }
 
@@ -304,11 +306,12 @@ function toggleLista() {
     if (productos.length === 0) {
         cont.innerHTML = '<li class="empty-msg">Sin productos disponibles</li>';
     } else {
+        const stock = obtenerStock();
         productos.forEach(p => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${p.nombre}</span>
-                <small>Stock: ${p.stock}</small>
+                <small>Stock: ${stock[p.id]}</small>
             `;
             cont.appendChild(li);
         });
