@@ -176,12 +176,17 @@ function enviarPedidoWhatsApp(numero) {
 
   // Limpiar carrito después del envío
   setTimeout(() => {
-    limpiarCarrito();
+  limpiarCarrito();
 
-    if (typeof limpiarSpinState === "function") {
-      limpiarSpinState();
-    }
-  }, 300);
+  if (typeof limpiarSpinState === "function") {
+    limpiarSpinState();
+  }
+
+  if (typeof renderCarrito === "function") {
+    renderCarrito();
+  }
+}, 300);
+
 }
 
 
