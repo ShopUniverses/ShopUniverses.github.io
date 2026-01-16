@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>ShopUniverses - ¡¡El Universo a un solo clikc!!</title>
+    <title>Shop Universes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- FAVICON (APLICADO CORRECTAMENTE) -->
+    <link rel="icon" href="./assets/img/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/assets/img/favicon/apple-touch-icon.png">
 
     <!-- CSS GLOBAL -->
     <link rel="stylesheet" href="./assets/css/styles.css">
@@ -22,21 +27,31 @@
 
 <!-- HERO / HEADER -->
 <header class="container section">
-    <a href="./index.html">
-        <img src="./assets/img/perfil/2.png" alt="Logo ShopUniverses" class="logo-header">
-    </a>
-    <h1>ShopUniverses</h1>
-    <p>
+
+    <!-- WRAPPER MINIMO PARA ALINEAR LOGO + TITULO -->
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="./index.html">
+            <img
+                src="./assets/img/perfil/2.png"
+                alt="Logo ShopUniverses"
+                class="logo-header"
+            >
+        </a>
+
+        <h1 style="margin:0;">ShopUniverses</h1>
+    </div>
+
+    <h3>
         Importaciones • Experiencias • Productos únicos  
         <br>
         Compra el universo, un producto a la vez.
-    </p>
+    </h3>
 </header>
 
 <!-- CONTENIDO PRINCIPAL -->
 <main class="container">
 
-<!-- BANNER SPIN -->
+    <!-- BANNER SPIN -->
     <section class="section">
         <div class="card">
             <h2>🎡 Prueba nuestra Ruleta</h2>
@@ -48,14 +63,14 @@
         </div>
     </section>
 
-<!-- BANNER CATALOGO -->
+    <!-- BANNER CATALOGO -->
     <section class="section">
         <div class="card">
             <h2>🛍️ Catálogo</h2>
-                <p>
-                    ¿Prefieres elegir tus productos uno a uno?  
-                    Explora nuestro catálogo completo con stock actualizado en tiempo real.
-                </p>
+            <p>
+                ¿Prefieres elegir tus productos uno a uno?  
+                Explora nuestro catálogo completo con stock actualizado en tiempo real.
+            </p>
             <button onclick="irACatalogo()">Ver Catálogo</button>
         </div>
     </section>
@@ -65,7 +80,7 @@
 <!-- FOOTER SIMPLE -->
 <footer class="container section">
     <small>
-    © ShopUniverses — Importaciones & Ventas Online
+        © ShopUniverses — Importaciones & Ventas Online
     </small>
 </footer>
 
@@ -76,8 +91,7 @@
 <script src="./assets/js/main.js"></script>
 
 <script>
-/* Navegación básica*/
-
+/* Navegación básica */
 function irASpin() {
     window.location.href = "./spin.html";
 }
