@@ -61,9 +61,15 @@
 
     /* NAVEGACIÓN */
     nav {
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-border);
+
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
     }
 
     nav a {
