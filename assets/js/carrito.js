@@ -154,14 +154,14 @@ function cancelarCompraCompleta() {
 
 function generarMensajeWhatsApp() {
   let mensaje = "Hola 👋\n";
-  mensaje += "Quiero hacer este pedido de ShopUniverses:\n\n";
+  mensaje += "🛒 Quiero hacer este pedido de ShopUniverses:\n\n";
 
   carrito.items.forEach(item => {
     mensaje += `• ${item.nombre} — $${item.precio}\n`;
   });
 
   mensaje += `\n💰 Total estimado: $${carrito.total}\n`;
-  mensaje += "\nGracias.";
+  mensaje += "\n✨ Gracias.";
 
   return encodeURIComponent(mensaje);
 }
