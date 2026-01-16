@@ -369,6 +369,16 @@ function resetActualMode() {
 
     updateStatus("✅ Premios agregados al carrito");
     updateUI();
+
+    // Refrescar ruleta y lista tras actualizar inventario
+    drawWheel(SPIN_STATE.currentMode);
+
+    const lista = document.getElementById('lista-productos');
+    if (lista && !lista.classList.contains('is-hidden')) {
+        toggleLista(); // cierra
+        toggleLista(); // vuelve a abrir con stock actualizado
+    }
+    
     closeModal();
     }
 
