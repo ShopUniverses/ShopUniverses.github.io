@@ -153,7 +153,7 @@ function cancelarCompraCompleta() {
  **************************************************/
 
 function generarMensajeWhatsApp() {
-  let mensaje = "Hola 👋\n";
+  let mensaje = "👋 Hola\n";
   mensaje += "🛒 Quiero hacer este pedido de ShopUniverses:\n\n";
 
   carrito.items.forEach(item => {
@@ -163,11 +163,25 @@ function generarMensajeWhatsApp() {
   mensaje += `\n💰 Total estimado: $${carrito.total}\n`;
   mensaje += "\n✨ Gracias.";
 
-  return encodeURIComponent(mensaje);
+  return mensaje;
 }
 
 function enviarPedidoWhatsApp(numero) {
-  const mensaje = generarMensajeWhatsApp();
-  const url = `https://wa.me/${numero}?text=${mensaje}`;
+  const mensaje = generarMensajeWhatsAppRaw();
+
+  const params = new URLSearchParams({ text: mensaje });
+  const url = `https://wa.me/${numero}?${params.toString()}`;
+
   window.open(url, "_blank");
+
+  // 🧹 Limpiar carrito después del envío
+  setTimeout(() => {
+    limpiarCarrito();
+
+    if (typeof limpiarSpinState === "function") {
+      limpiarSpinState();
+    }
+  }, 500);
 }
+
+
