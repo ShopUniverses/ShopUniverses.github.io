@@ -13,7 +13,7 @@ import {
 
 // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN REAL
 const firebaseConfig = {
-    apiKey: "TU_API_KEY",
+    apiKey: "AIzaSyB5zYCn6SD4stzYCawHdrj6oK8zqccWP0Q",
     authDomain: "shopuniverses-inventario.firebaseapp.com",
     projectId: "shopuniverses-inventario",
 };
