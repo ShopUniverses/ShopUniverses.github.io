@@ -3,6 +3,10 @@
  * Capa de dominio - ShopUniverses
  **************************************************/
 
+/*Importar Firebase*/
+import { db, doc, getDoc, runTransaction } from "./firebase.js";
+
+
 const INVENTARIO_URL = "/data/inventario.json";
 const STORAGE_STOCK_KEY = "shopuniverses_stock";
 
@@ -81,11 +85,32 @@ function validarStockContraInventario() {
  * STOCK
  **************************************************/
 
-function obtenerStock() {
-  return JSON.parse(
+async function obtenerStock() {
+  const stockLocal = JSON.parse(
     localStorage.getItem(STORAGE_STOCK_KEY)
-  ) || {};
+  );
+
+  if (stockLocal) return stockLocal;
+
+  const stockRemoto = {};
+
+  for (const producto of INVENTARIO.productos) {
+    const ref = doc(db, "stock", producto.id);
+    const snap = await getDoc(ref);
+
+    stockRemoto[producto.id] = snap.exists()
+      ? snap.data().cantidad
+      : 0;
+  }
+
+  localStorage.setItem(
+    STORAGE_STOCK_KEY,
+    JSON.stringify(stockRemoto)
+  );
+
+  return stockRemoto;
 }
+
 
 function guardarStock(stock) {
   localStorage.setItem(
@@ -97,33 +122,46 @@ function guardarStock(stock) {
 /**
  * Descuenta una unidad de stock
  */
-function descontarStock(productoId) {
-  const stock = obtenerStock();
+async function descontarStock(productoId) {
+  const ref = doc(db, "stock", productoId);
 
-  if (!stock[productoId] || stock[productoId] <= 0) {
-    return false;
-  }
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
 
-  stock[productoId]--;
-  guardarStock(stock);
+    if (!snap.exists() || snap.data().cantidad <= 0) {
+      throw new Error("Sin stock disponible");
+    }
 
-  return true;
+    tx.update(ref, {
+      cantidad: snap.data().cantidad - 1
+    });
+  });
+
+  // Invalidar cache local
+  localStorage.removeItem(STORAGE_STOCK_KEY);
 }
+
 
 /**
  * Restaura stock (por cancelación)
  */
-function restaurarStock(productosIds) {
-  const stock = obtenerStock();
+async function restaurarStock(productosIds) {
+  for (const id of productosIds) {
+    const ref = doc(db, "stock", id);
 
-  productosIds.forEach(id => {
-    if (stock[id] !== undefined) {
-      stock[id]++;
-    }
-  });
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) return;
 
-  guardarStock(stock);
+      tx.update(ref, {
+        cantidad: snap.data().cantidad + 1
+      });
+    });
+  }
+
+  localStorage.removeItem(STORAGE_STOCK_KEY);
 }
+
 
 /**************************************************
  * FILTROS DE PRODUCTOS

@@ -14,8 +14,8 @@ import {
 // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN REAL
 const firebaseConfig = {
     apiKey: "TU_API_KEY",
-    authDomain: "TU_PROJECT_ID.firebaseapp.com",
-    projectId: "TU_PROJECT_ID",
+    authDomain: "shopuniverses-inventario.firebaseapp.com",
+    projectId: "shopuniverses-inventario",
 };
 
 // Inicializar Firebase
