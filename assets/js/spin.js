@@ -28,19 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const inv = getInventario();
         if (inv && Array.isArray(inv.productos)) {
             clearInterval(interval);
-
-            // 👇 CONEXIÓN DEL BOTÓN (CLAVE)
-            const btn = document.getElementById('btnSpinAction');
-            if (btn) {
-                btn.onclick = handleSpinAction;
-            }
-
             drawWheel(SPIN_STATE.currentMode);
             updateUI();
         }
-    }, 50);
+    }, );
 });
-
 
 // ---------- HANDLERS ----------
 function handleSpinAction() {
@@ -349,25 +341,48 @@ function resetActualMode() {
 }
 
 
-/**************************************************
- * CONFIRMAR PREMIOS Y ENVIAR AL CARRITO
- **************************************************/
 function aceptarPremios() {
-    const premios = SPIN_STATE[SPIN_STATE.lastCompletedMode]?.premiosTemporales;
+    const mode = SPIN_STATE.lastCompletedMode;
+    const session = SPIN_STATE[mode];
 
-    if (!premios || premios.length === 0) {
-        alert("No hay premios para agregar.");
+    if (!session || session.premiosTemporales.length === 0) {
+        closeModal();
         return;
     }
 
-    // 🔴 NO se cambia la estructura del producto
-    premios.forEach(producto => {
-        agregarProductoDesdeSpin(producto);
+    // Agregar paquete Spin
+    if (mode === "estandar") {
+        agregarSpinBase();
+    } else {
+        agregarSpinPremium();
+    }
+
+    // Agregar productos reales
+    session.premiosTemporales.forEach(p => {
+        agregarProductoDesdeSpin({
+        id: p.id,
+        nombre: p.nombre
+        });
+        descontarStock(p.id);
     });
 
-    // Limpiar solo la sesión que terminó
-    SPIN_STATE[SPIN_STATE.lastCompletedMode].premiosTemporales = [];
-    SPIN_STATE[SPIN_STATE.lastCompletedMode].completed = false;
+    // Limpiar estado
+    session.premiosTemporales = [];
+    session.completed = true;
+    SPIN_STATE.isSpinning = false;
+    SPIN_STATE.lastCompletedMode = null;
+
+    updateStatus("✅ Premios agregados al carrito");
+    updateUI();
+
+    // Refrescar ruleta y lista tras actualizar inventario
+    drawWheel(SPIN_STATE.currentMode);
+
+    const lista = document.getElementById('lista-productos');
+    if (lista && !lista.classList.contains('is-hidden')) {
+        toggleLista(); // cierra
+        toggleLista(); // vuelve a abrir con stock actualizado
+    }
 
     closeModal();
 }
