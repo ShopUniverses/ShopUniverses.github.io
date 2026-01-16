@@ -2,6 +2,11 @@
  * CARRITO.JS
  * Gestión de carrito - ShopUniverses
  **************************************************/
+import {
+  descontarStock,
+  restaurarStock,
+  getConfigSpin
+} from "./data.js";
 
 const CARRITO_KEY = "shopuniverses_carrito";
 

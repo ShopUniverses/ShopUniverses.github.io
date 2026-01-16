@@ -244,5 +244,5 @@ export {
   restaurarStock,
   getProductosCatalogo,
   getProductosSpinEstandar,
-  getProductosSpinPremium
+  getProductosSpinPremium,
 };

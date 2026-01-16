@@ -2,14 +2,23 @@
  * MAIN.JS
  * Punto de entrada - ShopUniverses
  **************************************************/
+import {
+    cargarInventario,
+    getInventario
+} from "./data.js";
+
+import {
+    inicializarCarrito,
+    getItemsCarrito
+} from "./carrito.js";
 
 (async function iniciarApp() {
-  await cargarInventario();
-  inicializarCarrito();
+    await cargarInventario();
+    inicializarCarrito();
 
-  console.log("✔ App inicializada");
-  console.log("Inventario:", getInventario());
-  console.log("Carrito:", getItemsCarrito());
+    console.log("✔ App inicializada");
+    console.log("Inventario:", getInventario());
+    console.log("Carrito:", getItemsCarrito());
 })();
 
 /**************************************************

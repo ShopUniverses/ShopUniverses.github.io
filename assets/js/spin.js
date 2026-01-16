@@ -2,6 +2,13 @@
 // SPIN.JS — ShopUniverses (Pulido Final)
 // ==========================================
 
+import {
+    getInventario,
+    obtenerStock,
+    descontarStock
+} from "./data.js";
+
+
 // ---------- ESTADO GLOBAL ----------
 const SPIN_STATE = {
     currentMode: 'estandar',

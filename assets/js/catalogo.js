@@ -2,6 +2,17 @@
 CATALOGO.JS
 Render del catálogo con imagen, contador y stock seguro
 */
+import {
+    cargarInventario,
+    getProductosCatalogo,
+    obtenerStock
+} from "./data.js";
+
+import {
+    agregarProductoCatalogo,
+    inicializarCarrito
+} from "./carrito.js";
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarInventario();
