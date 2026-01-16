@@ -123,6 +123,7 @@ Gracias.
 │
 ├── /assets
 │   ├── /css
+│   │   ├── spin.css
 │   │   ├── styles.css
 │   │   ├── theme.css
 │   /fonts
@@ -131,11 +132,10 @@ Gracias.
 │   │   ├── TAN-b.otf
 │   ├── /js
 │   │   ├── data.js
-│   │   ├── stock.js
 │   │   ├── spin.js
 │   │   ├── catalogo.js
 │   │   ├── carrito.js
-│   │   ├── whatsapp.js
+│   │   ├── main.js
 │   │
 │   └── /img
 │   │   ├── /favicon
