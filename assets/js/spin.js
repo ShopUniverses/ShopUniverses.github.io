@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             drawWheel(SPIN_STATE.currentMode);
             updateUI();
         }
-    }, 50);
+    }, 10);
 });
 
 // ---------- HANDLERS ----------
