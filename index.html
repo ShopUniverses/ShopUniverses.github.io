@@ -5,6 +5,11 @@
     <title>ShopUniverses - ¡¡El Universo a un solo clikc!!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- FAVICON -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
     <!-- CSS GLOBAL -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
@@ -23,7 +28,12 @@
 <!-- HERO / HEADER -->
 <header class="container section">
     <a href="./index.html">
-        <img src="./assets/img/perfil/2.png" alt="Logo ShopUniverses" class="logo-header">
+        <img 
+            src="./assets/img/perfil/2.png" 
+            alt="Logo ShopUniverses" 
+            class="logo-header"
+            loading="eager"
+        >
     </a>
     <h1>ShopUniverses</h1>
     <p>
@@ -36,7 +46,7 @@
 <!-- CONTENIDO PRINCIPAL -->
 <main class="container">
 
-<!-- BANNER SPIN -->
+    <!-- BANNER SPIN -->
     <section class="section">
         <div class="card">
             <h2>🎡 Prueba nuestra Ruleta</h2>
@@ -48,14 +58,14 @@
         </div>
     </section>
 
-<!-- BANNER CATALOGO -->
+    <!-- BANNER CATALOGO -->
     <section class="section">
         <div class="card">
             <h2>🛍️ Catálogo</h2>
-                <p>
-                    ¿Prefieres elegir tus productos uno a uno?  
-                    Explora nuestro catálogo completo con stock actualizado en tiempo real.
-                </p>
+            <p>
+                ¿Prefieres elegir tus productos uno a uno?  
+                Explora nuestro catálogo completo con stock actualizado en tiempo real.
+            </p>
             <button onclick="irACatalogo()">Ver Catálogo</button>
         </div>
     </section>
@@ -65,7 +75,7 @@
 <!-- FOOTER SIMPLE -->
 <footer class="container section">
     <small>
-    © ShopUniverses — Importaciones & Ventas Online
+        © ShopUniverses — Importaciones & Ventas Online
     </small>
 </footer>
 
@@ -76,8 +86,7 @@
 <script src="./assets/js/main.js"></script>
 
 <script>
-/* Navegación básica*/
-
+/* Navegación básica */
 function irASpin() {
     window.location.href = "./spin.html";
 }
