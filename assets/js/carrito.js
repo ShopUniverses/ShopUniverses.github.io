@@ -153,15 +153,15 @@ function cancelarCompraCompleta() {
  **************************************************/
 
 function generarMensajeWhatsApp() {
-  let mensaje = "👋 Hola\n";
-  mensaje += "🛒 Quiero hacer este pedido de ShopUniverses:\n\n";
+  let mensaje = "Hola\n";
+  mensaje += "Quiero hacer este pedido de ShopUniverses:\n\n";
 
   carrito.items.forEach(item => {
     mensaje += `• ${item.nombre} — $${item.precio}\n`;
   });
 
-  mensaje += `\n💰 Total estimado: $${carrito.total}\n`;
-  mensaje += "\n✨ Gracias.";
+  mensaje += `\nTotal estimado: $${carrito.total}\n`;
+  mensaje += "\nGracias.";
 
   return mensaje;
 }
@@ -174,14 +174,14 @@ function enviarPedidoWhatsApp(numero) {
 
   window.open(url, "_blank");
 
-  // 🧹 Limpiar carrito después del envío
+  // Limpiar carrito después del envío
   setTimeout(() => {
     limpiarCarrito();
 
     if (typeof limpiarSpinState === "function") {
       limpiarSpinState();
     }
-  }, 500);
+  }, 300);
 }
 
 
