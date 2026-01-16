@@ -6,7 +6,6 @@
 (async function iniciarApp() {
   await cargarInventario();
   inicializarCarrito();
-  cargarSpinState();
 
   console.log("✔ App inicializada");
   console.log("Inventario:", getInventario());
