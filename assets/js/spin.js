@@ -4,7 +4,8 @@
 
 // ---------- ESTADO GLOBAL ----------
 const SPIN_STATE = {
-    currentMode: 'estandar', // 'estandar' | 'premium'
+    currentMode: 'estandar',
+    lastCompletedMode: null, // 'estandar' | 'premium'
     estandar: {
         maxGiros: 5,
         girosRestantes: 5,
@@ -201,7 +202,7 @@ function finalizeSpin(producto) {
     updateUI();
 
     if (session.girosRestantes === 0) {
-        SPIN_STATE.lastcompletedMode = mode;
+        SPIN_STATE.lastCompletedMode = mode;
         setTimeout(openModal, 1800);
     }
 }
@@ -267,9 +268,13 @@ function openModal() {
     const ul = document.getElementById('modalListaPremios');
     if (!modal || !ul) return;
 
+    const mode = SPIN_STATE.lastCompletedMode;
+    if (!mode) return; 
+    
     ul.innerHTML = '';
 
-    const premios = SPIN_STATE[SPIN_STATE.currentMode].premiosTemporales;
+    const premios = SPIN_STATE[mode].premiosTemporales;
+
 
     premios.forEach(p => {
         const li = document.createElement('li');
