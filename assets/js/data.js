@@ -235,3 +235,14 @@ function getConfigSpin() {
 function getInventario() {
   return INVENTARIO;
 }
+
+export {
+  cargarInventario,
+  getInventario,
+  obtenerStock,
+  descontarStock,
+  restaurarStock,
+  getProductosCatalogo,
+  getProductosSpinEstandar,
+  getProductosSpinPremium
+};
