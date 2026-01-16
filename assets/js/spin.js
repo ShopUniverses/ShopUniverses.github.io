@@ -29,18 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inv && Array.isArray(inv.productos)) {
             clearInterval(interval);
 
-            // 👇 CONEXIÓN DEL BOTÓN (CLAVE)
             const btn = document.getElementById('btnSpinAction');
-            if (btn) {
-                btn.onclick = handleSpinAction;
-            }
+            if (btn) btn.onclick = handleSpinAction;
 
             drawWheel(SPIN_STATE.currentMode);
             updateUI();
         }
     }, 50);
 });
-
 
 // ---------- HANDLERS ----------
 function handleSpinAction() {
@@ -69,7 +65,7 @@ function switchMode(mode) {
         const angle = SPIN_STATE.currentRotation % 360;
         canvas.style.transition = 'none';
         canvas.style.transform = `rotate(${angle}deg)`;
-        void canvas.offsetWidth; // force reflow
+        void canvas.offsetWidth;
         canvas.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
     }
 
@@ -80,8 +76,6 @@ function switchMode(mode) {
 // ---------- DATOS ----------
 function getProductosDisponibles(mode) {
     const data = getInventario();
-
-    // CLAVE: los productos están en data.productos
     if (!data || !Array.isArray(data.productos)) return [];
 
     return data.productos.filter(p => {
@@ -92,7 +86,6 @@ function getProductosDisponibles(mode) {
         return flag && p.stock > 0;
     });
 }
-
 
 // ---------- DIBUJO ----------
 function drawWheel(mode) {
@@ -115,7 +108,6 @@ function drawWheel(mode) {
     const center = canvas.width / 2;
     const radius = canvas.width / 2 - 10;
     const step = (2 * Math.PI) / productos.length;
-
     const colors = ['#6b3fa0', '#3dd6d0', '#2a1b4e', '#FFD700', '#FF4C4C'];
 
     productos.forEach((prod, i) => {
@@ -154,7 +146,6 @@ function spinWheel() {
     const mode = SPIN_STATE.currentMode;
     const session = SPIN_STATE[mode];
     const productos = getProductosDisponibles(mode);
-
     if (productos.length === 0) return;
 
     SPIN_STATE.isSpinning = true;
@@ -206,7 +197,6 @@ function finalizeSpin(producto) {
     });
 
     session.girosRestantes--;
-
     updateStatus(`🎁 Ganaste: ${producto.nombre}`);
     updateUI();
 
@@ -224,19 +214,16 @@ function updateUI() {
     document.getElementById('panelTitle').textContent =
         `Ruleta ${mode === 'estandar' ? 'Estándar' : 'Premium'}`;
 
-    document.getElementById('girosCounter').textContent =
-        session.girosRestantes;
+    document.getElementById('girosCounter').textContent = session.girosRestantes;
 
     const btn = document.getElementById('btnSpinAction');
     if (!btn) return;
 
     if (session.girosRestantes > 0 && !SPIN_STATE.isSpinning) {
         btn.textContent = 'Girar';
-        btn.dataset.state = 'ready';
         btn.disabled = false;
     } else {
         btn.textContent = 'Sesión completada';
-        btn.dataset.state = 'idle';
         btn.disabled = true;
     }
 
@@ -248,7 +235,6 @@ function renderPremios() {
     if (!ul) return;
 
     ul.innerHTML = '';
-
     const all = [
         ...SPIN_STATE.estandar.premiosTemporales,
         ...SPIN_STATE.premium.premiosTemporales
@@ -278,14 +264,10 @@ function openModal() {
     if (!modal || !ul) return;
 
     const mode = SPIN_STATE.lastCompletedMode;
-    if (!mode) return; 
-    
+    if (!mode) return;
+
     ul.innerHTML = '';
-
-    const premios = SPIN_STATE[mode].premiosTemporales;
-
-
-    premios.forEach(p => {
+    SPIN_STATE[mode].premiosTemporales.forEach(p => {
         const li = document.createElement('li');
         li.textContent = p.nombre;
         if (p.premium) li.classList.add('premium');
@@ -295,40 +277,9 @@ function openModal() {
     modal.classList.add('is-open');
 }
 
-function toggleLista() {
-    const cont = document.getElementById('lista-productos');
-    if (!cont) return;
-
-    const mode = SPIN_STATE.currentMode;
-    const productos = getProductosDisponibles(mode);
-
-    cont.innerHTML = '';
-
-    if (productos.length === 0) {
-        cont.innerHTML = '<li class="empty-msg">Sin productos disponibles</li>';
-    } else {
-        productos.forEach(p => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${p.nombre}</span>
-                <small>Stock: ${p.stock}</small>
-            `;
-            cont.appendChild(li);
-        });
-    }
-
-    if (cont.classList.contains('is-hidden')) {
-    cont.classList.remove('is-hidden');
-} else {
-    cont.classList.add('is-hidden');
-}
-
-
 function closeModal() {
     const modal = document.getElementById('modalPremios');
-    if (modal) {
-        modal.classList.remove('is-open');
-    }
+    if (modal) modal.classList.remove('is-open');
 }
 
 function resetActualMode() {
@@ -340,58 +291,31 @@ function resetActualMode() {
     session.completed = false;
 
     SPIN_STATE.isSpinning = false;
-
     updateStatus('🔄 Puedes girar de nuevo');
     updateUI();
     drawWheel(mode);
-
     closeModal();
 }
 
+// ---------- ACEPTAR PREMIOS ----------
+function aceptarPremios() {
+    const premios = [
+        ...SPIN_STATE.estandar.premiosTemporales,
+        ...SPIN_STATE.premium.premiosTemporales
+    ];
 
-    function aceptarPremios() {
-    const mode = SPIN_STATE.lastCompletedMode;
-    const session = SPIN_STATE[mode];
-
-    if (!session || session.premiosTemporales.length === 0) {
-        closeModal();
+    if (premios.length === 0) {
+        alert("No hay premios para agregar.");
         return;
     }
 
-    // Agregar paquete Spin
-    if (mode === "estandar") {
-        agregarSpinBase();
-    } else {
-        agregarSpinPremium();
-    }
+    premios.forEach(p => agregarProductoDesdeSpin(p));
 
-    // Agregar productos reales
-    session.premiosTemporales.forEach(p => {
-        agregarProductoDesdeSpin({
-        id: p.id,
-        nombre: p.nombre
-        });
-        descontarStock(p.id);
-    });
-
-    // Limpiar estado
-    session.premiosTemporales = [];
-    session.completed = true;
-    SPIN_STATE.isSpinning = false;
-    SPIN_STATE.lastCompletedMode = null;
-
-    updateStatus("✅ Premios agregados al carrito");
-    updateUI();
-
-    // Refrescar ruleta y lista tras actualizar inventario
-    drawWheel(SPIN_STATE.currentMode);
-
-    const lista = document.getElementById('lista-productos');
-    if (lista && !lista.classList.contains('is-hidden')) {
-        toggleLista(); // cierra
-        toggleLista(); // vuelve a abrir con stock actualizado
-    }
+    SPIN_STATE.estandar.premiosTemporales = [];
+    SPIN_STATE.premium.premiosTemporales = [];
 
     closeModal();
-    }
+    updateUI();
+
+    alert("🎉 Premios agregados al carrito correctamente");
 }
