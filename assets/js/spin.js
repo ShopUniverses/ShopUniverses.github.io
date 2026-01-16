@@ -403,3 +403,11 @@ function aceptarPremios() {
 
     closeModal();
 }
+
+// ⬇ Exponer funciones usadas por HTML
+window.switchMode = switchMode;
+window.toggleLista = toggleLista;
+window.aceptarPremios = aceptarPremios;
+window.closeModal = closeModal;
+window.resetActualMode = resetActualMode;
+// ⬆ Exponer funciones usadas por HTML

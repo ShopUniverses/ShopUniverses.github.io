@@ -4,7 +4,15 @@
  **************************************************/
 
 /*Importar Firebase*/
-import { db, doc, getDoc, runTransaction } from "./firebase.js";
+import {
+  db,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  runTransaction
+} from "./firebase.js";
+
 
 const INVENTARIO_URL = "/data/inventario.json";
 const STORAGE_STOCK_KEY = "shopuniverses_stock";
@@ -243,13 +251,4 @@ export {
   getProductosSpinEstandar,
   getProductosSpinPremium,
   getConfigSpin,
-};
-
-export {
-    db,
-    doc,
-    getDoc,
-    getDocs,
-    collection,
-    runTransaction
 };
