@@ -5,7 +5,7 @@
 import {
   descontarStock,
   restaurarStock,
-  getConfigSpin
+  getConfigSpin,
 } from "./data.js";
 
 const CARRITO_KEY = "shopuniverses_carrito";
@@ -194,4 +194,14 @@ function enviarPedidoWhatsApp(numero) {
 
 }
 
-
+export {
+  inicializarCarrito,
+  agregarProductoCatalogo,
+  agregarProductoDesdeSpin,
+  agregarSpinBase,
+  agregarSpinPremium,
+  cancelarCompraCompleta,
+  getItemsCarrito,
+  getTotal,
+  enviarPedidoWhatsApp
+};

@@ -4,7 +4,7 @@
  **************************************************/
 import {
     cargarInventario,
-    getInventario
+    getInventario,
 } from "./data.js";
 
 import {
