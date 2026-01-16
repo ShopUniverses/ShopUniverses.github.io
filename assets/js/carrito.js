@@ -185,7 +185,7 @@ function enviarPedidoWhatsApp(numero) {
   if (typeof renderCarrito === "function") {
     renderCarrito();
   }
-}, 300);
+}, 500);
 
 }
 
