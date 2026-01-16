@@ -28,11 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const inv = getInventario();
         if (inv && Array.isArray(inv.productos)) {
             clearInterval(interval);
+
+            // 👇 CONEXIÓN DEL BOTÓN (CLAVE)
+            const btn = document.getElementById('btnSpinAction');
+            if (btn) {
+                btn.onclick = handleSpinAction;
+            }
+
             drawWheel(SPIN_STATE.currentMode);
             updateUI();
         }
-    }, 10);
+    }, 50);
 });
+
 
 // ---------- HANDLERS ----------
 function handleSpinAction() {
