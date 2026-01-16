@@ -17,12 +17,29 @@
 
 <body>
 
-    <nav>
-        <a href="./index.html">Inicio</a>
-        <a href="./catalogo.html">Catálogo</a>
-        <a href="./spin.html">Spin</a>
-        <a href="./carrito.html">Carrito</a>
+    <nav class="nav">
+        <div class="nav-brand">
+            <a href="./index.html">ShopUniverses</a>
+        </div>
+
+        <!-- Toggle -->
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <!-- Links -->
+        <div class="nav-links">
+            <a href="./index.html">Inicio</a>
+            <a href="./catalogo.html">Catálogo</a>
+            <a href="./spin.html">Spin</a>
+            <a href="./carrito.html">Carrito</a>
+        </div>
     </nav>
+
 
     <header class="container section">
         <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
