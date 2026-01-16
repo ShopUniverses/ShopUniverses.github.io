@@ -30,7 +30,11 @@ async function cargarInventario() {
   INVENTARIO = await response.json();
 
   inicializarStock();
-  validarStockContraInventario(); // 🔐 ajuste clave
+
+  // 🔥 ESTA ES LA CLAVE
+  await sincronizarStockDesdeFirebase();
+
+  validarStockContraInventario();
 
   return INVENTARIO;
 }
@@ -50,6 +54,24 @@ function inicializarStock() {
   localStorage.setItem(
     STORAGE_STOCK_KEY,
     JSON.stringify(stockInicial)
+  );
+}
+
+async function sincronizarStockDesdeFirebase() {
+  const stockRemoto = {};
+
+  for (const producto of INVENTARIO.productos) {
+    const ref = doc(db, "stock", producto.id);
+    const snap = await getDoc(ref);
+
+    stockRemoto[producto.id] = snap.exists()
+      ? snap.data().cantidad
+      : 0;
+  }
+
+  localStorage.setItem(
+    STORAGE_STOCK_KEY,
+    JSON.stringify(stockRemoto)
   );
 }
 
@@ -85,32 +107,11 @@ function validarStockContraInventario() {
  * STOCK
  **************************************************/
 
-async function obtenerStock() {
-  const stockLocal = JSON.parse(
+function obtenerStock() {
+  return JSON.parse(
     localStorage.getItem(STORAGE_STOCK_KEY)
-  );
-
-  if (stockLocal) return stockLocal;
-
-  const stockRemoto = {};
-
-  for (const producto of INVENTARIO.productos) {
-    const ref = doc(db, "stock", producto.id);
-    const snap = await getDoc(ref);
-
-    stockRemoto[producto.id] = snap.exists()
-      ? snap.data().cantidad
-      : 0;
-  }
-
-  localStorage.setItem(
-    STORAGE_STOCK_KEY,
-    JSON.stringify(stockRemoto)
-  );
-
-  return stockRemoto;
+  ) || {};
 }
-
 
 function guardarStock(stock) {
   localStorage.setItem(
