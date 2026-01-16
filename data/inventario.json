@@ -26,7 +26,8 @@
         "nombre": "Lapíz 11 Minas Carita Felíz", 
         "imagen": "assets/img/img_catalogo/cara.jpg",
         "precio_referencia": 3000, 
-        "costo": 1320, "stock": 4, 
+        "costo": 1320, 
+        "stock": 4, 
         "categoria": "Lapiz y Portaminas", 
         "flags": { 
             "catalogo": true, 

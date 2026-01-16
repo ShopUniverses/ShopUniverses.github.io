@@ -6,7 +6,6 @@
 /*Importar Firebase*/
 import { db, doc, getDoc, runTransaction } from "./firebase.js";
 
-
 const INVENTARIO_URL = "/data/inventario.json";
 const STORAGE_STOCK_KEY = "shopuniverses_stock";
 
@@ -60,14 +59,11 @@ function inicializarStock() {
 async function sincronizarStockDesdeFirebase() {
   const stockRemoto = {};
 
-  for (const producto of INVENTARIO.productos) {
-    const ref = doc(db, "stock", producto.id);
-    const snap = await getDoc(ref);
+  const snapshot = await getDocs(collection(db, "stock"));
 
-    stockRemoto[producto.id] = snap.exists()
-      ? snap.data().cantidad
-      : 0;
-  }
+  snapshot.forEach(docSnap => {
+    stockRemoto[docSnap.id] = docSnap.data().cantidad;
+  });
 
   localStorage.setItem(
     STORAGE_STOCK_KEY,
@@ -247,4 +243,13 @@ export {
   getProductosSpinEstandar,
   getProductosSpinPremium,
   getConfigSpin,
+};
+
+export {
+    db,
+    doc,
+    getDoc,
+    getDocs,
+    collection,
+    runTransaction
 };

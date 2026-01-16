@@ -15,10 +15,10 @@ import {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();
+    await cargarInventario();   // espera Firebase
     inicializarCarrito();
-    renderCatalogo();
-    });
+    renderCatalogo();           // render seguro
+});
 
     /* ===============================
     UTILIDAD DE PRECIO
