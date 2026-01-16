@@ -5,7 +5,12 @@
     <title>Catálogo | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- CSS GLOBAL -->
+    <!-- FAVICON (MISMO QUE INDEX) -->
+    <link rel="icon" href="assets/img/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="assets/img/favicon/apple-touch-icon.png">
+
+    <!-- CSS GLOBAL -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
 </head>
@@ -20,16 +25,46 @@
     <a href="./carrito.html">Carrito</a>
 </nav>
 
+<!-- HERO / HEADER (MISMA ESTÉTICA QUE INDEX) -->
 <header class="container section">
-    <h1>🛍️ Catálogo ShopUniverses</h1>
-    <p>
-        Explora nuestros productos disponibles con stock actualizado en tiempo real.
-    </p>
+
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:32px;
+        text-align:left;
+    ">
+
+        <!-- LOGO -->
+        <a href="./index.html">
+            <img
+                src="./assets/img/perfil/2.png"
+                alt="Logo ShopUniverses"
+                class="logo-header"
+                style="max-width:180px;"
+            >
+        </a>
+
+        <!-- TEXTO -->
+        <div>
+            <h1 style="margin:0; font-size:2.6rem; letter-spacing:1px;">
+                CATÁLOGO
+            </h1>
+            <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
+                Explora nuestros productos disponibles<br>
+                con stock actualizado en tiempo real.
+            </p>
+        </div>
+
+    </div>
+
 </header>
 
+<!-- CONTENIDO PRINCIPAL -->
 <main class="container">
 
-<!-- GRID DE PRODUCTOS -->
+    <!-- GRID DE PRODUCTOS (NO SE TOCA) -->
     <section
         id="catalogo"
         class="grid"
@@ -38,7 +73,14 @@
 
 </main>
 
-<!-- SCRIPTS -->
+<!-- FOOTER SIMPLE -->
+<footer class="container section">
+    <small>
+        © ShopUniverses — Importaciones & Ventas Online
+    </small>
+</footer>
+
+<!-- SCRIPTS (SIN CAMBIOS) -->
 <script src="./assets/js/data.js"></script>
 <script src="./assets/js/spin.js"></script>
 <script src="./assets/js/carrito.js"></script>
