@@ -136,3 +136,70 @@
     a:hover {
     color: var(--color-accent);
     }
+
+    /* ==============================
+    CARRITO – TEMA VISUAL
+    ============================== */
+
+    .carrito-item {
+    background: var(--card-bg, #1f1b2e);
+    border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .carrito-item-precio {
+    color: var(--accent-color, #3dd6d0);
+    }
+
+    .carrito-item.spin {
+    border: 1px solid #6b3fa0;
+    background: linear-gradient(
+        135deg,
+        rgba(107,63,160,0.25),
+        rgba(61,214,208,0.15)
+    );
+    }
+
+    .carrito-item.spin .badge {
+    background: #6b3fa0;
+    color: #fff;
+    }
+
+    .carrito-item.gratis .badge {
+    background: #3dd6d0;
+    color: #000;
+    }
+
+    .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 6px;
+    margin-top: 0.25rem;
+    width: fit-content;
+    }
+
+    .carrito-total {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+    }
+
+    .btn-whatsapp {
+    background: #25d366;
+    color: #000;
+    }
+
+    .btn-whatsapp:hover {
+    background: #1ebc59;
+    }
+
+    .btn-cancelar {
+    background: transparent;
+    border: 1px solid #ff4c4c;
+    color: #ff4c4c;
+    }
+
+    .btn-cancelar:hover {
+    background: rgba(255,76,76,0.1);
+    }
+
+

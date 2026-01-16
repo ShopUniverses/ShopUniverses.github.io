@@ -1,56 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/theme.css">
-
     <head>
     <meta charset="UTF-8">
     <title>Carrito | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
     </head>
 
     <body>
 
-    <!-- NAVEGACIÓN -->
     <nav>
-        <a href="./index.html">Inicio</a>
-        <a href="./catalogo.html">Catálogo</a>
-        <a href="./spin.html">Spin</a>
-        <a href="./carrito.html">Carrito</a>
+    <a href="./index.html">Inicio</a>
+    <a href="./catalogo.html">Catálogo</a>
+    <a href="./spin.html">Spin</a>
+    <a href="./carrito.html">Carrito</a>
     </nav>
 
+    <main class="carrito-container">
+
     <h1>🛒 Carrito de Compras</h1>
-
-    <p>
-    Revisa tu pedido antes de enviarlo por WhatsApp.
-    </p>
+    <p>Revisa tu pedido antes de enviarlo por WhatsApp.</p>
 
     <hr>
 
-    <!-- LISTADO DEL CARRITO -->
     <h3>Productos en el carrito</h3>
-    <ul id="lista-carrito"></ul>
+    <ul id="lista-carrito" class="carrito-lista"></ul>
 
-    <p>
-    <strong>Total:</strong> $
-    <span id="total">0</span>
-    </p>
+    <div class="carrito-total">
+        <strong>Total:</strong>
+        <span>$<span id="total">0</span></span>
+    </div>
+
+    <div class="carrito-actions">
+        <button class="btn-whatsapp" onclick="enviarPedidoWA()">Enviar pedido por WhatsApp</button>
+        <button class="btn-cancelar" onclick="cancelarCompra()">Cancelar compra</button>
+    </div>
 
     <hr>
 
-    <!-- ACCIONES -->
-    <button onclick="enviarPedidoWA()">Enviar pedido por WhatsApp</button>
-    <button onclick="cancelarCompra()">Cancelar compra</button>
-
-    <!-- LOG -->
-    <hr>
     <h3>Log</h3>
     <div id="log"></div>
 
+    </main>
+
     <!-- SCRIPTS -->
     <script src="./assets/js/data.js"></script>
-    <script src="./assets/js/spin.js"></script>
     <script src="./assets/js/carrito.js"></script>
     <script src="./assets/js/main.js"></script>
 
@@ -58,7 +54,6 @@
     /**************************************************
     * UTILIDADES
     **************************************************/
-
     function log(msg) {
     document.getElementById("log").innerHTML += msg + "<br>";
     }
@@ -66,7 +61,6 @@
     /**************************************************
     * RENDER
     **************************************************/
-
     function renderCarrito() {
     const ul = document.getElementById("lista-carrito");
     const items = getItemsCarrito();
@@ -78,18 +72,24 @@
     } else {
         items.forEach((item, index) => {
         const li = document.createElement("li");
-        li.textContent = `${item.nombre} — $${item.precio}`;
+        li.classList.add("carrito-item");
 
-        // Permitir eliminar SOLO productos de catálogo
+        if (item.origen === "spin") {
+            li.classList.add("spin", "gratis");
+        }
+
+        li.innerHTML = `
+            <div class="carrito-item-info">
+            <span class="carrito-item-nombre">${item.nombre}</span>
+            ${item.origen === "spin" ? `<span class="badge">Spin</span>` : ""}
+            </div>
+            <span class="carrito-item-precio">$${item.precio}</span>
+        `;
+
         if (item.tipo === "producto" && item.origen === "catalogo") {
             const btn = document.createElement("button");
             btn.textContent = "Quitar";
-            btn.style.marginLeft = "10px";
-
-            btn.onclick = () => {
-            eliminarProducto(index, item.id);
-            };
-
+            btn.onclick = () => eliminarProducto(index, item.id);
             li.appendChild(btn);
         }
 
@@ -103,7 +103,6 @@
     /**************************************************
     * ACCIONES
     **************************************************/
-
     function eliminarProducto(index, productoId) {
     eliminarItem(index);
     restaurarStock([productoId]);
@@ -119,22 +118,17 @@
 
     function enviarPedidoWA() {
     const items = getItemsCarrito();
-
     if (items.length === 0) {
         alert("El carrito está vacío");
         return;
     }
-
-    enviarPedido("573207096148"); // ← tu número
+    enviarPedidoWhatsApp("573207096148");
     }
 
     /**************************************************
     * INIT
     **************************************************/
-
-    document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();
-    inicializarCarrito();
+    document.addEventListener("DOMContentLoaded", () => {
     renderCarrito();
     });
     </script>

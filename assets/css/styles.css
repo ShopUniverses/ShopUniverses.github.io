@@ -198,3 +198,65 @@
     font-weight: bold;
     }
 
+    /* ==============================
+    CARRITO – ESTRUCTURA
+    ============================== */
+
+    .carrito-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    }
+
+    .carrito-lista {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    }
+
+    .carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    }
+
+    .carrito-item-info {
+    display: flex;
+    flex-direction: column;
+    }
+
+    .carrito-item-nombre {
+    font-weight: 600;
+    }
+
+    .carrito-item-precio {
+    font-size: 0.9rem;
+    }
+
+    .carrito-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    }
+
+    .carrito-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+    .carrito-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .carrito-actions {
+        flex-direction: column;
+    }
+    }
