@@ -308,8 +308,12 @@ function toggleLista() {
         });
     }
 
-    cont.classList.toggle('is-hidden');
+    if (cont.classList.contains('is-hidden')) {
+    cont.classList.remove('is-hidden');
+} else {
+    cont.classList.add('is-hidden');
 }
+
 
 function closeModal() {
     const modal = document.getElementById('modalPremios');
@@ -378,7 +382,7 @@ function resetActualMode() {
         toggleLista(); // cierra
         toggleLista(); // vuelve a abrir con stock actualizado
     }
-    
+
     closeModal();
     }
 
