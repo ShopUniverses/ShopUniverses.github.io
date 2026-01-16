@@ -134,15 +134,14 @@
     }
 
     function enviarPedidoWA() {
-    const items = getItemsCarrito();
-
-    if (items.length === 0) {
+    if (getItemsCarrito().length === 0) {
         alert("El carrito está vacío");
         return;
     }
 
-    enviarPedidoWA("573207096148"); 
+    enviarPedidoWhatsApp("573207096148");
     }
+
 
     /**************************************************
     * INIT
