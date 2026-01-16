@@ -8,8 +8,11 @@ import {
     getFirestore,
     doc,
     getDoc,
+    getDocs,
+    collection,
     runTransaction
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 
 // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN REAL
 const firebaseConfig = {
@@ -29,5 +32,7 @@ export {
     db,
     doc,
     getDoc,
+    getDocs,
+    collection,
     runTransaction
 };
