@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/theme.css">
-
-    <head>
+<head>
     <meta charset="UTF-8">
     <title>Carrito | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
+    
+    <link rel="icon" href="./assets/img/favicon/favicon.ico" sizes="any">
+    
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/theme.css">
+</head>
 
-    <body>
+<body>
 
-    <!-- NAVEGACIÓN -->
     <nav>
         <a href="./index.html">Inicio</a>
         <a href="./catalogo.html">Catálogo</a>
@@ -20,29 +20,39 @@
         <a href="./carrito.html">Carrito</a>
     </nav>
 
-    <main class="container">
-        <header class="section">
-            <h1>🛒 Tu Carrito</h1>
-            <p style="color: var(--color-text-muted);">Revisa tu pedido estelar antes de enviarlo por WhatsApp.</p>
-        </header>
+    <header class="container section">
+        <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+            <a href="./index.html">
+                <img src="./assets/img/perfil/2.png" alt="Logo ShopUniverses" class="logo-header" style="max-width:120px;">
+            </a>
 
-        <div class="grid" style="grid-template-columns: 1fr 350px; align-items: start;">
+            <div>
+                <h1 style="margin:0; font-size:2.8rem; letter-spacing:1px;">TU CARRITO</h1>
+                <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5; color: var(--color-text-muted);">
+                    Revisa tu pedido estelar antes de enviarlo por WhatsApp.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="grid" style="grid-template-columns: 1fr 350px; align-items: start; gap: 30px;">
             
             <section class="card">
                 <h3>Productos en el pedido</h3>
                 <hr style="border: 0; border-top: 1px solid var(--color-border); margin: 20px 0;">
-                <ul id="lista-carrito">
+                <ul id="lista-carrito" style="list-style: none; padding: 0;">
                     </ul>
             </section>
 
             <aside class="card" style="position: sticky; top: 20px;">
                 <h3>Resumen</h3>
-                <div class="flex-between" style="margin: 20px 0; font-size: 1.2rem;">
+                <div class="flex-between" style="margin: 20px 0; font-size: 1.4rem;">
                     <span>Total:</span>
                     <strong style="color: var(--color-accent);">$<span id="total">0</span></strong>
                 </div>
                 
-                <div class="producto-accion">
+                <div class="producto-accion" style="display: flex; flex-direction: column; gap: 10px;">
                     <button onclick="enviarPedidoWA()">🚀 Enviar por WhatsApp</button>
                     <button class="secondary" onclick="cancelarCompra()">Vaciar Carrito</button>
                 </div>
@@ -52,7 +62,10 @@
         </div>
     </main>
 
-    <!-- SCRIPTS -->
+    <footer class="container section">
+        <small>© ShopUniverses — Importaciones & Ventas Online</small>
+    </footer>
+
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/spin.js"></script>
     <script src="./assets/js/carrito.js"></script>
@@ -62,97 +75,89 @@
     /**************************************************
     * UTILIDADES
     **************************************************/
-
     function log(msg) {
-    document.getElementById("log").innerHTML += msg + "<br>";
+        document.getElementById("log").innerHTML += msg + "<br>";
     }
 
     /**************************************************
     * RENDER
     **************************************************/
-
     function renderCarrito() {
-    const ul = document.getElementById("lista-carrito");
-    const items = getItemsCarrito();
+        const ul = document.getElementById("lista-carrito");
+        const items = getItemsCarrito();
 
-    ul.innerHTML = "";
+        ul.innerHTML = "";
 
-    if (items.length === 0) {
-        ul.innerHTML = `<li style="text-align:center; padding: 40px; color:var(--color-text-muted);">
-                            El carrito está orbitando vacío... 🚀
-                        </li>`;
-    } else {
-        items.forEach((item, index) => {
-            const li = document.createElement("li");
-            // Estilo de fila
-            li.className = "flex-between";
-            li.style.padding = "15px 0";
-            li.style.borderBottom = "1px solid var(--color-border)";
-            
-            li.innerHTML = `
-                <div>
-                    <span style="display:block; font-weight:bold;">${item.nombre}</span>
-                    <small style="color:var(--color-accent)">${item.tipo === 'producto' ? 'Producto' : 'Spin Reward'}</small>
-                </div>
-                <div class="flex" style="align-items:center; gap:15px;">
-                    <span>$${item.precio}</span>
-                </div>
-            `;
+        if (items.length === 0) {
+            ul.innerHTML = `<li style="text-align:center; padding: 40px; color:var(--color-text-muted);">
+                                El carrito está orbitando vacío... 🚀
+                            </li>`;
+        } else {
+            items.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.className = "flex-between";
+                li.style.padding = "15px 0";
+                li.style.borderBottom = "1px solid var(--color-border)";
+                
+                li.innerHTML = `
+                    <div>
+                        <span style="display:block; font-weight:bold;">${item.nombre}</span>
+                        <small style="color:var(--color-accent)">${item.tipo === 'producto' ? 'Producto' : 'Spin Reward'}</small>
+                    </div>
+                    <div class="flex" style="align-items:center; gap:15px;">
+                        <span>$${item.precio}</span>
+                    </div>
+                `;
 
-            if (item.tipo === "producto" && item.origen === "catalogo") {
-                const btn = document.createElement("button");
-                btn.innerHTML = "✕"; // Un icono simple de cerrar
-                btn.className = "secondary";
-                btn.style.padding = "5px 10px";
-                btn.style.fontSize = "12px";
-                btn.onclick = () => eliminarProducto(index, item.id);
-                li.querySelector('.flex').appendChild(btn);
-            }
+                if (item.tipo === "producto" && item.origen === "catalogo") {
+                    const btn = document.createElement("button");
+                    btn.innerHTML = "✕"; 
+                    btn.className = "secondary";
+                    btn.style.padding = "5px 10px";
+                    btn.style.fontSize = "12px";
+                    btn.onclick = () => eliminarProducto(index, item.id);
+                    li.querySelector('.flex').appendChild(btn);
+                }
 
-            ul.appendChild(li);
-        });
-    }
+                ul.appendChild(li);
+            });
+        }
 
-    document.getElementById("total").innerText = getTotal().toLocaleString();
+        document.getElementById("total").innerText = getTotal().toLocaleString();
     }
 
     /**************************************************
     * ACCIONES
     **************************************************/
-
     function eliminarProducto(index, productoId) {
-    eliminarItem(index);
-    restaurarStock([productoId]);
-    log("Producto eliminado del carrito");
-    renderCarrito();
+        eliminarItem(index);
+        restaurarStock([productoId]);
+        log("Producto eliminado del carrito");
+        renderCarrito();
     }
 
     function cancelarCompra() {
-    cancelarCompraCompleta();
-    log("❌ Compra cancelada y stock restaurado");
-    renderCarrito();
+        cancelarCompraCompleta();
+        log("❌ Compra cancelada y stock restaurado");
+        renderCarrito();
     }
 
     function enviarPedidoWA() {
-    if (getItemsCarrito().length === 0) {
-        alert("El carrito está vacío");
-        return;
+        if (getItemsCarrito().length === 0) {
+            alert("El carrito está vacío");
+            return;
+        }
+        enviarPedidoWhatsApp("573207096148");
     }
-
-    enviarPedidoWhatsApp("573207096148");
-    }
-
 
     /**************************************************
     * INIT
     **************************************************/
-
     document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();
-    inicializarCarrito();
-    renderCarrito();
+        await cargarInventario();
+        inicializarCarrito();
+        renderCarrito();
     });
     </script>
-
-    </body>
+</body>
 </html>

@@ -5,38 +5,53 @@
     <title>Spin | ShopUniverses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS global (Respetando tu estructura existente) -->
+    <link rel="icon" href="./assets/img/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="./assets/img/favicon/apple-touch-icon.png">
+
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
     
-    <!-- CSS específico del Spin -->
     <link rel="stylesheet" href="./assets/css/spin.css">
 </head>
 
 <body>
 
-    <!-- ================= NAV ================= -->
     <nav>
         <a href="./index.html">Inicio</a>
         <a href="./catalogo.html">Catálogo</a>
+        <a href="./spin.html">Spin</a>
         <a href="./carrito.html">Carrito</a>
     </nav>
 
-    <!-- ================= HEADER ================= -->
     <header class="container section">
-        <h1>🎡 Spin ShopUniverses</h1>
-        <p>Gira la ruleta estándar o premium y gana productos exclusivos.</p>
+        <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+            <a href="./index.html">
+                <img src="./assets/img/perfil/2.png" alt="Logo ShopUniverses" class="logo-header" style="max-width:180px;">
+            </a>
+
+            <div>
+                <h1 style="margin:0; font-size:2.8rem; letter-spacing:1px; display: flex; align-items: center; gap: 15px;">
+                    🎡 Roulette of the Universe
+                </h1>
+                <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
+                    Gira la ruleta estándar o premium y gana productos exclusivos.<br>
+                    Tu destino está a un giro de distancia.
+                </p>
+                <p>
+                    Si no te gusta lo que obtienes, intenta en darle girar de nuevo ¡No Tiene costo adicional!
+                    ¡Prueba la ruleta premium para mejores premios!
+                </p>
+            </div>
+        </div>
     </header>
 
-    <!-- ================= MAIN ================= -->
     <main class="container spin">
 
         <div class="spin__layout">
             
-            <!-- ===== ÁREA VISUAL DE LA RULETA ===== -->
             <div class="spin-visual-area">
                 
-                <!-- Selector de Modo (Pestañas) -->
                 <div class="spin-mode-selector">
                     <button class="spin-tab active" data-mode="estandar" onclick="switchMode('estandar')">
                         Estándar ($25.000)
@@ -46,21 +61,17 @@
                     </button>
                 </div>
 
-                <!-- Contenedor de la Ruleta -->
                 <div class="wheel-wrapper">
                     <div class="wheel-arrow"></div>
                     <canvas id="wheelCanvas" width="500" height="500"></canvas>
-                    <!-- Centro decorativo -->
                     <div class="wheel-center">SPIN</div>
                 </div>
 
-                <!-- Mensaje de estado -->
                 <div id="spinStatus" class="spin-status-message">
                     Selecciona un modo para comenzar
                 </div>
             </div>
 
-            <!-- ===== PANEL DE CONTROL Y RESULTADOS ===== -->
             <aside class="spin-panel">
                 
                 <div class="spin-panel__header">
@@ -72,22 +83,18 @@
 
                 <button id="btnSpinAction" class="btn-spin-action"></button>
 
-                <!-- Lista de premios obtenidos en la sesión actual -->
                 <div class="spin-rewards">
                     <h4>🎁 Premios en esta sesión</h4>
                     <p class="small">No confirmados hasta aceptar.</p>
                     <ul id="listaPremiosTemporales" class="spin-list">
-                        <!-- Se llena con JS -->
                         <li class="empty-msg">Aún no has girado</li>
                     </ul>
                 </div>
 
-                <!-- Lista de posibles productos (Accordion) -->
                 <div class="spin-info">
                     <button class="secondary small" onclick="toggleLista()">Ver productos posibles</button>
                     <div id="lista-productos" class="spin-list is-hidden">
-                        <!-- Se llena dinámicamente -->
-                    </div>
+                        </div>
                 </div>
 
             </aside>
@@ -95,15 +102,13 @@
 
     </main>
 
-    <!-- ================= MODAL DE RESULTADOS FINALES ================= -->
     <div id="modalPremios" class="spin-modal">
         <div class="spin-modal__content">
             <h2>🎁 ¡Sesión Completada!</h2>
             <p id="modalDescription">Has completado tus giros. ¿Qué deseas hacer?</p>
             
             <ul id="modalListaPremios" class="spin-modal__list">
-                <!-- Resumen final -->
-            </ul>
+                </ul>
 
             <div class="spin-modal__actions">
                 <button class="secondary" onclick="resetActualMode()">Volver a girar (Descartar)</button>
@@ -113,12 +118,14 @@
         </div>
     </div>
 
-    <!-- ================= SCRIPTS ================= -->
+    <footer class="container section">
+        <small>© ShopUniverses — Importaciones & Ventas Online</small>
+    </footer>
+
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/carrito.js"></script>
     <script src="./assets/js/main.js"></script>
     <script src="./assets/js/spin.js"></script>
-
 
 </body>
 </html>
