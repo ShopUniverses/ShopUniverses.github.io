@@ -237,3 +237,69 @@ canvas {
     font-weight: 900;
     padding: 14px;
 }
+
+/* ======================================================
+    SPIN — RESPONSIVE MOBILE
+    ====================================================== */
+
+    @media (max-width: 600px) {
+
+    .spin {
+        margin-top: 16px;
+    }
+
+    .spin__layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    /* RULETA */
+    .wheel-wrapper {
+        width: 300px;
+        height: 300px;
+        margin-bottom: 1.5rem;
+    }
+
+    .wheel-center {
+        width: 48px;
+        height: 48px;
+        font-size: 0.8rem;
+    }
+
+    .wheel-arrow {
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 20px solid var(--color-accent);
+    }
+
+    /* SELECTOR DE MODO */
+    .spin-mode-selector {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .spin-tab {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* PANEL */
+    .spin-panel__header {
+        padding: 1rem;
+    }
+
+    .btn-spin-action {
+        font-size: 1rem;
+        padding: 14px;
+    }
+
+    /* LISTAS */
+    .spin-list {
+        max-height: 160px;
+    }
+
+    /* MODAL */
+    .spin-modal__content {
+        padding: 1.5rem;
+    }
+}

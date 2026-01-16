@@ -137,3 +137,36 @@
     color: var(--color-accent);
     }
 
+/* ======================================================
+    RESPONSIVE VISUAL — MOBILE
+    ====================================================== */
+
+    @media (max-width: 600px) {
+
+    body {
+        background-size:
+        150px 150px,
+        120px 120px,
+        200px 200px,
+        180px 180px,
+        140px 140px,
+        100% 100%,
+        100% 100%,
+        100% 100%;
+    }
+
+    /* BOTONES MÁS TOCABLES */
+    button {
+        font-size: 1rem;
+        padding: 14px 18px;
+    }
+
+    /* TARJETAS */
+    .card {
+        padding: 16px;
+    }
+
+    small {
+        font-size: 0.85rem;
+    }
+    }
