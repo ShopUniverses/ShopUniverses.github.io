@@ -302,15 +302,11 @@
 .nav-links {
     display: flex;
     gap: 16px;
+    z-index: 2000;
 }
 
 /* -------- MOBILE -------- */
 @media (max-width: 600px) {
-
-    .nav-toggle-label {
-        display: flex;
-    }
-
     .nav-links {
         position: absolute;
         top: 64px;
@@ -324,18 +320,10 @@
         overflow: hidden;
         transition: max-height 0.3s ease;
         border-bottom: 1px solid var(--color-border);
-    }
-
-    .nav-links a {
-        padding: 14px 24px;
-        border-top: 1px solid var(--color-border);
-    }
-
-    /* When toggle checked */
-    .nav-toggle:checked + .nav-toggle-label + .nav-links {
-        max-height: 300px;
+        z-index: 2000; /* 🔑 AQUI TAMBIÉN */
     }
 }
+
 
 /* ======================================================
     HAMBURGER ANIMATION (☰ → ✕)
