@@ -217,30 +217,32 @@ function finalizeSpin(producto) {
 
 // ---------- UI ----------
 function updateUI() {
+    const panelTitle = document.getElementById('panelTitle');
+    const girosCounter = document.getElementById('girosCounter');
+    const btn = document.getElementById('btnSpinAction');
+
+    // ⛔ Si no estamos en spin.html, salimos
+    if (!panelTitle || !girosCounter || !btn) return;
+
     const mode = SPIN_STATE.currentMode;
     const session = SPIN_STATE[mode];
 
-    document.getElementById('panelTitle').textContent =
+    panelTitle.textContent =
         `Ruleta ${mode === 'estandar' ? 'Estándar' : 'Premium'}`;
 
-    document.getElementById('girosCounter').textContent =
-        session.girosRestantes;
-
-    const btn = document.getElementById('btnSpinAction');
-    if (!btn) return;
+    girosCounter.textContent = session.girosRestantes;
 
     if (session.girosRestantes > 0 && !SPIN_STATE.isSpinning) {
         btn.textContent = 'Girar';
-        btn.dataset.state = 'ready';
         btn.disabled = false;
     } else {
         btn.textContent = 'Sesión completada';
-        btn.dataset.state = 'idle';
         btn.disabled = true;
     }
 
     renderPremios();
 }
+
 
 function renderPremios() {
     const ul = document.getElementById('listaPremiosTemporales');
