@@ -167,7 +167,7 @@ function generarMensajeWhatsApp() {
 }
 
 function enviarPedidoWhatsApp(numero) {
-  const mensaje = generarMensajeWhatsAppRaw();
+  const mensaje = generarMensajeWhatsApp();
 
   const params = new URLSearchParams({ text: mensaje });
   const url = `https://wa.me/${numero}?${params.toString()}`;
