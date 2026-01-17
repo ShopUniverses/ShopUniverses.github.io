@@ -8,6 +8,13 @@ import {
     descontarStock
 } from "./data.js";
 
+import {
+    agregarSpinBase,
+    agregarSpinPremium,
+    agregarProductoDesdeSpin
+} from "./carrito.js";
+
+
 
 // ---------- ESTADO GLOBAL ----------
 const SPIN_STATE = {
