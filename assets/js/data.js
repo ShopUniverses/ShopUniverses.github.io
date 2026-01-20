@@ -38,7 +38,7 @@ async function cargarInventario() {
 
   inicializarStock();
 
-  // 🔥 ESTA ES LA CLAVE
+  // ESTA ES LA CLAVE
   await sincronizarStockDesdeFirebase();
 
   validarStockContraInventario();
@@ -65,18 +65,19 @@ function inicializarStock() {
 }
 
 async function sincronizarStockDesdeFirebase() {
-  const stockRemoto = {};
-
+  const stockLocal = obtenerStock();
   const snapshot = await getDocs(collection(db, "stock"));
 
   snapshot.forEach(docSnap => {
-    stockRemoto[docSnap.id] = docSnap.data().cantidad;
+    const remoto = docSnap.data().cantidad;
+
+    // Solo sincronizar si existe y es número válido
+    if (typeof remoto === "number") {
+      stockLocal[docSnap.id] = remoto;
+    }
   });
 
-  localStorage.setItem(
-    STORAGE_STOCK_KEY,
-    JSON.stringify(stockRemoto)
-  );
+  guardarStock(stockLocal);
 }
 
 /**************************************************
