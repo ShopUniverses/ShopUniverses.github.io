@@ -133,17 +133,24 @@ async function descontarStock(productoId) {
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
 
-    if (!snap.exists() || snap.data().cantidad <= 0) {
+    if (!snap.exists()) {
+      throw new Error("Producto no existe en stock");
+    }
+    const cantidad = snap.data().cantidad;
+
+    if (cantidad <= 0) {
       throw new Error("Sin stock disponible");
     }
 
     tx.update(ref, {
-      cantidad: snap.data().cantidad - 1
+      cantidad: cantidad - 1
     });
   });
 
-  // Invalidar cache local
-  localStorage.removeItem(STORAGE_STOCK_KEY);
+  // Sincroniza local después de FIREBASE
+  const stock = obtenerStock();
+  stock[productoId] = (stock[productoId] || 0) - 1;
+  guardarStock(stock);
 }
 
 
