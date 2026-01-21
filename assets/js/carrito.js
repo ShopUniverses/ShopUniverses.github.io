@@ -49,11 +49,6 @@ function agregarItem(item) {
   recalcularTotal();
 }
 
-function eliminarItem(index) {
-  carrito.items.splice(index, 1);
-  recalcularTotal();
-}
-
 /**
  * Limpia el carrito completamente
  */
@@ -204,5 +199,4 @@ export {
   getItemsCarrito,
   getTotal,
   enviarPedidoWhatsApp,
-  eliminarItem,
 };
