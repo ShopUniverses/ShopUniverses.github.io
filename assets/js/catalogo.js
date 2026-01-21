@@ -13,11 +13,14 @@ import {
     inicializarCarrito
 } from "./carrito.js";
 
+let PRODUCTOS_CACHE = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarInventario();   // espera Firebase
     inicializarCarrito();
-    renderCatalogo();           // render seguro
+
+    PRODUCTOS_CACHE = getProductosCatalogo(); // cache fijo
+    renderCatalogo();
 });
 
     /* ===============================
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const contenedor = document.getElementById("catalogo");
     contenedor.innerHTML = "";
 
-    const productos = getProductosCatalogo();
+    const productos = PRODUCTOS_CACHE;
 
     if (productos.length === 0) {
         contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
@@ -42,9 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     productos.forEach(producto => {
-        const stockActual = obtenerStock()[producto.id];
-
-        if (stockActual <= 0) return;
+        const stockActual = obtenerStock()[producto.id] ?? 0;
 
         const card = document.createElement("div");
         card.className = "card producto-card";
@@ -81,8 +82,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnAgregar = card.querySelector(".agregar");
 
         const actualizarBoton = () => {
-        btnAgregar.disabled = cantidad === 0;
+            btnAgregar.disabled = cantidad === 0 || stockActual === 0;
+            btnMas.disabled = cantidad >= stockActual;
+            btnMenos.disabled = cantidad === 0;
         };
+
 
         btnMenos.onclick = () => {
         if (cantidad > 0) {
@@ -112,5 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         contenedor.appendChild(card);
+        actualizarBoton();
     });
 }
