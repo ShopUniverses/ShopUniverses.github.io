@@ -72,9 +72,10 @@ async function sincronizarStockDesdeFirebase() {
     const remoto = docSnap.data().cantidad;
 
     // Solo sincronizar si existe y es número válido
-    if (typeof remoto === "number") {
+    if (typeof remoto === "number" && Number.isFinite(remoto)) {
       stockLocal[docSnap.id] = remoto;
     }
+
   });
 
   guardarStock(stockLocal);
