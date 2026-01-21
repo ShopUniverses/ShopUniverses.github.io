@@ -189,8 +189,9 @@ function productosConStock() {
   const stock = obtenerStock();
 
   return INVENTARIO.productos.filter(p =>
-    stock[p.id] > 0
+    Number.isFinite(stock[p.id]) && stock[p.id] > 0
   );
+
 }
 
 /**
