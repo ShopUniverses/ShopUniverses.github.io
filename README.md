@@ -132,9 +132,11 @@ Gracias.
 │   │   ├── TAN-b.otf
 │   ├── /js
 │   │   ├── data.js
+│   │   ├── firebase.js
 │   │   ├── spin.js
 │   │   ├── catalogo.js
 │   │   ├── carrito.js
+│   │   ├── carrito.page.js
 │   │   ├── main.js
 │   │
 │   └── /img
