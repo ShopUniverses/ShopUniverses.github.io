@@ -57,9 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="producto-info">
             <h3>${producto.nombre}</h3>
             <p><strong>$${formatearPrecio(producto.precio_referencia)}</strong></p>
-            <small class="stock" id="stock-${producto.id}">
-                Stock disponible: ${stockActual}
-            </small>
+            <small>Stock disponible: ${stockActual}</small>
         </div>
 
         <div class="producto-accion">
@@ -83,49 +81,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnAgregar = card.querySelector(".agregar");
 
         const actualizarBoton = () => {
-            btnAgregar.disabled = cantidad === 0;
-
-            const stockReal = obtenerStock()[producto.id];
-            const stockE1 = card.querySelector(`#stock-${producto.id}`);
-
-            if (stockE1) {
-                stockE1.textContent = `Stock disponible: ${stockReal}`;
-        }
+        btnAgregar.disabled = cantidad === 0;
         };
 
         btnMenos.onclick = () => {
-            if (cantidad > 0) {
-                cantidad--;
-                spanCantidad.textContent = cantidad;
-                actualizarBoton();
-            }
+        if (cantidad > 0) {
+            cantidad--;
+            spanCantidad.textContent = cantidad;
+            actualizarBoton();
+        }
         };
 
         btnMas.onclick = () => {
-            const stockReal = obtenerStock()[producto.id];
-
-            if (cantidad < stockReal) {
-                cantidad++;
-                spanCantidad.textContent = cantidad;
-                actualizarBoton();
-            }   
+        if (cantidad < stockActual) {
+            cantidad++;
+            spanCantidad.textContent = cantidad;
+            actualizarBoton();
+        }
         };
 
         btnAgregar.onclick = () => {
-            if (cantidad === 0) return;
+        if (cantidad === 0) return;
 
-            for (let i = 0; i < cantidad; i++) {
-                agregarProductoCatalogo(producto);
-            }
+        for (let i = 0; i < cantidad; i++) {
+            agregarProductoCatalogo(producto);
+        }
 
-            cantidad = 0;
-            spanCantidad.textContent = cantidad;
-            actualizarBoton();
-
-            alert(`Agregaste ${cantidad} unidad(es) al carrito`);
-            renderCatalogo();
+        alert(`Agregaste ${cantidad} unidad(es) al carrito`);
+        renderCatalogo(); // 🔄 refresca stock visual
         };
-
 
         contenedor.appendChild(card);
     });
