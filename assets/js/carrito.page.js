@@ -50,6 +50,7 @@ function renderCarrito() {
 
         if (item.tipo === "producto") {
             const btn = document.createElement("button");
+            btn.type = "button";
             btn.textContent = "✕";
             btn.className = "secondary";
             btn.style.padding = "5px 10px";
