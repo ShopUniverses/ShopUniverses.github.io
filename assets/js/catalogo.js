@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <button class="agregar" disabled>Agregar al carrito</button>
         </div>
         `;
-
+        
         /* ===============================
         LÓGICA DEL CONTADOR
         =============================== */
@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btnMenos = card.querySelector(".menos");
         const btnMas = card.querySelector(".mas");
         const btnAgregar = card.querySelector(".agregar");
+        const stockLabel = card.querySelector("small");
 
         const actualizarBoton = () => {
             btnAgregar.disabled = cantidad === 0 || stockActual === 0;
@@ -87,12 +88,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             btnMenos.disabled = cantidad === 0;
         };
 
+        const actualizarStockVisual = () => {
+            const restante = stockActual - cantidad;
+            stockLabel.textContent = `Stock disponible: ${restante}`;
+        };
 
         btnMenos.onclick = () => {
         if (cantidad > 0) {
             cantidad--;
             spanCantidad.textContent = cantidad;
             actualizarBoton();
+            actualizarStockVisual();
         }
         };
 
@@ -101,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             cantidad++;
             spanCantidad.textContent = cantidad;
             actualizarBoton();
+            actualizarStockVisual();
         }
         };
 
@@ -116,6 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         contenedor.appendChild(card);
+        actualizarStockVisual();
         actualizarBoton();
     });
 }
