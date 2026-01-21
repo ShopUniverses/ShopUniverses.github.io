@@ -94,19 +94,28 @@ function validarStockContraInventario() {
   const stock = obtenerStock();
 
   INVENTARIO.productos.forEach(producto => {
-    // Si no existe, se inicializa
-    if (stock[producto.id] === undefined) {
+    const valor = stock[producto.id];
+
+    // Corregir undefined, null y NaN
+    if (!Number.isFinite(valor)) {
+      stock[producto.id] = producto.stock;
+      return;
+    }
+
+    // Nunca permitir más que el máximo del inventario
+    if (stock[producto.id] > producto.stock) {
       stock[producto.id] = producto.stock;
     }
 
-    // Nunca permitir más que el máximo teórico
-    if (stock[producto.id] > producto.stock) {
-      stock[producto.id] = producto.stock;
+    // Nunca permitir negativos
+    if (stock[producto.id] < 0) {
+      stock[producto.id] = 0;
     }
   });
 
   guardarStock(stock);
 }
+
 
 /**************************************************
  * STOCK
