@@ -3,15 +3,8 @@ import {
     getItemsCarrito,
     getTotal,
     cancelarCompraCompleta,
-    enviarPedidoWhatsApp
-} from "./carrito.js";
-
-import {
-    restaurarStock
-} from "./data.js";
-
-import { 
-    eliminarItem 
+    enviarPedidoWhatsApp,
+    eliminarItem
 } from "./carrito.js";
 
 /**************************************************
@@ -55,17 +48,15 @@ function renderCarrito() {
             </div>
         `;
 
-        if (item.tipo === "producto" && item.origen === "catalogo") {
+        if (item.tipo === "producto") {
             const btn = document.createElement("button");
             btn.textContent = "✕";
             btn.className = "secondary";
             btn.style.padding = "5px 10px";
-            btn.onclick = async () => {
-            eliminarItem(index);              // elimina + recalcula + guarda
-            await restaurarStock([item.id]);  // Firebase + local
+            btn.onclick = () => {
+            eliminarItem(index);
             log("Producto eliminado del carrito");
             renderCarrito();
-
             };
             li.querySelector(".flex").appendChild(btn);
         }
@@ -75,7 +66,7 @@ function renderCarrito() {
     }
 
     document.getElementById("total").textContent =
-        getTotal().toLocaleString();
+    getTotal().toLocaleString();
 }
 
 /**************************************************

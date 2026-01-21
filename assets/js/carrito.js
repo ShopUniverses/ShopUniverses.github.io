@@ -50,6 +50,22 @@ function agregarItem(item) {
 }
 
 /**
+ * Elimina un ítem y restaura stock si corresponde
+ */
+function eliminarItem(index) {
+  const item = carrito.items[index];
+  if (!item) return;
+
+  // 🔒 Restaurar stock SOLO si es producto real
+  if (item.tipo === "producto") {
+    restaurarStock([item.id]);
+  }
+
+  carrito.items.splice(index, 1);
+  recalcularTotal();
+}
+
+/**
  * Limpia el carrito completamente
  */
 function limpiarCarrito() {
@@ -132,21 +148,17 @@ function getItemsCarrito() {
  **************************************************/
 
 function cancelarCompraCompleta() {
-  // Restaurar stock SOLO de productos reales
   const productos = carrito.items
     .filter(i => i.tipo === "producto")
     .map(i => i.id);
 
   restaurarStock(productos);
-
   limpiarCarrito();
 
-  // Limpiar spin correctamente
   if (typeof limpiarSpinState === "function") {
     limpiarSpinState();
   }
 }
-
 
 /**************************************************
  * WHATSAPP
@@ -168,25 +180,17 @@ function generarMensajeWhatsApp() {
 
 function enviarPedidoWhatsApp(numero) {
   const mensaje = generarMensajeWhatsApp();
-
   const params = new URLSearchParams({ text: mensaje });
   const url = `https://wa.me/${numero}?${params.toString()}`;
 
   window.open(url, "_blank");
 
-  // Limpiar carrito después del envío
   setTimeout(() => {
-  limpiarCarrito();
-
-  if (typeof limpiarSpinState === "function") {
-    limpiarSpinState();
-  }
-
-  if (typeof renderCarrito === "function") {
-    renderCarrito();
-  }
-}, 500);
-
+    limpiarCarrito();
+    if (typeof limpiarSpinState === "function") {
+      limpiarSpinState();
+    }
+  }, 500);
 }
 
 export {
@@ -195,6 +199,7 @@ export {
   agregarProductoDesdeSpin,
   agregarSpinBase,
   agregarSpinPremium,
+  eliminarItem,
   cancelarCompraCompleta,
   getItemsCarrito,
   getTotal,
