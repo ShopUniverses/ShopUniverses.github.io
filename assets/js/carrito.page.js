@@ -54,8 +54,11 @@ function renderCarrito() {
             btn.textContent = "✕";
             btn.className = "secondary";
             btn.style.padding = "5px 10px";
-            btn.onclick = () => {
-            eliminarItem(index);
+            btn.onclick = async (e) => {
+
+            e.preventDefault();
+            e.stopPropagation();
+            await eliminarItem(index);
             log("Producto eliminado del carrito");
             renderCarrito();
             };

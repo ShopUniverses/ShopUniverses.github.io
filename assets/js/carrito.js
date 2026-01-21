@@ -52,13 +52,13 @@ function agregarItem(item) {
 /**
  * Elimina un ítem y restaura stock si corresponde
  */
-function eliminarItem(index) {
+async function eliminarItem(index) {
   const item = carrito.items[index];
   if (!item) return;
 
-  // 🔒 Restaurar stock SOLO si es producto real
+  // Restaurar stock SOLO si es producto real
   if (item.tipo === "producto") {
-    restaurarStock([item.id]);
+    await restaurarStock([item.id]);
   }
 
   carrito.items.splice(index, 1);
