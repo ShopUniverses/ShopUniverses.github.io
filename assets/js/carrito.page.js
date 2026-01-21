@@ -10,6 +10,10 @@ import {
     restaurarStock
 } from "./data.js";
 
+import { 
+    eliminarItem 
+} from "./carrito.js";
+
 /**************************************************
  * UTILIDAD
  **************************************************/
@@ -56,11 +60,12 @@ function renderCarrito() {
             btn.textContent = "✕";
             btn.className = "secondary";
             btn.style.padding = "5px 10px";
-            btn.onclick = () => {
-            restaurarStock([item.id]);
-            getItemsCarrito().splice(index, 1);
+            btn.onclick = async () => {
+            eliminarItem(index);              // elimina + recalcula + guarda
+            await restaurarStock([item.id]);  // Firebase + local
             log("Producto eliminado del carrito");
             renderCarrito();
+
             };
             li.querySelector(".flex").appendChild(btn);
         }

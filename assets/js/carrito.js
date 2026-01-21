@@ -203,5 +203,6 @@ export {
   cancelarCompraCompleta,
   getItemsCarrito,
   getTotal,
-  enviarPedidoWhatsApp
+  enviarPedidoWhatsApp,
+  eliminarItem,
 };
