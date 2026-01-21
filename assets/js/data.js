@@ -159,6 +159,8 @@ async function descontarStock(productoId) {
  * Restaura stock (por cancelación)
  */
 async function restaurarStock(productosIds) {
+  const stockLocal = obtenerStock();
+
   for (const id of productosIds) {
     const ref = doc(db, "stock", id);
 
@@ -166,13 +168,16 @@ async function restaurarStock(productosIds) {
       const snap = await tx.get(ref);
       if (!snap.exists()) return;
 
-      tx.update(ref, {
-        cantidad: snap.data().cantidad + 1
-      });
+      const nuevaCantidad = snap.data().cantidad + 1;
+
+      tx.update(ref, { cantidad: nuevaCantidad });
+
+      // 🔒 sincronizar local correctamente
+      stockLocal[id] = nuevaCantidad;
     });
   }
 
-  localStorage.removeItem(STORAGE_STOCK_KEY);
+  guardarStock(stockLocal);
 }
 
 
