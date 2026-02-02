@@ -195,13 +195,16 @@ Después de enviar:
 ├── catalogo.html
 ├── spin.html
 ├── carrito.html
-├── sobre-nosotros.html
+├── s.html
 ├── 404.html
 ├── README.md
 │
 ├── /assets
 │   ├── /css
-│   ├── /fonts
+│   │   ├── spin.css      # Diseño Ruleta
+│   │   ├── style.css     # Estilos globales
+│   │   ├── theme.css     # Temas generales y parámetros de diseño
+│   ├── /fonts            # Fuentes a usar
 │   ├── /js
 │   │   ├── data.js        # Dominio e inventario
 │   │   ├── firebase.js    # Firebase / Firestore
@@ -210,7 +213,12 @@ Después de enviar:
 │   │   ├── carrito.js     # Estado del carrito
 │   │   ├── carrito.page.js# UI del carrito
 │   │   ├── main.js        # Bootstrap
+│   └── /data
+│   │   ├── inventario.json  # Limitador de inventario
 │   └── /img
+│   │   └── /favicon       # favicon para la página
+│   │   └── /img_catalogo  # Imagenés del catalogó en .webp
+│   │   └── /perfil        # logos e imagenés de la marca
 │
 └── /data
     └── inventario.json
