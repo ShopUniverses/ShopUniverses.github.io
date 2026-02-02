@@ -56,9 +56,9 @@ Sistema de venta por experiencia con precio fijo.
 
 ### 💎 Spin Premium (Opcional)
 
-Oferta adicional al finalizar el Spin Estándar.
+Oferta adicional el Spin Estándar.
 
-* Precio adicional: **$8.000 COP**
+* Precio: **$8.000 COP**
 * Giro único
 * Productos de mayor valor o menor margen
 * Stock y probabilidades controladas
