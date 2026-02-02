@@ -213,15 +213,13 @@ Después de enviar:
 │   │   ├── carrito.js     # Estado del carrito
 │   │   ├── carrito.page.js# UI del carrito
 │   │   ├── main.js        # Bootstrap
-│   └── /data
-│   │   ├── inventario.json  # Limitador de inventario
 │   └── /img
 │   │   └── /favicon       # favicon para la página
 │   │   └── /img_catalogo  # Imagenés del catalogó en .webp
 │   │   └── /perfil        # logos e imagenés de la marca
 │
 └── /data
-    └── inventario.json
+    └── inventario.json    # Limitador de inventario
 ```
 
 ---
