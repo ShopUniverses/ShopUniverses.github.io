@@ -48,7 +48,7 @@ function renderCarrito() {
             </div>
         `;
 
-        if (item.tipo === "producto") {
+        if (item.tipo === "producto" && item.origen === "catalogo") {
             const btn = document.createElement("button");
             btn.type = "button";
             btn.textContent = "✕";

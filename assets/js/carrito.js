@@ -56,14 +56,38 @@ async function eliminarItem(index) {
   const item = carrito.items[index];
   if (!item) return;
 
-  // Restaurar stock SOLO si es producto real
-  if (item.tipo === "producto") {
+  // Caso 1: producto de catálogo (eliminación normal)
+  if (item.tipo === "producto" && item.origen === "catalogo") {
     await restaurarStock([item.id]);
+    carrito.items.splice(index, 1);
+    recalcularTotal();
+    return;
   }
 
-  carrito.items.splice(index, 1);
-  recalcularTotal();
+  // Caso 2: cualquier elemento asociado a Spin -> eliminación atómica
+  if (item.origen === "spin" || item.tipo.startsWith("spin_")) {
+    // Obtener todos los productos del spin
+    const productosSpin = carrito.items.filter(
+      i => i.tipo === "producto" && i.origen === "spin"
+    );
+
+    const ids = productosSpin.map(p => p.id);
+    if (ids.length > 0) {
+      await restaurarStock(ids);
+    }
+
+    // Eliminar spin + productos asociados
+    carrito.items = carrito.items.filter(
+      i =>
+        !(i.tipo === "producto" && i.origen === "spin") &&
+        !i.tipo.startsWith("spin_")
+    );
+
+    recalcularTotal();
+    return;
+  }
 }
+
 
 /**
  * Limpia el carrito completamente
