@@ -16,7 +16,7 @@ import {
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB5zYCn6SD4stzYCawHdrj6oK8zqccWP0Q",
+    apiKey: "AIzaSyCsFxn0WRCuTPZpICaT542u-fEnJRzhJk4",
     authDomain: "shopuniverses-inventario.firebaseapp.com",
     projectId: "shopuniverses-inventario",
 };
