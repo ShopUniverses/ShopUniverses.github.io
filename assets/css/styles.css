@@ -278,24 +278,28 @@
     color: var(--color-text);
 }
 
-/* Toggle hidden */
+/* Toggle — siempre oculto (checkbox invisible) */
 .nav-toggle {
     display: none;
 }
 
-/* Hamburger icon */
+/* Hamburger icon — oculto en desktop, visible en mobile */
 .nav-toggle-label {
     display: none;
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
+    padding: 4px;
+    z-index: 2001;
 }
 
 .nav-toggle-label span {
+    display: block;
     width: 26px;
     height: 3px;
     background: var(--color-text);
     border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* Links desktop */
@@ -305,47 +309,74 @@
     z-index: 2000;
 }
 
-/* -------- MOBILE -------- */
+.nav-links a {
+    color: var(--color-text) !important;
+    text-decoration: none;
+}
+
+/* ======================================================
+    HAMBURGER — MOBILE
+   ====================================================== */
+
 @media (max-width: 600px) {
+
+    /* 1. Mostrar ícono hamburguesa */
+    .nav-toggle-label {
+        display: flex;
+    }
+
+    /* 2. Menú cerrado por defecto */
     .nav-links {
         position: absolute;
-        top: 64px;
+        top: 57px;
         left: 0;
         width: 100%;
-        background: rgba(0,0,0,0.9);
-        backdrop-filter: blur(10px);
+        background: rgba(7, 7, 13, 0.97);
+        backdrop-filter: blur(12px);
         flex-direction: column;
         gap: 0;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease;
+        transition: max-height 0.35s ease;
         border-bottom: 1px solid var(--color-border);
-        z-index: 2000; /* 🔑 AQUI TAMBIÉN */
+        z-index: 2000;
+    }
+
+    /* 3. Menú ABIERTO — selector ~ (hermano general) */
+    /* Orden en HTML: input#nav-toggle → label → div.nav-links */
+    .nav-toggle:checked ~ .nav-links {
+        max-height: 300px;
+    }
+
+    /* 4. Links tocables */
+    .nav-links a {
+        display: block;
+        padding: 16px 24px;
+        font-size: 1rem;
+        border-top: 1px solid var(--color-border);
+        transition: background 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:active {
+        background: rgba(255,255,255,0.05);
+        color: var(--color-accent) !important;
     }
 }
-
 
 /* ======================================================
     HAMBURGER ANIMATION (☰ → ✕)
    ====================================================== */
 
-.nav-toggle-label span {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-/* Estado abierto */
 .nav-toggle:checked + .nav-toggle-label span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
 
 .nav-toggle:checked + .nav-toggle-label span:nth-child(2) {
     opacity: 0;
+    transform: scaleX(0);
 }
 
 .nav-toggle:checked + .nav-toggle-label span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
-}
-
-.nav-links a {
-    color: var(--color-text) !important;
 }
