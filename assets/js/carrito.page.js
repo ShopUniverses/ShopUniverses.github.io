@@ -55,12 +55,11 @@ function renderCarrito() {
             btn.className = "secondary";
             btn.style.padding = "5px 10px";
             btn.onclick = async (e) => {
-
-            e.preventDefault();
-            e.stopPropagation();
-            await eliminarItem(index);
-            log("Producto eliminado del carrito");
-            renderCarrito();
+                e.preventDefault();
+                e.stopPropagation();
+                await eliminarItem(index);
+                log("Producto eliminado del carrito");
+                renderCarrito();
             };
             li.querySelector(".flex").appendChild(btn);
         }
@@ -76,10 +75,25 @@ function renderCarrito() {
 /**************************************************
  * ACCIONES EXPUESTAS A HTML
  **************************************************/
-window.cancelarCompra = () => {
-    cancelarCompraCompleta();
+
+// CORRECCIÓN: async + await para esperar que Firestore
+// confirme el rollback antes de limpiar la UI
+window.cancelarCompra = async () => {
+    const btn = document.querySelector('.secondary[onclick="cancelarCompra()"]');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Restaurando...';
+    }
+
+    await cancelarCompraCompleta();
+
     log("❌ Compra cancelada y stock restaurado");
     renderCarrito();
+
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Vaciar Carrito';
+    }
 };
 
 window.enviarPedidoWA = () => {
