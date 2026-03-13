@@ -153,7 +153,7 @@
         "imagen": "assets/img/img_catalogo/degrade.webp",
         "precio_referencia": 15000, 
         "costo": 9659, 
-        "stock": 1, 
+        "stock": 0, 
         "categoria": "Marcador", 
         "flags": { 
             "catalogo": true, 
@@ -195,7 +195,7 @@
         "imagen": "assets/img/img_catalogo/lapiceros_flores.webp",
         "precio_referencia": 3000, 
         "costo": 1531, 
-        "stock": 92, 
+        "stock": 88, 
         "categoria": "Lapiceros", 
         "flags": { 
             "catalogo": true, 
