@@ -104,17 +104,19 @@ export async function runE2E() {
     const stockF = async (id) => (await getDoc(doc(db, 'stock', id))).data()?.Cantidad;
     const limpiar = async () => { await cancelarCompraCompleta(); await esperar(DELAY); };
 
-    // Producto exclusivo para catálogo — fuera del pool de spin
-    const idsSpinPool = new Set([
-        ...getProductosSpinEstandar().map(p => p.id),
-        ...getProductosSpinPremium().map(p => p.id)
-    ]);
-    const prodCatalogo = getProductosCatalogo().find(p => !idsSpinPool.has(p.id));
+    // Producto para tests de catálogo — usamos el de mayor stock
+    // (todos los productos están en spin, así que elegimos uno con stock alto
+    // para que los bloques de spin no lo agoten antes de que F y H lo usen)
+    const todoCatalogo = getProductosCatalogo();
+    const prodCatalogo = todoCatalogo.reduce((max, p) => {
+        const s = obtenerStock()[p.id] ?? 0;
+        return s > (obtenerStock()[max.id] ?? 0) ? p : max;
+    }, todoCatalogo[0]);
     if (!prodCatalogo) {
-        error('SETUP — No hay producto de catálogo fuera del pool de spin');
+        error('SETUP — No hay productos en catálogo');
         return;
     }
-    info(`Producto exclusivo catálogo: ${prodCatalogo.id}`);
+    info(`Producto catálogo seleccionado: ${prodCatalogo.id} (stock: ${obtenerStock()[prodCatalogo.id]})`);
 
     // ── A: SPIN ESTÁNDAR compra ─────────────────────────
     titulo('BLOQUE A — SPIN ESTÁNDAR: compra completa');
