@@ -46,13 +46,20 @@ export function resetLocal() {
 export async function checkSync() {
     console.log('\n🔍 Verificando sincronía Firestore ↔ localStorage...');
     const { db, collection, getDocs } = await import('./firebase.js');
-    const { cargarInventario, obtenerStock } = await import('./data.js');
 
-    await cargarInventario();
-    await esperar(2000); // dar tiempo al onSnapshot
-
+    // Leer Firestore directamente y poblar localStorage sin depender del caché
     const snap = await getDocs(collection(db, 'stock'));
-    const local = obtenerStock();
+    const stockFresh = {};
+    snap.forEach(d => {
+        const cantidad = d.data().Cantidad;
+        if (typeof cantidad === 'number') stockFresh[d.id] = cantidad;
+    });
+
+    // Guardar directo en localStorage
+    localStorage.setItem('shopuniverses_stock', JSON.stringify(stockFresh));
+
+    // Verificar que quedó bien
+    const local = JSON.parse(localStorage.getItem('shopuniverses_stock') || '{}');
     let malos = 0;
 
     snap.forEach(d => {
