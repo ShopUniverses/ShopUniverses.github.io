@@ -171,12 +171,14 @@ function getItemsCarrito() {
  * CANCELACIÓN
  **************************************************/
 
-function cancelarCompraCompleta() {
+async function cancelarCompraCompleta() {
   const productos = carrito.items
     .filter(i => i.tipo === "producto")
     .map(i => i.id);
 
-  restaurarStock(productos);
+  // await garantiza que Firestore confirme el rollback
+  // antes de limpiar el carrito
+  await restaurarStock(productos);
   limpiarCarrito();
 
   if (typeof limpiarSpinState === "function") {
