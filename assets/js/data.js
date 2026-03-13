@@ -1,35 +1,54 @@
 /**************************************************
  * DATA.JS
  * Capa de dominio - ShopUniverses
+ *
+ * CAMBIOS vs versión anterior:
+ *  1. Se importa y usa onSnapshot → stock en tiempo real
+ *  2. suscribirseAlStock() arranca el listener automáticamente
+ *     dentro de cargarInventario(), sin cambiar la firma pública
+ *  3. Se añade un Set de callbacks para que spin.js / catalogo.js
+ *     puedan reaccionar cuando el stock cambia remotamente
+ *  4. Se exporta onStockChange(fn) para registrar esos callbacks
+ *  5. Se exporta obtenerStock para que spin.js lo use directamente
  **************************************************/
 
-/*Importar Firebase*/
 import {
   db,
   doc,
-  getDoc,
   getDocs,
   collection,
-  runTransaction
+  runTransaction,
+  onSnapshot          // ← NUEVO
 } from "./firebase.js";
 
 
-const INVENTARIO_URL = "/data/inventario.json";
+const INVENTARIO_URL    = "/data/inventario.json";
 const STORAGE_STOCK_KEY = "shopuniverses_stock";
 
-/**
- * Estado interno (no tocar desde fuera)
- */
 let INVENTARIO = null;
+
+// Callbacks que se ejecutan cuando Firebase notifica un cambio de stock
+const _stockListeners = new Set();
+
+/**
+ * Registra una función que se ejecuta cada vez que
+ * el stock se actualiza desde Firebase en tiempo real.
+ * Uso en spin.js:  onStockChange(() => drawWheel(mode));
+ */
+function onStockChange(fn) {
+  _stockListeners.add(fn);
+}
+
+function _notificarCambioStock() {
+  _stockListeners.forEach(fn => {
+    try { fn(); } catch (e) { console.error("onStockChange callback error:", e); }
+  });
+}
 
 /**************************************************
  * INICIALIZACIÓN
  **************************************************/
 
-/**
- * Carga el inventario desde el JSON
- * Debe llamarse UNA vez al iniciar cualquier página
- */
 async function cargarInventario() {
   if (INVENTARIO) return INVENTARIO;
 
@@ -38,105 +57,116 @@ async function cargarInventario() {
 
   inicializarStock();
 
-  // ESTA ES LA CLAVE
+  // Lectura inicial desde Firebase
   await sincronizarStockDesdeFirebase();
 
   validarStockContraInventario();
+
+  // ← NUEVO: arranca el listener en tiempo real
+  suscribirseAlStock();
 
   return INVENTARIO;
 }
 
 /**
- * Inicializa el stock en localStorage si no existe
+ * Inicializa el stock en localStorage si no existe todavía
  */
 function inicializarStock() {
   if (localStorage.getItem(STORAGE_STOCK_KEY)) return;
 
   const stockInicial = {};
-
-  INVENTARIO.productos.forEach(producto => {
-    stockInicial[producto.id] = producto.stock;
+  INVENTARIO.productos.forEach(p => {
+    stockInicial[p.id] = p.stock;
   });
-
-  localStorage.setItem(
-    STORAGE_STOCK_KEY,
-    JSON.stringify(stockInicial)
-  );
+  localStorage.setItem(STORAGE_STOCK_KEY, JSON.stringify(stockInicial));
 }
 
+/**
+ * Lectura única al arrancar (garantiza sincronía antes del primer render)
+ */
 async function sincronizarStockDesdeFirebase() {
   const stockLocal = obtenerStock();
-  const snapshot = await getDocs(collection(db, "stock"));
+  const snapshot   = await getDocs(collection(db, "stock"));
 
   snapshot.forEach(docSnap => {
     const remoto = docSnap.data().cantidad;
-
-    // Solo sincronizar si existe y es número válido
     if (typeof remoto === "number" && Number.isFinite(remoto)) {
       stockLocal[docSnap.id] = remoto;
     }
-
   });
 
   guardarStock(stockLocal);
+}
+
+/**
+ * NUEVO — Listener persistente: cada vez que Firestore cambia,
+ * actualiza localStorage y avisa a los suscriptores.
+ */
+function suscribirseAlStock() {
+  onSnapshot(collection(db, "stock"), (snapshot) => {
+    const stockLocal = obtenerStock();
+    let huboCambio = false;
+
+    snapshot.docChanges().forEach(change => {
+      // 'modified' cubre descuentos y restauraciones
+      // 'added'    cubre productos nuevos en Firestore
+      if (change.type === "added" || change.type === "modified") {
+        const remoto = change.doc.data().cantidad;
+        if (typeof remoto === "number" && Number.isFinite(remoto)) {
+          const id = change.doc.id;
+
+          // Solo notificar si el valor realmente cambió
+          if (stockLocal[id] !== remoto) {
+            stockLocal[id] = remoto;
+            huboCambio = true;
+          }
+        }
+      }
+    });
+
+    if (huboCambio) {
+      guardarStock(stockLocal);
+      validarStockContraInventario();
+      _notificarCambioStock();   // ← Avisa a spin.js, catalogo.js, etc.
+    }
+  });
 }
 
 /**************************************************
  * VALIDACIÓN DE INTEGRIDAD
  **************************************************/
 
-/**
- * Valida el stock activo contra el inventario base
- * - NO repone unidades vendidas
- * - SOLO inicializa faltantes
- * - Limita al stock máximo del JSON
- */
 function validarStockContraInventario() {
   const stock = obtenerStock();
 
-  INVENTARIO.productos.forEach(producto => {
-    const valor = stock[producto.id];
+  INVENTARIO.productos.forEach(p => {
+    const valor = stock[p.id];
 
-    // Corregir undefined, null y NaN
     if (!Number.isFinite(valor)) {
-      stock[producto.id] = producto.stock;
+      stock[p.id] = p.stock;
       return;
     }
-
-    // Nunca permitir más que el máximo del inventario
-    if (stock[producto.id] > producto.stock) {
-      stock[producto.id] = producto.stock;
-    }
-
-    // Nunca permitir negativos
-    if (stock[producto.id] < 0) {
-      stock[producto.id] = 0;
-    }
+    if (stock[p.id] > p.stock) stock[p.id] = p.stock;
+    if (stock[p.id] < 0)       stock[p.id] = 0;
   });
 
   guardarStock(stock);
 }
 
-
 /**************************************************
- * STOCK
+ * STOCK — lectura y escritura
  **************************************************/
 
 function obtenerStock() {
-  return JSON.parse(
-    localStorage.getItem(STORAGE_STOCK_KEY)
-  ) || {};
+  return JSON.parse(localStorage.getItem(STORAGE_STOCK_KEY)) || {};
 }
 
 function guardarStock(stock) {
-  localStorage.setItem(
-    STORAGE_STOCK_KEY,
-    JSON.stringify(stock)
-  );
+  localStorage.setItem(STORAGE_STOCK_KEY, JSON.stringify(stock));
 }
 
 /**
- * Descuenta una unidad de stock
+ * Descuenta una unidad de stock con transacción atómica en Firebase
  */
 async function descontarStock(productoId) {
   const ref = doc(db, "stock", productoId);
@@ -144,26 +174,17 @@ async function descontarStock(productoId) {
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
 
-    if (!snap.exists()) {
-      throw new Error("Producto no existe en stock");
-    }
-    const cantidad = snap.data().cantidad;
+    if (!snap.exists())          throw new Error("Producto no existe en stock");
+    if (snap.data().cantidad <= 0) throw new Error("Sin stock disponible");
 
-    if (cantidad <= 0) {
-      throw new Error("Sin stock disponible");
-    }
-
-    tx.update(ref, {
-      cantidad: cantidad - 1
-    });
+    tx.update(ref, { cantidad: snap.data().cantidad - 1 });
   });
 
-  // Sincroniza local después de FIREBASE
+  // Sincronía local inmediata (el listener también lo hará, pero esto es más rápido)
   const stock = obtenerStock();
-  stock[productoId] = (stock[productoId] || 0) - 1;
+  stock[productoId] = Math.max(0, (stock[productoId] || 0) - 1);
   guardarStock(stock);
 }
-
 
 /**
  * Restaura stock (por cancelación)
@@ -179,10 +200,7 @@ async function restaurarStock(productosIds) {
       if (!snap.exists()) return;
 
       const nuevaCantidad = snap.data().cantidad + 1;
-
       tx.update(ref, { cantidad: nuevaCantidad });
-
-      // 🔒 sincronizar local correctamente
       stockLocal[id] = nuevaCantidad;
     });
   }
@@ -190,67 +208,43 @@ async function restaurarStock(productosIds) {
   guardarStock(stockLocal);
 }
 
-
 /**************************************************
  * FILTROS DE PRODUCTOS
+ *
+ * CORRECCIÓN: todas usan obtenerStock() en tiempo de llamada,
+ * no un snapshot guardado al arrancar.
  **************************************************/
 
 function productosConStock() {
-  const stock = obtenerStock();
-
+  const stock = obtenerStock();    // ← siempre fresco desde localStorage
   return INVENTARIO.productos.filter(p =>
     Number.isFinite(stock[p.id]) && stock[p.id] > 0
   );
-
 }
 
-/**
- * Catálogo
- */
 function getProductosCatalogo() {
-  return productosConStock().filter(p =>
-    p.flags.catalogo
-  );
+  return productosConStock().filter(p => p.flags.catalogo);
 }
 
-/**
- * Spin estándar
- */
 function getProductosSpinEstandar() {
-  return productosConStock().filter(p =>
-    p.flags.spin_estandar
-  );
+  return productosConStock().filter(p => p.flags.spin_estandar);
 }
 
-/**
- * Spin premium
- */
 function getProductosSpinPremium() {
-  return productosConStock().filter(p =>
-    p.flags.spin_premium
-  );
+  return productosConStock().filter(p => p.flags.spin_premium);
 }
 
 /**************************************************
- * SPIN (SELECCIÓN PONDERADA)
+ * SPIN — selección ponderada
  **************************************************/
 
 function seleccionarProductoPonderado(productos) {
   const bolsa = [];
-
-  productos.forEach(producto => {
-    for (let i = 0; i < producto.peso_spin; i++) {
-      bolsa.push(producto);
-    }
+  productos.forEach(p => {
+    for (let i = 0; i < (p.peso_spin || 1); i++) bolsa.push(p);
   });
-
   if (bolsa.length === 0) return null;
-
-  const indice = Math.floor(
-    Math.random() * bolsa.length
-  );
-
-  return bolsa[indice];
+  return bolsa[Math.floor(Math.random() * bolsa.length)];
 }
 
 /**************************************************
@@ -275,4 +269,5 @@ export {
   getProductosSpinEstandar,
   getProductosSpinPremium,
   getConfigSpin,
+  onStockChange,         // ← NUEVO: para que spin.js / catalogo.js reaccionen
 };

@@ -5,7 +5,10 @@
 import {
     getInventario,
     obtenerStock,
-    descontarStock
+    descontarStock,
+    getProductosSpinEstandar,   // ← USA EL FILTRO CORRECTO
+    getProductosSpinPremium,    // ← USA EL FILTRO CORRECTO
+    onStockChange               // ← TIEMPO REAL
 } from "./data.js";
 
 import {
@@ -48,6 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             drawWheel(SPIN_STATE.currentMode);
             updateUI();
+
+            // NUEVO: cuando Firebase notifica un cambio de stock,
+            // redibuja la ruleta y refresca la lista de productos
+            // si está visible. No interrumpe un giro en curso.
+            onStockChange(() => {
+                if (SPIN_STATE.isSpinning) return;
+                drawWheel(SPIN_STATE.currentMode);
+
+                const lista = document.getElementById('lista-productos');
+                if (lista && !lista.classList.contains('is-hidden')) {
+                    toggleLista(); // cierra
+                    toggleLista(); // reabre con datos frescos
+                }
+            });
         }
     }, 50);
 });
@@ -89,21 +106,15 @@ function switchMode(mode) {
 }
 
 // ---------- DATOS ----------
+// CORRECCIÓN: usa getProductosSpinEstandar / Premium desde data.js
+// que respetan el stock actualizado en tiempo real, en lugar de
+// filtrar getInventario() manualmente (que ignoraba el stock).
 function getProductosDisponibles(mode) {
-    const data = getInventario();
-
-    // CLAVE: los productos están en data.productos
-    if (!data || !Array.isArray(data.productos)) return [];
-
-    return data.productos.filter(p => {
-        const flag = mode === 'estandar'
-            ? p.flags?.spin_estandar
-            : p.flags?.spin_premium;
-
-        const stock = obtenerStock();
-        return flag && stock[p.id] > 0;
-
-    });
+    if (mode === 'estandar') {
+        return getProductosSpinEstandar();
+    } else {
+        return getProductosSpinPremium();
+    }
 }
 
 
