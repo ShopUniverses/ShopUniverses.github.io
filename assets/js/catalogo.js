@@ -117,15 +117,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         };
 
-        btnAgregar.onclick = () => {
+        btnAgregar.onclick = async () => {
         if (cantidad === 0) return;
 
+        btnAgregar.disabled = true;
+        btnAgregar.textContent = 'Agregando...';
+
         for (let i = 0; i < cantidad; i++) {
-            agregarProductoCatalogo(producto);
+            await agregarProductoCatalogo(producto);
         }
 
         alert(`Agregaste ${cantidad} unidad(es) al carrito`);
-        renderCatalogo(); // 🔄 refresca stock visual
+        renderCatalogo(); // 🔄 refresca stock visual con datos actualizados
         };
 
         contenedor.appendChild(card);

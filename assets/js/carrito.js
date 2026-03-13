@@ -134,7 +134,7 @@ function agregarProductoDesdeSpin(producto) {
   });
 }
 
-function agregarProductoCatalogo(producto) {
+async function agregarProductoCatalogo(producto) {
   agregarItem({
     tipo: "producto",
     id: producto.id,
@@ -143,8 +143,8 @@ function agregarProductoCatalogo(producto) {
     origen: "catalogo"
   });
 
-  // Descontar stock real
-  descontarStock(producto.id);
+  // Descontar stock real — await garantiza confirmación Firestore
+  await descontarStock(producto.id);
 }
 
 /**************************************************
