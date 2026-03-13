@@ -1,3 +1,13 @@
+// Pega esto en consola JUSTO al entrar a carrito.html antes de que cargue
+const key = 'shopuniverses_carrito';
+const original = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(k, v) {
+    if (k === key) {
+        console.trace('🔴 setItem carrito:', JSON.parse(v));
+    }
+    return original(k, v);
+};
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
