@@ -108,26 +108,26 @@ function suscribirseAlStock() {
     let huboCambio = false;
 
     snapshot.docChanges().forEach(change => {
-      // 'modified' cubre descuentos y restauraciones
-      // 'added'    cubre productos nuevos en Firestore
-      if (change.type === "added" || change.type === "modified") {
-        const remoto = change.doc.data().Cantidad;   // ← mayúscula
-        if (typeof remoto === "number" && Number.isFinite(remoto)) {
-          const id = change.doc.id;
+      const remoto = change.doc.data().Cantidad;
+      if (typeof remoto !== "number" || !Number.isFinite(remoto)) return;
 
-          // Solo notificar si el valor realmente cambió
-          if (stockLocal[id] !== remoto) {
-            stockLocal[id] = remoto;
-            huboCambio = true;
-          }
-        }
+      const id = change.doc.id;
+      stockLocal[id] = remoto;
+
+      // "added" = carga inicial (todos los docs llegan así al arrancar)
+      // "modified" = cambio real desde cualquier cliente → siempre notificar
+      if (change.type === "modified") {
+        huboCambio = true;
       }
     });
 
+    // Siempre guardar (mantiene localStorage fresco)
+    guardarStock(stockLocal);
+    validarStockContraInventario();
+
+    // Solo avisar a la UI cuando hubo un cambio real
     if (huboCambio) {
-      guardarStock(stockLocal);
-      validarStockContraInventario();
-      _notificarCambioStock();   // ← Avisa a spin.js, catalogo.js, etc.
+      _notificarCambioStock();
     }
   });
 }
