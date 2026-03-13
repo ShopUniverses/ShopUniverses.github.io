@@ -5,7 +5,8 @@ Render del catálogo con imagen, contador y stock seguro
 import {
     cargarInventario,
     getProductosCatalogo,
-    obtenerStock
+    obtenerStock,
+    onStockChange       // ← tiempo real
 } from "./data.js";
 
 import {
@@ -13,14 +14,17 @@ import {
     inicializarCarrito
 } from "./carrito.js";
 
-let PRODUCTOS_CACHE = [];
-
+// Sin cache fijo — getProductosCatalogo() siempre lee stock fresco
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();   // espera Firebase
+    await cargarInventario();
     inicializarCarrito();
 
-    PRODUCTOS_CACHE = getProductosCatalogo(); // cache fijo
     renderCatalogo();
+
+    // Cuando Firebase notifica un cambio de stock desde cualquier cliente,
+    // re-renderiza el catálogo completo con datos frescos.
+    // Esto evita que un usuario vea stock disponible que ya fue comprado.
+    onStockChange(() => renderCatalogo());
 });
 
     /* ===============================
@@ -37,7 +41,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const contenedor = document.getElementById("catalogo");
     contenedor.innerHTML = "";
 
-    const productos = PRODUCTOS_CACHE;
+    // Siempre recalcula desde stock actual — nunca desde cache
+    const productos = getProductosCatalogo();
 
     if (productos.length === 0) {
         contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
@@ -45,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     productos.forEach(producto => {
+        // Stock leído en este momento exacto, no capturado en closure
         const stockActual = obtenerStock()[producto.id] ?? 0;
 
         const card = document.createElement("div");
