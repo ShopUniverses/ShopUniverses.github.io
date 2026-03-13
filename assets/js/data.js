@@ -89,7 +89,7 @@ async function sincronizarStockDesdeFirebase() {
   const snapshot   = await getDocs(collection(db, "stock"));
 
   snapshot.forEach(docSnap => {
-    const remoto = docSnap.data().cantidad;
+    const remoto = docSnap.data().Cantidad;   // ← mayúscula
     if (typeof remoto === "number" && Number.isFinite(remoto)) {
       stockLocal[docSnap.id] = remoto;
     }
@@ -111,7 +111,7 @@ function suscribirseAlStock() {
       // 'modified' cubre descuentos y restauraciones
       // 'added'    cubre productos nuevos en Firestore
       if (change.type === "added" || change.type === "modified") {
-        const remoto = change.doc.data().cantidad;
+        const remoto = change.doc.data().Cantidad;   // ← mayúscula
         if (typeof remoto === "number" && Number.isFinite(remoto)) {
           const id = change.doc.id;
 
@@ -175,9 +175,9 @@ async function descontarStock(productoId) {
     const snap = await tx.get(ref);
 
     if (!snap.exists())          throw new Error("Producto no existe en stock");
-    if (snap.data().cantidad <= 0) throw new Error("Sin stock disponible");
+    if (snap.data().Cantidad <= 0) throw new Error("Sin stock disponible");
 
-    tx.update(ref, { cantidad: snap.data().cantidad - 1 });
+    tx.update(ref, { Cantidad: snap.data().Cantidad - 1 });
   });
 
   // Sincronía local inmediata (el listener también lo hará, pero esto es más rápido)
@@ -199,8 +199,8 @@ async function restaurarStock(productosIds) {
       const snap = await tx.get(ref);
       if (!snap.exists()) return;
 
-      const nuevaCantidad = snap.data().cantidad + 1;
-      tx.update(ref, { cantidad: nuevaCantidad });
+      const nuevaCantidad = snap.data().Cantidad + 1;
+      tx.update(ref, { Cantidad: nuevaCantidad });
       stockLocal[id] = nuevaCantidad;
     });
   }
