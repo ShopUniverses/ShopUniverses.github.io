@@ -7,6 +7,8 @@ import {
     eliminarItem
 } from "./carrito.js";
 
+import { cargarInventario } from "./data.js";
+
 /**************************************************
  * UTILIDAD
  **************************************************/
@@ -107,7 +109,8 @@ window.enviarPedidoWA = () => {
 /**************************************************
  * INIT
  **************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarCarrito();
+document.addEventListener("DOMContentLoaded", async () => {
+    await cargarInventario();   // sincroniza stock desde Firebase primero
+    inicializarCarrito();       // luego carga el carrito desde localStorage
     renderCarrito();
 });
