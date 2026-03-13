@@ -33,105 +33,95 @@ function renderCarrito() {
         </li>`;
     } else {
         items.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.className = "flex-between";
-        li.style.padding = "15px 0";
-        li.style.borderBottom = "1px solid var(--color-border)";
+            const li = document.createElement("li");
+            li.className = "flex-between";
+            li.style.padding = "15px 0";
+            li.style.borderBottom = "1px solid var(--color-border)";
 
-        const esSpin = item.tipo.startsWith("spin_");
-        const esProductoCatalogo = item.tipo === "producto" && item.origen === "catalogo";
-        const esProductoSpin = item.tipo === "producto" && item.origen === "spin";
+            const esPaqueteSpin = item.tipo.startsWith("spin_");
+            const esProductoCatalogo = item.tipo === "producto" && item.origen === "catalogo";
+            const esProductoSpin = item.tipo === "producto" && item.origen === "spin";
 
-        // Los productos del spin no se muestran con botón — se eliminan junto al paquete
-        // Solo mostramos botón en: paquetes spin (spin_base/premium) y productos de catálogo
-        const mostrarBoton = esSpin || esProductoCatalogo;
+            let etiqueta = "Producto";
+            if (esPaqueteSpin)  etiqueta = "🎡 Paquete Spin";
+            if (esProductoSpin) etiqueta = "Premio Spin";
 
-        let etiqueta = "Producto";
-        if (esSpin) etiqueta = "🎡 Paquete Spin — elimina todos los premios";
-        if (esProductoSpin) etiqueta = "Premio Spin";
+            // Productos individuales del spin NO tienen botón —
+            // se eliminan junto al paquete spin automáticamente
+            const mostrarBoton = esPaqueteSpin || esProductoCatalogo;
 
-        li.innerHTML = `
-            <div>
-            <span style="display:block; font-weight:bold;">${item.nombre}</span>
-            <small style="color:var(--color-accent)">${etiqueta}</small>
-            </div>
-            <div class="flex" style="align-items:center; gap:15px;">
-            <span>$${item.precio.toLocaleString()}</span>
-            </div>
-        `;
+            li.innerHTML = `
+                <div>
+                    <span style="display:block; font-weight:bold;">${item.nombre}</span>
+                    <small style="color:var(--color-accent)">${etiqueta}</small>
+                </div>
+                <div class="flex" style="align-items:center; gap:15px;">
+                    <span>$${item.precio.toLocaleString()}</span>
+                </div>
+            `;
 
-        if (mostrarBoton) {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.textContent = "✕";
-            btn.className = "secondary";
-            btn.style.padding = "5px 10px";
-            btn.onclick = async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                btn.disabled = true;
-                btn.textContent = "...";
-                await eliminarItem(index);
-                log(esSpin ? "Paquete spin eliminado y stock restaurado" : "Producto eliminado del carrito");
-                renderCarrito();
-            };
-            li.querySelector(".flex").appendChild(btn);
-        }
+            if (mostrarBoton) {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.textContent = "✕";
+                btn.className = "secondary";
+                btn.style.padding = "5px 10px";
+                btn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    btn.disabled = true;
+                    btn.textContent = "...";
+                    await eliminarItem(index);
+                    log(esPaqueteSpin
+                        ? "🎡 Paquete spin eliminado y stock restaurado"
+                        : "✕ Producto eliminado del carrito");
+                    renderCarrito();
+                });
+                li.querySelector(".flex").appendChild(btn);
+            }
 
-        ul.appendChild(li);
+            ul.appendChild(li);
         });
     }
 
-    document.getElementById("total").textContent =
-    getTotal().toLocaleString();
+    document.getElementById("total").textContent = getTotal().toLocaleString();
 }
 
 /**************************************************
- * ACCIONES EXPUESTAS A HTML
+ * ACCIONES
  **************************************************/
-
-// CORRECCIÓN: async + await para esperar que Firestore
-// confirme el rollback antes de limpiar la UI
 async function cancelarCompra() {
-    const btn = document.getElementById('btn-vaciar');
-    if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Restaurando...';
-    }
+    const btn = document.getElementById("btn-vaciar");
+    if (btn) { btn.disabled = true; btn.textContent = "Restaurando..."; }
 
     await cancelarCompraCompleta();
 
     log("❌ Compra cancelada y stock restaurado");
     renderCarrito();
 
-    if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Vaciar Carrito';
-    }
+    if (btn) { btn.disabled = false; btn.textContent = "Vaciar Carrito"; }
 }
 
-window.enviarPedidoWA = () => {
+function enviarPedidoWA() {
     if (getItemsCarrito().length === 0) {
         alert("El carrito está vacío");
         return;
     }
     enviarPedidoWhatsApp("573207096148");
-};
+}
 
 /**************************************************
- * INIT
+ * INIT — conectar todo via addEventListener
+ * NUNCA usar onclick inline con type="module"
  **************************************************/
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarInventario();
     inicializarCarrito();
     renderCarrito();
 
-    // Conectar botones via JS — evita problema con onclick en módulos ES
-    document.getElementById('btn-enviar-wa')?.addEventListener('click', () => {
-        window.enviarPedidoWA();
-    });
+    document.getElementById("btn-enviar-wa")
+        ?.addEventListener("click", enviarPedidoWA);
 
-    document.getElementById('btn-vaciar')?.addEventListener('click', () => {
-        cancelarCompra();
-    });
+    document.getElementById("btn-vaciar")
+        ?.addEventListener("click", cancelarCompra);
 });
