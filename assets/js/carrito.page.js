@@ -38,19 +38,29 @@ function renderCarrito() {
         li.style.padding = "15px 0";
         li.style.borderBottom = "1px solid var(--color-border)";
 
+        const esSpin = item.tipo.startsWith("spin_");
+        const esProductoCatalogo = item.tipo === "producto" && item.origen === "catalogo";
+        const esProductoSpin = item.tipo === "producto" && item.origen === "spin";
+
+        // Los productos del spin no se muestran con botón — se eliminan junto al paquete
+        // Solo mostramos botón en: paquetes spin (spin_base/premium) y productos de catálogo
+        const mostrarBoton = esSpin || esProductoCatalogo;
+
+        let etiqueta = "Producto";
+        if (esSpin) etiqueta = "🎡 Paquete Spin — elimina todos los premios";
+        if (esProductoSpin) etiqueta = "Premio Spin";
+
         li.innerHTML = `
             <div>
             <span style="display:block; font-weight:bold;">${item.nombre}</span>
-            <small style="color:var(--color-accent)">
-                ${item.tipo === "producto" ? "Producto" : "Spin Reward"}
-            </small>
+            <small style="color:var(--color-accent)">${etiqueta}</small>
             </div>
             <div class="flex" style="align-items:center; gap:15px;">
             <span>$${item.precio.toLocaleString()}</span>
             </div>
         `;
 
-        if (item.tipo === "producto" && item.origen === "catalogo") {
+        if (mostrarBoton) {
             const btn = document.createElement("button");
             btn.type = "button";
             btn.textContent = "✕";
@@ -59,8 +69,10 @@ function renderCarrito() {
             btn.onclick = async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                btn.disabled = true;
+                btn.textContent = "...";
                 await eliminarItem(index);
-                log("Producto eliminado del carrito");
+                log(esSpin ? "Paquete spin eliminado y stock restaurado" : "Producto eliminado del carrito");
                 renderCarrito();
             };
             li.querySelector(".flex").appendChild(btn);
@@ -80,8 +92,8 @@ function renderCarrito() {
 
 // CORRECCIÓN: async + await para esperar que Firestore
 // confirme el rollback antes de limpiar la UI
-window.cancelarCompra = async () => {
-    const btn = document.querySelector('.secondary[onclick="cancelarCompra()"]');
+async function cancelarCompra() {
+    const btn = document.getElementById('btn-vaciar');
     if (btn) {
         btn.disabled = true;
         btn.textContent = 'Restaurando...';
@@ -96,7 +108,7 @@ window.cancelarCompra = async () => {
         btn.disabled = false;
         btn.textContent = 'Vaciar Carrito';
     }
-};
+}
 
 window.enviarPedidoWA = () => {
     if (getItemsCarrito().length === 0) {
@@ -110,7 +122,16 @@ window.enviarPedidoWA = () => {
  * INIT
  **************************************************/
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarInventario();   // sincroniza stock desde Firebase primero
-    inicializarCarrito();       // luego carga el carrito desde localStorage
+    await cargarInventario();
+    inicializarCarrito();
     renderCarrito();
+
+    // Conectar botones via JS — evita problema con onclick en módulos ES
+    document.getElementById('btn-enviar-wa')?.addEventListener('click', () => {
+        window.enviarPedidoWA();
+    });
+
+    document.getElementById('btn-vaciar')?.addEventListener('click', () => {
+        cancelarCompra();
+    });
 });
