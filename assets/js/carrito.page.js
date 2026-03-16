@@ -114,7 +114,7 @@ function enviarPedidoWA() {
  * INIT — conectar todo via addEventListener
  * NUNCA usar onclick inline con type="module"
  **************************************************/
-document.addEventListener("DOMContentLoaded", async () => {
+async function init() {
     await cargarInventario();
     inicializarCarrito();
     renderCarrito();
@@ -124,4 +124,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("btn-vaciar")
         ?.addEventListener("click", cancelarCompra);
-});
+}
+
+// Usar DOMContentLoaded solo si el DOM no está listo aún,
+// si ya cargó (readyState complete/interactive) correr directo
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+} else {
+    init();
+}
