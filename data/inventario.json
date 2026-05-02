@@ -69,7 +69,7 @@
         "imagen": "assets/img/img_catalogo/bolsa_250_ml.webp", 
     "precio_referencia": 10000, 
     "costo": 2978, 
-    "stock": 1, 
+    "stock": 0, 
     "categoria": "Cuidado Personal", 
     "flags": { 
         "catalogo": true, 
@@ -83,7 +83,7 @@
         "imagen": "assets/img/img_catalogo/bolsa_350_ml.webp", 
         "precio_referencia": 15000, 
         "costo": 7850, 
-        "stock": 3, 
+        "stock": 1, 
         "categoria": "Cuidado Personal", 
         "flags": { 
             "catalogo": true, 
@@ -111,7 +111,7 @@
         "imagen": "assets/img/img_catalogo/capibara.webp",
         "precio_referencia": 4000, 
         "costo": 2400, 
-        "stock": 3, 
+        "stock": 2, 
         "categoria": "Post-its", 
         "flags": { 
             "catalogo": true, 
@@ -125,7 +125,7 @@
         "imagen": "assets/img/img_catalogo/carpeta_pandas.webp",
         "precio_referencia": 3000, 
         "costo": 1500, 
-        "stock": 15, 
+        "stock": 14, 
         "categoria": "Carpetas", 
         "flags": { 
             "catalogo": true, 
@@ -139,7 +139,7 @@
         "imagen": "assets/img/img_catalogo/carpeta_van_gogh.webp",
         "precio_referencia": 5000, 
         "costo": 2581, 
-        "stock": 6, 
+        "stock": 4, 
         "categoria": "Carpetas", 
         "flags": { 
             "catalogo": true, 
@@ -167,7 +167,7 @@
         "imagen": "assets/img/img_catalogo/dino.webp",
         "precio_referencia": 5000, 
         "costo": 1820, 
-        "stock": 1, 
+        "stock": 0, 
         "categoria": "Sacapuntas", 
         "flags": { 
             "catalogo": true, 
@@ -181,7 +181,7 @@
         "imagen": "assets/img/img_catalogo/kitty.webp", 
         "precio_referencia": 6000, 
         "costo": 3860, 
-        "stock": 3, 
+        "stock": 4, 
         "categoria": "Sacapuntas", 
         "flags": { 
             "catalogo": true, 
@@ -237,7 +237,7 @@
         "imagen": "assets/img/img_catalogo/IKuromi.webp",
         "precio_referencia": 5000, 
         "costo": 2860, 
-        "stock": 3, 
+        "stock": 1, 
         "categoria": "Lapiz y Portaminas", 
         "flags": { 
             "catalogo": true, 
@@ -251,7 +251,7 @@
         "imagen": "assets/img/img_catalogo/Pata2.webp",
         "precio_referencia": 15000, 
         "costo": 4864, 
-        "stock": 10, 
+        "stock": 7, 
         "categoria": "Resaltador", 
         "flags": { 
             "catalogo": true, 
@@ -293,7 +293,7 @@
         "imagen": "assets/img/img_catalogo/separador_animalitos.webp",
         "precio_referencia": 5000, 
         "costo": 2081, 
-        "stock": 2, 
+        "stock": 1, 
         "categoria": "Separadores", 
         "flags": { 
             "catalogo": true, 
