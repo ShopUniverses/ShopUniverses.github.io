@@ -4,6 +4,7 @@
 
 .spin {
     margin-top: 24px;
+    color: #3b82f6; /* Azul brillante y legible sobre fondo oscuro */
 }
 
 .spin__layout {

@@ -1,1 +1,4 @@
 .zip
+graphify-out/
+.graphify/
+.gemini/
