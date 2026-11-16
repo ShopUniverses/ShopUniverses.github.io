@@ -7,8 +7,8 @@
   NODE_VERSION = "22"
 
 [functions]
-  # El catálogo base viaja junto a la función (se lee en el servidor, con costos)
-  included_files = ["data/inventario.json"]
+  # El catálogo base y las vistas EJS viajan junto a la función serverless
+  included_files = ["data/inventario.json", "src/views/**"]
   external_node_modules = ["sharp", "firebase-admin"]
 
 # API y panel administrativo -> función Express
@@ -29,6 +29,12 @@
   to = "/.netlify/functions/api"
   status = 200
   force = true
+
+# Vistas SSR (Netlify sirve primero estáticos en dist/ como /assets/*)
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/api"
+  status = 200
 
 # Encabezados de seguridad para todo el sitio estático
 [[headers]]

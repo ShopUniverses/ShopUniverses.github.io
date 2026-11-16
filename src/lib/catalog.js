@@ -45,6 +45,16 @@ export function toPublicProduct(p, stock) {
   };
 }
 
+/** Devuelve la lista ordenada de categorías únicas presentes en el catálogo. */
+export function listCategories() {
+  const cats = new Set();
+  for (const p of loadCatalog().productos) {
+    const c = typeof p.categoria === 'string' ? p.categoria.trim() : '';
+    if (c) cats.add(c);
+  }
+  return [...cats].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
 /** Versión saneada del JSON para el frontend legado (sin costos). */
 export function legacyPublicCatalog() {
   const { config: cfg, productos } = loadCatalog();

@@ -11,6 +11,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "build": "node scripts/build-static.js",
+    "optimize-images": "node scripts/optimize-images.js",
     "sync-stock": "node scripts/sync-stock.js",
     "test": "node --test \"test/**/*.test.js\""
   },
