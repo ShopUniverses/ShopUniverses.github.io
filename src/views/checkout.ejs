@@ -1,0 +1,150 @@
+<%- include('partials/head', { title: 'Finalizar compra', activeNav: 'carrito' }) %>
+
+<header class="container section" style="margin-bottom:24px;">
+    <h1 style="margin:0; font-size:2.4rem;">💳 Finalizar Compra</h1>
+    <p style="margin:8px 0 0; color:var(--color-text-muted);">
+        Completa tus datos de envío en Colombia y elige tu método de pago seguro.
+    </p>
+</header>
+
+<main class="container section">
+    <div class="grid" style="grid-template-columns: 1.2fr 0.8fr; align-items: start; gap: 30px;">
+
+        <form id="checkout-form" class="card" style="display:flex; flex-direction:column; gap:16px;" novalidate>
+            <h3>1. Datos de envío</h3>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 14px;">
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Nombre completo *</span>
+                    <input id="name" name="name" required autocomplete="name" placeholder="Tu nombre completo" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Correo electrónico *</span>
+                    <input id="email" name="email" type="email" required autocomplete="email" placeholder="correo@ejemplo.com" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Celular / WhatsApp *</span>
+                    <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="300 000 0000" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Cédula / NIT (opcional)</span>
+                    <input id="document" name="document" placeholder="Documento de identidad" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Departamento *</span>
+                    <select id="department" name="department" required style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#111122; color:var(--color-text);">
+                        <option value="">Selecciona...</option>
+                        <% departments.forEach(function (d) { %>
+                        <option value="<%= d %>"><%= d %></option>
+                        <% }); %>
+                    </select>
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span>Ciudad / Municipio *</span>
+                    <input id="city" name="city" required autocomplete="address-level2" placeholder="Ej. Bogotá" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+            </div>
+
+            <label style="display:flex; flex-direction:column; gap:6px;">
+                <span>Dirección completa *</span>
+                <input id="address" name="address" required autocomplete="street-address" placeholder="Calle, carrera, número, apto y barrio" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+            </label>
+
+            <label style="display:flex; flex-direction:column; gap:6px;">
+                <span>Notas del pedido (opcional)</span>
+                <textarea id="notes" name="notes" rows="2" maxlength="300" placeholder="Indicaciones para la entrega..." style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);"></textarea>
+            </label>
+
+            <hr style="border:0; border-top:1px solid var(--color-border); margin:6px 0;">
+
+            <h3>2. Método de pago</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1px solid var(--color-border); border-radius:8px;">
+                    <input type="radio" name="paymentMethod" value="wompi" <%= wompiEnabled ? 'checked' : '' %>>
+                    <div>
+                        <strong>Wompi Bancolombia (Nequi, PSE, Tarjetas)</strong><br>
+                        <small>Pago cifrado en pasarela certificada PCI-DSS Nivel 1.<%= wompiEnabled ? '' : ' (Modo preparación)' %></small>
+                    </div>
+                </label>
+
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1px solid var(--color-border); border-radius:8px;">
+                    <input type="radio" name="paymentMethod" value="manual" <%= !wompiEnabled ? 'checked' : '' %>>
+                    <div>
+                        <strong>Transferencia Nequi / Bancolombia directa</strong><br>
+                        <small>0% de comisión adicional. Recibes tu código y envías comprobante.</small>
+                    </div>
+                </label>
+
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1px solid var(--color-border); border-radius:8px;">
+                    <input type="radio" name="paymentMethod" value="whatsapp">
+                    <div>
+                        <strong>Acordar por WhatsApp</strong><br>
+                        <small>Generamos tu orden formal y continuamos el cierre por WhatsApp.</small>
+                    </div>
+                </label>
+            </div>
+
+            <hr style="border:0; border-top:1px solid var(--color-border); margin:6px 0;">
+
+            <h3>3. Autorizaciones Legales</h3>
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="accept-terms" name="acceptTerms" required>
+                <small style="color:var(--color-text);">
+                    He leído y acepto la Política de Tratamiento de Información (Ley 1581 de 2012) y los Términos y Condiciones de compra. *
+                </small>
+            </label>
+
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="accept-marketing" name="acceptMarketing">
+                <small>
+                    Autorizo recibir novedades y promociones por WhatsApp o correo electrónico conforme a la Ley 2300 de 2023 (opcional).
+                </small>
+            </label>
+        </form>
+
+        <aside class="card" style="position:sticky; top:20px; display:flex; flex-direction:column; gap:16px;">
+            <h3>Resumen del pedido</h3>
+            <ul id="checkout-lines" style="list-style:none; padding:0; margin:0;"></ul>
+
+            <div style="display:flex; gap:8px;">
+                <input id="coupon-input" type="text" placeholder="Código promocional" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text); text-transform:uppercase;">
+                <button id="btn-apply-coupon" type="button" class="secondary">Aplicar</button>
+            </div>
+            <small id="coupon-msg"></small>
+
+            <hr style="border:0; border-top:1px solid var(--color-border);">
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <div class="flex-between">
+                    <span style="color:var(--color-text-muted);">Subtotal</span>
+                    <span id="sum-subtotal">$ 0</span>
+                </div>
+                <div class="flex-between" id="row-discount" style="display:none; color:var(--color-accent);">
+                    <span>Descuento (<span id="discount-code"></span>)</span>
+                    <span id="sum-discount">- $ 0</span>
+                </div>
+                <div class="flex-between">
+                    <span style="color:var(--color-text-muted);">Envío nacional</span>
+                    <span id="sum-shipping">$ 0</span>
+                </div>
+                <small id="sum-free" style="color:var(--color-accent); display:none;"></small>
+                <div class="flex-between" style="font-size:1.3rem; padding-top:8px; border-top:1px solid var(--color-border);">
+                    <strong>Total</strong>
+                    <strong id="sum-total" style="color:var(--color-accent);">$ 0</strong>
+                </div>
+            </div>
+
+            <div id="checkout-alert" style="display:none; padding:10px; border-radius:8px; background:rgba(255,76,76,0.18); border:1px solid #ff4c4c; color:#ffd6d6; font-size:0.9rem;"></div>
+
+            <button id="pay-btn" type="submit" form="checkout-form" disabled>Confirmar pedido</button>
+            <a href="/carrito" style="text-align:center; font-size:0.9rem;">← Volver al carrito</a>
+        </aside>
+    </div>
+</main>
+
+<%- include('partials/foot', { scripts: ['/assets/js/main.js', '/assets/js/checkout.js'] }) %>

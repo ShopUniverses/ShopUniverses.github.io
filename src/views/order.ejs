@@ -1,0 +1,134 @@
+<%- include('partials/head', { title: `Pedido ${order.code}`, activeNav: '' }) %>
+
+<header class="container section" style="margin-bottom:24px;">
+    <small style="text-transform:uppercase; letter-spacing:1px;">Resumen de tu compra</small>
+    <h1 style="margin:6px 0; font-size:2.6rem;">Pedido <%= order.code %></h1>
+    <p>
+        Estado actual:
+        <strong style="color:var(--color-accent); text-transform:uppercase;"><%= order.status %></strong>
+        · Creado el <%= fmtDate(order.createdAt) %>
+    </p>
+</header>
+
+<main class="container section" style="display:flex; flex-direction:column; gap:24px;">
+
+    <% if (order.status === 'pendiente') { %>
+    <section class="card">
+        <% if (order.paymentMethod === 'wompi' && wompi) { %>
+            <h2>💳 Completa tu pago seguro</h2>
+            <p style="margin:10px 0 18px; color:var(--color-text-muted);">
+                Total a pagar: <strong style="color:var(--color-text);"><%= fmtCOP(order.total) %></strong>.
+                Tu inventario está reservado hasta el <%= fmtDate(order.expiresAt) %>.
+            </p>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a href="<%= wompi.checkoutUrl %>" style="text-decoration:none;">
+                    <button type="button">Pagar con Wompi (Nequi / PSE / Tarjetas)</button>
+                </a>
+                <a href="/pedido/<%= order.code %>" style="text-decoration:none;">
+                    <button type="button" class="secondary">Actualizar estado</button>
+                </a>
+            </div>
+        <% } else if (order.paymentMethod === 'wompi') { %>
+            <h2>⏳ Confirmando pago en pasarela</h2>
+            <p style="margin:10px 0 16px; color:var(--color-text-muted);">
+                Si ya realizaste el pago en Wompi, esta página se actualizará en cuanto recibamos la confirmación bancaria.
+            </p>
+            <a href="/pedido/<%= order.code %>" style="text-decoration:none;">
+                <button type="button" class="secondary">Actualizar estado</button>
+            </a>
+        <% } else { %>
+            <h2>📲 Instrucciones de pago</h2>
+            <p style="margin:10px 0; white-space:pre-line;"><%= settings?.manualPaymentInfo || 'Transferencia Nequi o Bancolombia.' %></p>
+            <p style="margin:10px 0;"><strong>Total a pagar: <%= fmtCOP(order.total) %></strong></p>
+            <p style="margin:0 0 16px; color:var(--color-text-muted); font-size:0.9rem;">
+                Reservamos tus productos hasta el <%= fmtDate(order.expiresAt) %>.
+            </p>
+            <% if (settings?.whatsapp) { %>
+            <a target="_blank" rel="noopener noreferrer" href="https://wa.me/<%= settings.whatsapp %>?text=<%= encodeURIComponent('Hola ShopUniverses, confirmo mi pedido ' + order.code + ' por ' + fmtCOP(order.total)) %>" style="text-decoration:none;">
+                <button type="button">Enviar comprobante por WhatsApp</button>
+            </a>
+            <% } %>
+        <% } %>
+    </section>
+    <% } else if (order.status === 'pagado') { %>
+    <section class="card" style="border-color:var(--color-accent);">
+        <h2>✅ ¡Pago recibido!</h2>
+        <p style="color:var(--color-text-muted);">
+            Confirmamos tu pago<%= order.paymentRef ? ` (Ref: ${order.paymentRef})` : '' %>. Estamos alistando tu pedido para envío.
+        </p>
+    </section>
+    <% } else if (order.status === 'enviado') { %>
+    <section class="card" style="border-color:var(--color-accent);">
+        <h2>🚚 Tu pedido va en camino</h2>
+        <% if (order.tracking) { %>
+        <p>Guía de seguimiento: <strong><%= order.tracking %></strong></p>
+        <% } %>
+    </section>
+    <% } else if (order.status === 'cancelado') { %>
+    <section class="card">
+        <h2>❌ Pedido cancelado</h2>
+        <p style="margin-bottom:16px; color:var(--color-text-muted);">
+            Motivo: <%= order.cancelReason || 'Cancelado' %>. Las unidades fueron devueltas al inventario.
+        </p>
+        <a href="/catalogo" style="text-decoration:none;"><button type="button">Volver al catálogo</button></a>
+    </section>
+    <% } %>
+
+    <div class="grid" style="grid-template-columns: 1.2fr 0.8fr; gap:24px;">
+        <section class="card">
+            <h3>Productos del pedido</h3>
+            <ul style="list-style:none; padding:0; margin:16px 0;">
+                <% order.items.forEach(function (it) { %>
+                <li class="flex-between" style="padding:10px 0; border-bottom:1px solid var(--color-border);">
+                    <div>
+                        <strong><%= it.nombre %></strong>
+                        <small style="display:block;">
+                            <%= it.origen === 'spin' ? '🎡 Premio Spin' : 'Catálogo' %> · Cant. <%= it.qty %>
+                        </small>
+                    </div>
+                    <span><%= fmtCOP(it.lineTotal) %></span>
+                </li>
+                <% }); %>
+            </ul>
+
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <div class="flex-between">
+                    <span style="color:var(--color-text-muted);">Subtotal</span>
+                    <span><%= fmtCOP(order.subtotal) %></span>
+                </div>
+                <% if (order.discount > 0) { %>
+                <div class="flex-between" style="color:var(--color-accent);">
+                    <span>Descuento<%= order.couponCode ? ` (${order.couponCode})` : '' %></span>
+                    <span>- <%= fmtCOP(order.discount) %></span>
+                </div>
+                <% } %>
+                <div class="flex-between">
+                    <span style="color:var(--color-text-muted);">Envío</span>
+                    <span><%= order.shipping > 0 ? fmtCOP(order.shipping) : 'Gratis' %></span>
+                </div>
+                <div class="flex-between" style="font-size:1.25rem; padding-top:8px; border-top:1px solid var(--color-border);">
+                    <strong>Total</strong>
+                    <strong style="color:var(--color-accent);"><%= fmtCOP(order.total) %></strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Datos de envío</h3>
+            <p style="margin-top:12px;">
+                <strong><%= order.customer.name %></strong><br>
+                <%= order.customer.address %><br>
+                <%= order.customer.city %>, <%= order.customer.department %><br>
+                Tel: <%= order.customer.phone %><br>
+                Email: <%= order.customer.email %>
+            </p>
+            <% if (order.customer.notes) { %>
+            <p style="margin-top:12px; color:var(--color-text-muted);">
+                Notas: <%= order.customer.notes %>
+            </p>
+            <% } %>
+        </section>
+    </div>
+</main>
+
+<%- include('partials/foot', { scripts: ['/assets/js/main.js'] }) %>

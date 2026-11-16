@@ -119,6 +119,15 @@ async function init() {
     inicializarCarrito();
     renderCarrito();
 
+    document.getElementById("btn-ir-checkout")
+        ?.addEventListener("click", () => {
+            if (getItemsCarrito().length === 0) {
+                alert("El carrito está vacío");
+                return;
+            }
+            window.location.href = "/checkout";
+        });
+
     document.getElementById("btn-enviar-wa")
         ?.addEventListener("click", enviarPedidoWA);
 
