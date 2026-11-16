@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// =============================================================================
+// Reglas de seguridad de Firestore — proyecto: shopuniverses-inventario
+// =============================================================================
+// Modelo de datos asumido (acceso exclusivo desde servidor vía Admin SDK):
+//   - stock/{productId} : { Cantidad: number }
+//   - reservations/{id} : { items, status, tokenHash, source,
+//                           createdAt, holdUntil, closedAt, reason }
+//   - Colecciones futuras: orders, coupons, settings, admins
+//
+// Todo el acceso a Firestore se realiza EXCLUSIVAMENTE desde el servidor
+// (Node.js / Express en Netlify Functions) mediante el Firebase Admin SDK,
+// el cual omite estas reglas. Ningún cliente del navegador debe leer ni
+// escribir Firestore directamente.
+//
+// IMPORTANTE: Desplegar estas reglas ÚNICAMENTE en el cutover (Fase 7).
+// El sitio actual en GitHub Pages todavía accede a `stock` desde el
+// navegador; desplegarlas antes rompería el sitio en producción.
+// =============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Denegación por defecto: ningún acceso desde SDKs de cliente.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

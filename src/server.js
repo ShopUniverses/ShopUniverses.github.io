@@ -29,14 +29,11 @@ app.use(
       useDefaults: true,
       directives: {
         'default-src': ["'self'"],
-        // TEMPORAL: las páginas actuales usan <script> y onclick inline. Se eliminará
-        // 'unsafe-inline' cuando el frontend se refactorice (Fases 3 y 4).
-        'script-src': ["'self'", "'unsafe-inline'", 'https://checkout.wompi.co', 'https://www.gstatic.com'],
-        'script-src-attr': ["'unsafe-inline'"],
+        'script-src': ["'self'", 'https://checkout.wompi.co'],
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
         'img-src': ["'self'", 'data:', 'https:', 'blob:'],
-        'connect-src': ["'self'", 'https://checkout.wompi.co', 'https://firestore.googleapis.com', 'https://*.googleapis.com'],
+        'connect-src': ["'self'", 'https://checkout.wompi.co'],
         'frame-src': ['https://checkout.wompi.co'],
         'form-action': ["'self'", 'https://checkout.wompi.co'],
         'frame-ancestors': ["'none'"],

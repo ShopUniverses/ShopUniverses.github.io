@@ -71,10 +71,10 @@
             <div class="spin-visual-area">
                 
                 <div class="spin-mode-selector">
-                    <button class="spin-tab active" data-mode="estandar" onclick="switchMode('estandar')">
+                    <button class="spin-tab active" data-mode="estandar" type="button">
                         Estándar ($25.000)
                     </button>
-                    <button class="spin-tab" data-mode="premium" onclick="switchMode('premium')">
+                    <button class="spin-tab" data-mode="premium" type="button">
                         Premium ($8.000)
                     </button>
                 </div>
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="spin-info">
-                    <button class="secondary small" onclick="toggleLista()">Ver productos posibles</button>
+                    <button id="btnToggleLista" class="secondary small" type="button">Ver productos posibles</button>
                     <div id="lista-productos" class="spin-list is-hidden">
                         </div>
                 </div>
@@ -129,9 +129,9 @@
                 </ul>
 
             <div class="spin-modal__actions">
-                <button class="secondary" onclick="resetActualMode()">Volver a girar (Descartar)</button>
-                <button id="btnGoPremium" class="btn-premium-link" style="display:none;" onclick="transitionToPremium()">Añadir Premium (+$8.000)</button>
-                <button class="btn-accept" onclick="aceptarPremios()">Aceptar y Agregar al Carrito</button>
+                <button id="btnResetSpin" class="secondary" type="button">Volver a girar (Descartar)</button>
+                <button id="btnGoPremium" class="btn-premium-link" type="button" style="display:none;">Añadir Premium (+$8.000)</button>
+                <button id="btnAcceptSpin" class="btn-accept" type="button">Aceptar y Agregar al Carrito</button>
             </div>
         </div>
     </div>

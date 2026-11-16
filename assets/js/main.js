@@ -22,17 +22,31 @@ import {
 })();
 
 /**************************************************
- * NAV MOBILE — CERRAR AL HACER CLICK
+ * NAV MOBILE & NAVEGACIÓN PRINCIPAL
  **************************************************/
-document.addEventListener("DOMContentLoaded", () => {
+function initNavigation() {
     const navToggle = document.getElementById("nav-toggle");
     const navLinks = document.querySelectorAll(".nav-links a");
 
-    if (!navToggle) return;
-
-    navLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            navToggle.checked = false;
+    if (navToggle) {
+        navLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                navToggle.checked = false;
+            });
         });
+    }
+
+    document.getElementById("btnIrSpin")?.addEventListener("click", () => {
+        window.location.href = "./spin.html";
     });
-});
+
+    document.getElementById("btnIrCatalogo")?.addEventListener("click", () => {
+        window.location.href = "./catalogo.html";
+    });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initNavigation);
+} else {
+    initNavigation();
+}

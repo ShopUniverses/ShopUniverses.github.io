@@ -3,7 +3,8 @@
 // ========================================================
 import { Router } from 'express';
 import { loadCatalog, toPublicProduct } from '../lib/catalog.js';
-import { getStockMap, reserveStock, releaseReservation, sweepExpiredIfDue } from '../lib/inventory.js';
+import { getStockMap, reserveStock, releaseReservation, extendReservations, sweepExpiredIfDue } from '../lib/inventory.js';
+import { rollSpinSession, acceptSpinSession } from '../lib/spin.js';
 import { apiLimiter, stockLimiter, asyncHandler, apiErrorHandler } from '../lib/http.js';
 
 const router = Router();
@@ -57,6 +58,38 @@ router.post(
     const { reservationId, token } = req.body || {};
     const result = await releaseReservation(reservationId, token);
     res.json(result);
+  }),
+);
+
+/** POST /api/stock/hold — body: { reservations: [{ reservationId, token }] } */
+router.post(
+  '/stock/hold',
+  stockLimiter,
+  asyncHandler(async (req, res) => {
+    const result = await extendReservations(req.body?.reservations);
+    res.json(result);
+  }),
+);
+
+/** POST /api/spin/roll — body: { mode: 'estandar' | 'premium' } */
+router.post(
+  '/spin/roll',
+  stockLimiter,
+  asyncHandler(async (req, res) => {
+    await sweepExpiredIfDue();
+    const result = await rollSpinSession(req.body?.mode);
+    res.json(result);
+  }),
+);
+
+/** POST /api/spin/accept — body: { spinToken } */
+router.post(
+  '/spin/accept',
+  stockLimiter,
+  asyncHandler(async (req, res) => {
+    await sweepExpiredIfDue();
+    const result = await acceptSpinSession(req.body?.spinToken);
+    res.status(201).json(result);
   }),
 );
 

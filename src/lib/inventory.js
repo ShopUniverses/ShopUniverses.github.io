@@ -76,15 +76,29 @@ export async function getStockMap() {
  * Reserva stock de forma atómica. Si algún producto no alcanza, no se descuenta nada.
  * Devuelve { reservationId, token, holdUntil, items }. El token solo se entrega una vez.
  */
-export async function reserveStock(rawItems, { source = 'catalogo', holdMinutes = config.store.holdMinutes } = {}) {
+export async function reserveStock(
+  rawItems,
+  { source = 'catalogo', holdMinutes = config.store.holdMinutes, reservationId = null, token: providedToken = null } = {},
+) {
   const items = normalizeItems(rawItems);
   const db = getDb();
-  const token = crypto.randomBytes(24).toString('base64url');
-  const resRef = db.collection(RESERVATIONS).doc();
+  const token = providedToken || crypto.randomBytes(24).toString('base64url');
+  const resRef = reservationId ? db.collection(RESERVATIONS).doc(String(reservationId)) : db.collection(RESERVATIONS).doc();
   const now = Date.now();
   const holdUntil = now + holdMinutes * 60_000;
 
-  await db.runTransaction(async (tx) => {
+  return db.runTransaction(async (tx) => {
+    if (reservationId) {
+      const existing = await tx.get(resRef);
+      if (existing.exists) {
+        const data = existing.data();
+        if (data.status === 'activa' && safeEqual(sha256(token), data.tokenHash)) {
+          return { reservationId: resRef.id, token, holdUntil: data.holdUntil, items: data.items, idempotent: true };
+        }
+        throw new InventoryError('Esta sesión de ruleta ya fue utilizada.', 409);
+      }
+    }
+
     const refs = items.map((it) => db.collection(STOCK).doc(it.id));
     const snaps = await Promise.all(refs.map((r) => tx.get(r)));
 
@@ -108,9 +122,9 @@ export async function reserveStock(rawItems, { source = 'catalogo', holdMinutes 
       closedAt: null,
       reason: null,
     });
-  });
 
-  return { reservationId: resRef.id, token, holdUntil, items };
+    return { reservationId: resRef.id, token, holdUntil, items };
+  });
 }
 
 /** Cierra una reserva activa. Si restock = true, devuelve las unidades al inventario. */
@@ -154,6 +168,40 @@ export function confirmReservation(reservationId, reason = 'pago_confirmado') {
 /** Uso interno (admin): cancela y devuelve el stock sin token. */
 export function cancelReservationAsAdmin(reservationId, reason = 'cancelada_por_admin') {
   return closeReservation(reservationId, { status: 'liberada', reason, restock: true });
+}
+
+/** Extiende la vigencia de reservas activas (ej. al enviar pedido por WhatsApp). */
+export async function extendReservations(grants, holdMinutes = config.store.whatsappHoldHours * 60) {
+  if (!Array.isArray(grants) || grants.length === 0) return { updated: 0, holdUntil: null };
+  const list = grants.slice(0, MAX_LINES);
+  const db = getDb();
+  const targetHold = Date.now() + holdMinutes * 60_000;
+  let updated = 0;
+  let maxHoldUntil = null;
+
+  for (const g of list) {
+    const reservationId = typeof g?.reservationId === 'string' ? g.reservationId.trim() : '';
+    const token = typeof g?.token === 'string' ? g.token : '';
+    if (!reservationId || token.length < 10) continue;
+
+    const resRef = db.collection(RESERVATIONS).doc(reservationId);
+    const nextHold = await db.runTransaction(async (tx) => {
+      const resSnap = await tx.get(resRef);
+      if (!resSnap.exists) return null;
+      const data = resSnap.data();
+      if (data.status !== 'activa' || !safeEqual(sha256(token), data.tokenHash)) return null;
+      const extended = Math.max(Number(data.holdUntil) || 0, targetHold);
+      tx.update(resRef, { holdUntil: extended });
+      return extended;
+    });
+
+    if (nextHold !== null) {
+      updated++;
+      if (maxHoldUntil === null || nextHold > maxHoldUntil) maxHoldUntil = nextHold;
+    }
+  }
+
+  return { updated, holdUntil: maxHoldUntil };
 }
 
 /** Libera reservas vencidas. Devuelve cuántas se liberaron. */
