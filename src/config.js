@@ -51,7 +51,12 @@ export const config = {
     shippingFlat: Number(env.SHIPPING_FLAT || 12000),
     freeShippingMin: Number(env.FREE_SHIPPING_MIN || 100000),
     holdMinutes: Number(env.HOLD_MINUTES || 15),
+    cartHoldMinutes: Number(env.CART_HOLD_MINUTES || 30),
+    whatsappHoldHours: Number(env.WHATSAPP_HOLD_HOURS || 48),
   },
+
+  // Firma de sesiones de ruleta (HMAC). En producción DEBE definirse.
+  spinSecret: env.SPIN_SECRET || env.SESSION_SECRET || 'dev_spin_secret_shopuniverses_2026',
 
   dataDir: path.resolve(root, 'data'),
   publicDir: path.resolve(root, 'public'),

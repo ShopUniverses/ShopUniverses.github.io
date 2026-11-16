@@ -12,6 +12,7 @@ serviceAccountKey.json
 *.pem
 
 # Archivos de compilación y datos locales
+dist/
 data/uploads/
 .netlify/
 
