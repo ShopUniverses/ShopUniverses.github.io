@@ -10,7 +10,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test"
+    "build": "node scripts/build-static.js",
+    "sync-stock": "node scripts/sync-stock.js",
+    "test": "node --test \"test/**/*.test.js\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
