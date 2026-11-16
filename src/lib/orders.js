@@ -475,3 +475,110 @@ export async function handleWompiWebhook(payload, headerChecksum) {
 
   return { ok: true, code: order.code, status };
 }
+
+/** Lista los pedidos ordenados del más reciente al más antiguo. */
+export async function listOrders({ status = '' } = {}) {
+  const filter = String(status || '').trim().toLowerCase();
+  const snap = await getDb().collection(ORDERS_COL).get();
+  const items = [];
+  snap.forEach((doc) => {
+    const data = doc.data();
+    if (!filter || data.status === filter) items.push(data);
+  });
+  return items.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+}
+
+/** Marca un pedido pagado como enviado y registra la guía de transporte. */
+export async function markOrderShipped(rawCode, { tracking = '' } = {}) {
+  const code = String(rawCode || '').trim().toUpperCase();
+  const orderRef = getDb().collection(ORDERS_COL).doc(code);
+  const snap = await orderRef.get();
+  if (!snap.exists) throw new InventoryError('Pedido no encontrado.', 404);
+
+  const order = snap.data();
+  if (order.status !== 'pagado') {
+    throw new InventoryError('Solo se pueden marcar como enviados los pedidos pagados.', 409);
+  }
+
+  const patch = {
+    status: 'enviado',
+    tracking: String(tracking || '').trim().slice(0, 80),
+    shippedAt: nowIso(),
+  };
+  await orderRef.update(patch);
+  return { ...order, ...patch };
+}
+
+/** Marca un pedido enviado como entregado. */
+export async function markOrderDelivered(rawCode) {
+  const code = String(rawCode || '').trim().toUpperCase();
+  const orderRef = getDb().collection(ORDERS_COL).doc(code);
+  const snap = await orderRef.get();
+  if (!snap.exists) throw new InventoryError('Pedido no encontrado.', 404);
+
+  const order = snap.data();
+  if (order.status !== 'enviado') {
+    throw new InventoryError('Solo se pueden marcar como entregados los pedidos enviados.', 409);
+  }
+
+  const patch = {
+    status: 'entregado',
+    deliveredAt: nowIso(),
+  };
+  await orderRef.update(patch);
+  return { ...order, ...patch };
+}
+
+/** Radica una solicitud de Retracto, Reversión de Pago (Dec. 587/2016) o PQRS. */
+export async function createPqrsClaim({
+  type,
+  orderCode = '',
+  name,
+  email,
+  phone,
+  document = '',
+  reason,
+  details = '',
+}) {
+  const normType = String(type || '').trim().toLowerCase();
+  if (!['retracto', 'reversion', 'pqrs'].includes(normType)) {
+    throw new InventoryError('Tipo de solicitud inválido.', 400);
+  }
+
+  const cleanName = String(name || '').trim();
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  const cleanPhone = String(phone || '').trim();
+  const phoneDigits = cleanPhone.replace(/\D/g, '');
+  const cleanReason = String(reason || '').trim();
+
+  if (cleanName.length < 3) {
+    throw new InventoryError('Ingresa tu nombre completo (mínimo 3 caracteres).', 400);
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    throw new InventoryError('Ingresa un correo electrónico válido.', 400);
+  }
+  if (phoneDigits.length < 7) {
+    throw new InventoryError('Ingresa un número celular válido.', 400);
+  }
+  if (!cleanReason) {
+    throw new InventoryError('Selecciona o describe el motivo de la solicitud.', 400);
+  }
+
+  const radicado = `PQRS-${crypto.randomInt(10000, 100000)}`;
+  const claim = {
+    radicado,
+    type: normType,
+    orderCode: String(orderCode || '').trim().toUpperCase().slice(0, 30),
+    name: cleanName.slice(0, 120),
+    email: cleanEmail.slice(0, 120),
+    phone: cleanPhone.slice(0, 30),
+    document: String(document || '').trim().slice(0, 30),
+    reason: cleanReason.slice(0, 200),
+    details: String(details || '').trim().slice(0, 1000),
+    status: 'radicado',
+    createdAt: nowIso(),
+  };
+
+  await getDb().collection('pqrs').doc(radicado).set(claim);
+  return claim;
+}

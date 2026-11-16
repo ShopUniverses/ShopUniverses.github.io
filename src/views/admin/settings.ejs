@@ -1,0 +1,45 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1>Ajustes de Tienda</h1>
+</div>
+
+<div class="card">
+  <h2>Envíos, WhatsApp y Pago Manual</h2>
+  <form method="post" action="/admin/ajustes" class="grid cols-2">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <label>
+      <span>Costo envío nacional (COP)</span>
+      <input type="number" name="shippingFlat" min="0" value="<%= settings.shippingFlat %>">
+    </label>
+    <label>
+      <span>Envío gratis desde (COP, 0 = desactivado)</span>
+      <input type="number" name="freeShippingMin" min="0" value="<%= settings.freeShippingMin %>">
+    </label>
+    <label>
+      <span>WhatsApp de confirmación (con indicativo 57)</span>
+      <input name="whatsapp" value="<%= settings.whatsapp %>">
+    </label>
+    <label style="grid-column:1 / -1;">
+      <span>Instrucciones para pago manual (Nequi / Bancolombia)</span>
+      <textarea name="manualPaymentInfo" rows="3"><%= settings.manualPaymentInfo %></textarea>
+    </label>
+    <div><button type="submit">Guardar ajustes</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Cambiar Contraseña Administrativa</h2>
+  <form method="post" action="/admin/ajustes/password" class="grid cols-2">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <label>
+      <span>Contraseña actual</span>
+      <input type="password" name="currentPassword" required autocomplete="current-password">
+    </label>
+    <label>
+      <span>Nueva contraseña (mínimo 10 caracteres)</span>
+      <input type="password" name="newPassword" required minlength="10" autocomplete="new-password">
+    </label>
+    <div><button class="secondary" type="submit">Actualizar contraseña</button></div>
+  </form>
+</div>
+<%- include('foot') %>

@@ -6,7 +6,7 @@ import { loadCatalog, toPublicProduct } from '../lib/catalog.js';
 import { getStockMap, reserveStock, releaseReservation, extendReservations, sweepExpiredIfDue } from '../lib/inventory.js';
 import { rollSpinSession, acceptSpinSession } from '../lib/spin.js';
 import { getStoreSettings, validateCoupon } from '../lib/promotions.js';
-import { createOrder, handleWompiWebhook } from '../lib/orders.js';
+import { createOrder, handleWompiWebhook, createPqrsClaim } from '../lib/orders.js';
 import { isWompiConfigured, buildWompiCheckoutConfig } from '../lib/payments/wompi.js';
 import { apiLimiter, stockLimiter, asyncHandler, apiErrorHandler } from '../lib/http.js';
 
@@ -134,6 +134,16 @@ router.post(
   asyncHandler(async (req, res) => {
     const result = await handleWompiWebhook(req.body, req.get('x-event-checksum'));
     res.json(result);
+  }),
+);
+
+/** POST /api/pqrs — radicación de retracto, reversión de pago o PQRS (Ley 1480 / Dec. 587) */
+router.post(
+  '/pqrs',
+  stockLimiter,
+  asyncHandler(async (req, res) => {
+    const claim = await createPqrsClaim(req.body || {});
+    res.status(201).json({ claim });
   }),
 );
 

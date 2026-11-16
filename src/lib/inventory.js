@@ -237,3 +237,19 @@ export async function sweepExpiredIfDue() {
 export function __resetSweepForTests() {
   _lastSweep = 0;
 }
+
+/** Uso interno (admin): fija la cantidad disponible de un producto en Firestore. */
+export async function setProductStock(productId, rawQty) {
+  const id = typeof productId === 'string' ? productId.trim() : '';
+  if (!id || !getProduct(id)) {
+    throw new InventoryError('Producto no encontrado.', 404);
+  }
+
+  const qty = Number(rawQty);
+  if (!Number.isInteger(qty) || qty < 0 || qty > 10000) {
+    throw new InventoryError('Cantidad de stock inválida.', 400);
+  }
+
+  await getDb().collection(STOCK).doc(id).set({ Cantidad: qty }, { merge: true });
+  return { id, stock: qty };
+}

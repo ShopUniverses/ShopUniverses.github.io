@@ -1,0 +1,77 @@
+<%- include('../partials/head', { title: 'Términos y Condiciones', activeNav: '' }) %>
+
+<main class="container section" style="max-width:860px;">
+    <article class="card" style="display:flex; flex-direction:column; gap:18px;">
+        <h1 style="margin:0; font-size:2.2rem;">Términos y Condiciones de Uso y Compra</h1>
+        <p><small>Última actualización: 2026 — República de Colombia</small></p>
+
+        <section>
+            <h2>1. Identificación del Responsable y Comercio</h2>
+            <p>
+                El presente sitio web es operado por <strong><%= store.name %></strong>, NIT/Identificación:
+                <strong><%= store.nit %></strong>, con domicilio en <strong><%= store.city %>, Colombia</strong>,
+                correo electrónico de atención al cliente <strong><%= store.email %></strong> y línea WhatsApp
+                <strong>+<%= storeSettings?.whatsapp || store.whatsapp %></strong>.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. Validez de Mensajes de Datos y Precios (Ley 527 de 1999 y Ley 1480 de 2011)</h2>
+            <p>
+                Toda aceptación electrónica, confirmación de compra y registro de consentimiento realizado en esta plataforma
+                goza de plena validez jurídica probatoria conforme a la <strong>Ley 527 de 1999</strong>.
+            </p>
+            <p>
+                Todos los precios se muestran en <strong>Pesos Colombianos (COP)</strong> e incluyen los impuestos
+                aplicables. Antes de finalizar la compra, el resumen detalla el subtotal, descuentos aplicables, costo
+                de envío nacional y valor total a pagar.
+            </p>
+        </section>
+
+        <section>
+            <h2>3. Ruleta Promocional (Spin Wheel) e Inventario</h2>
+            <p>
+                Los paquetes de Ruleta Estándar y Premium sortean aleatoriamente productos disponibles en inventario real
+                al momento de confirmar el paquete. Una vez confirmados los premios e ingresados al pedido, aplican las
+                condiciones generales de envío y garantía de la tienda.
+            </p>
+        </section>
+
+        <section>
+            <h2>4. Derecho de Retracto (Art. 47 Ley 1480 de 2011 y Ley 2439 de 2024)</h2>
+            <p>
+                En compras efectuadas a través de comercio electrónico, el consumidor tiene derecho a ejercer el
+                <strong>Derecho de Retracto</strong> dentro de los <strong>cinco (5) días hábiles</strong> siguientes
+                a la entrega del bien. El producto deberá devolverse por los mismos medios y en las mismas condiciones en
+                que lo recibió (sin uso, con empaques y etiquetas originales).
+            </p>
+            <p>
+                Conforme a la <strong>Ley 2439 de 2024</strong>, una vez ejercido oportunamente el retracto y recibido
+                el producto, <strong><%= store.name %></strong> reintegrará la totalidad del dinero pagado por el
+                consumidor en un plazo máximo de <strong>quince (15) días calendario</strong>, sin descuentos ni
+                retenciones injustificadas. Se exceptúan los bienes de uso personal o confeccionados conforme a
+                especificaciones personalizadas del consumidor (Art. 47 num. 4 y 7).
+            </p>
+        </section>
+
+        <section>
+            <h2>5. Reversión del Pago y Supervisión SIC</h2>
+            <p>
+                Para solicitudes de reversión del pago conforme al Artículo 51 de la Ley 1480 de 2011 y el Decreto 587
+                de 2016, consulta nuestro canal formal en <a href="/reversion-de-pago">Solicitud de Reversión y Retracto</a>.
+                Autoridad de vigilancia: <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">Superintendencia de Industria y Comercio (SIC)</a>.
+            </p>
+        </section>
+
+        <section>
+            <h2>6. Propiedad Intelectual y Legislación Aplicable</h2>
+            <p>
+                Las marcas, logotipos, fotografías, ilustraciones y código fuente de este sitio pertenecen a
+                <strong><%= store.name %></strong> o cuentan con licencia de uso (Ley 23 de 1982 y Decisión Andina 351).
+                Estos términos se rigen exclusivamente por las leyes de la República de Colombia.
+            </p>
+        </section>
+    </article>
+</main>
+
+<%- include('../partials/foot', { scripts: ['/assets/js/main.js'] }) %>

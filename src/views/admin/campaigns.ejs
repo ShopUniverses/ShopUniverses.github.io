@@ -1,0 +1,101 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1>Campañas, Evento Flash & Cupones</h1>
+</div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h2>⚡ Evento Flash Global (Toda la tienda)</h2>
+    <p class="muted" style="font-size:0.88rem; margin-top:0;">
+      Al activarlo se muestra el banner promocional y se descuenta automáticamente en el catálogo y carrito.
+    </p>
+    <form method="post" action="/admin/campanas/flash" style="display:flex; flex-direction:column; gap:12px;">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <label style="flex-direction:row; align-items:center; gap:8px;">
+        <input type="checkbox" name="active" style="width:auto;" <%= settings.flashSale?.active ? 'checked' : '' %>>
+        <span>Activar Evento Flash en toda la tienda</span>
+      </label>
+      <label>
+        <span>Título del evento</span>
+        <input name="title" value="<%= settings.flashSale?.title || '' %>" placeholder="Ej. Cyber ShopUniverses">
+      </label>
+      <label>
+        <span>Porcentaje de descuento (%)</span>
+        <input type="number" name="percent" min="0" max="90" value="<%= settings.flashSale?.percent || 0 %>">
+      </label>
+      <button type="submit">Guardar Evento Flash</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>🎟️ Crear Cupón Promocional</h2>
+    <p class="muted" style="font-size:0.88rem; margin-top:0;">
+      Define códigos promocionales con un límite exacto de redenciones (ej. para los primeros 15 clientes).
+    </p>
+    <form method="post" action="/admin/campanas/cupones" style="display:flex; flex-direction:column; gap:12px;">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <label>
+        <span>Código (ej. PRIMEROS15)</span>
+        <input name="code" required minlength="3" placeholder="PRIMEROS15" style="text-transform:uppercase;">
+      </label>
+      <div class="grid cols-2">
+        <label>
+          <span>Tipo</span>
+          <select name="type">
+            <option value="percent">Porcentaje (%)</option>
+            <option value="fixed">Monto fijo (COP)</option>
+          </select>
+        </label>
+        <label>
+          <span>Valor</span>
+          <input type="number" name="value" min="1" required placeholder="15">
+        </label>
+      </div>
+      <div class="grid cols-2">
+        <label>
+          <span>Límite de usos</span>
+          <input type="number" name="maxUses" min="1" required placeholder="15">
+        </label>
+        <label>
+          <span>Compra mínima (COP)</span>
+          <input type="number" name="minSubtotal" min="0" value="0">
+        </label>
+      </div>
+      <button type="submit">Crear / Actualizar Cupón</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Cupones Activos e Historial</h2>
+  <% if (!coupons.length) { %>
+    <p class="muted">No hay cupones creados todavía.</p>
+  <% } else { %>
+    <table>
+      <tr>
+        <th>Código</th>
+        <th>Beneficio</th>
+        <th>Usos</th>
+        <th>Mínimo</th>
+        <th>Estado</th>
+        <th class="right">Acción</th>
+      </tr>
+      <% coupons.forEach(function (c) { %>
+      <tr>
+        <td><strong><%= c.code %></strong></td>
+        <td><%= c.type === 'percent' ? c.value + '%' : fmtCOP(c.value) %></td>
+        <td><%= c.usedCount || 0 %> / <%= c.maxUses %></td>
+        <td><%= fmtCOP(c.minSubtotal || 0) %></td>
+        <td><span class="badge <%= c.active ? 'pagado' : 'cancelado' %>"><%= c.active ? 'Activo' : 'Inactivo' %></span></td>
+        <td class="right">
+          <form method="post" action="/admin/campanas/cupones/<%= c.code %>/toggle" style="display:inline;">
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
+            <button class="sm secondary" type="submit"><%= c.active ? 'Desactivar' : 'Activar' %></button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </table>
+  <% } %>
+</div>
+<%- include('foot') %>
