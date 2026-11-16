@@ -90,6 +90,14 @@ async function aceptarRuletaAPI(spinToken) {
   return apiPost("/api/spin/accept", { spinToken });
 }
 
+async function validarCuponAPI(code, subtotal) {
+  return apiPost("/api/coupons/validate", { code, subtotal });
+}
+
+async function crearOrdenAPI(payload) {
+  return apiPost("/api/orders", payload);
+}
+
 /**************************************************
  * INICIALIZACIÓN Y SINCRONIZACIÓN DE STOCK
  **************************************************/
@@ -103,6 +111,8 @@ async function cargarInventario() {
 
     INVENTARIO = {
       config: data.config,
+      flashSale: data.flashSale || null,
+      shipping: data.shipping || null,
       productos: data.productos.map((p) => ({
         ...p,
         precio_referencia: p.precio ?? p.precio_referencia,
@@ -235,6 +245,8 @@ export {
   extenderReservasAPI,
   girarRuletaAPI,
   aceptarRuletaAPI,
+  validarCuponAPI,
+  crearOrdenAPI,
   getProductosCatalogo,
   getProductosSpinEstandar,
   getProductosSpinPremium,

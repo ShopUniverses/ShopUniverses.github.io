@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title ? `${title} | ${store.name}` : store.name %></title>
+
+    <link rel="icon" href="/assets/img/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/assets/img/favicon/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/theme.css">
+    <% if (locals.extraCss && Array.isArray(extraCss)) { extraCss.forEach(function (href) { %>
+    <link rel="stylesheet" href="<%= href %>">
+    <% }); } %>
+</head>
+<body>
+
+    <% if (locals.flashSale && flashSale.active && Number(flashSale.percent) > 0) { %>
+    <div id="flash-banner" style="background:linear-gradient(90deg,var(--color-primary),var(--color-accent)); color:#07070d; text-align:center; padding:8px 16px; font-weight:700; font-size:0.95rem; letter-spacing:0.4px;">
+        ⚡ <%= flashSale.title || '¡EVENTO FLASH ACTIVO!' %> — <%= flashSale.percent %>% DE DESCUENTO EN TODA LA TIENDA ⚡
+    </div>
+    <% } %>
+
+    <nav class="nav" style="position:relative;">
+        <div class="nav-brand">
+            <a href="/"><%= store.name %></a>
+        </div>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label" aria-label="Abrir menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        <div class="nav-links">
+            <a href="/"<%- locals.activeNav === 'inicio' ? ' aria-current="page"' : '' %>>Inicio</a>
+            <a href="/catalogo"<%- locals.activeNav === 'catalogo' ? ' aria-current="page"' : '' %>>Catálogo</a>
+            <a href="/spin"<%- locals.activeNav === 'spin' ? ' aria-current="page"' : '' %>>Ruleta</a>
+            <a href="/carrito"<%- locals.activeNav === 'carrito' ? ' aria-current="page"' : '' %>>Carrito</a>
+        </div>
+    </nav>

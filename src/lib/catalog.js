@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
+import { applyFlashSale } from './promotions.js';
 
 const CATALOG_FILE = path.join(config.dataDir, 'inventario.json');
 
@@ -32,17 +33,31 @@ export function getProduct(id) {
 }
 
 /** Elimina campos internos (costo) antes de enviar al navegador. */
-export function toPublicProduct(p, stock) {
+export function toPublicProduct(p, stock, flashSale = null) {
+  const sale = applyFlashSale(p.precio_referencia, flashSale);
   return {
     id: p.id,
     nombre: p.nombre,
     imagen: p.imagen,
-    precio: p.precio_referencia,
+    precio: sale.precio,
+    ...(sale.precioOriginal !== null
+      ? { precio_original: sale.precioOriginal, descuento_porcentaje: sale.descuentoPorcentaje }
+      : {}),
     categoria: p.categoria,
     flags: p.flags,
     peso_spin: p.peso_spin,
     stock: Number.isFinite(stock) ? stock : 0,
   };
+}
+
+/** Devuelve la lista ordenada de categorías únicas presentes en el catálogo. */
+export function listCategories() {
+  const cats = new Set();
+  for (const p of loadCatalog().productos) {
+    const c = typeof p.categoria === 'string' ? p.categoria.trim() : '';
+    if (c) cats.add(c);
+  }
+  return [...cats].sort((a, b) => a.localeCompare(b, 'es'));
 }
 
 /** Versión saneada del JSON para el frontend legado (sin costos). */

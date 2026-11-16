@@ -1,0 +1,42 @@
+<%- include('partials/head', { title: 'Catálogo', activeNav: 'catalogo' }) %>
+
+<header class="container section">
+    <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+        <a href="/">
+            <img
+                src="/assets/img/perfil/2.webp"
+                alt="Logo <%= store.name %>"
+                class="logo-header"
+                style="max-width:180px;"
+                loading="lazy"
+            >
+        </a>
+        <div>
+            <h1 style="margin:0; font-size:2.6rem; letter-spacing:1px;">
+                🛍️ Catálogo ShopUniverses
+            </h1>
+            <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
+                Explora nuestros productos disponibles<br>
+            </p>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <% if (categories && categories.length > 0) { %>
+    <div id="categoria-filtros" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px;">
+        <button type="button" data-categoria="" class="categoria-btn active">Todos</button>
+        <% categories.forEach(function (cat) { %>
+        <button type="button" data-categoria="<%= cat %>" class="categoria-btn secondary"><%= cat %></button>
+        <% }); %>
+    </div>
+    <% } %>
+
+    <section
+        id="catalogo"
+        class="grid"
+        style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+    </section>
+</main>
+
+<%- include('partials/foot', { scripts: ['/assets/js/data.js', '/assets/js/carrito.js', '/assets/js/main.js', '/assets/js/catalogo.js'] }) %>

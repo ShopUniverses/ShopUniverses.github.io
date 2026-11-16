@@ -14,14 +14,31 @@ import {
     inicializarCarrito
 } from "./carrito.js";
 
+let categoriaActiva = "";
+
 // Sin cache fijo — getProductosCatalogo() siempre lee stock fresco
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarInventario();
     inicializarCarrito();
 
+    const filtros = document.getElementById("categoria-filtros");
+    if (filtros) {
+        filtros.querySelectorAll("[data-categoria]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                categoriaActiva = btn.dataset.categoria || "";
+                filtros.querySelectorAll("[data-categoria]").forEach(b => {
+                    const activo = (b.dataset.categoria || "") === categoriaActiva;
+                    b.classList.toggle("active", activo);
+                    b.classList.toggle("secondary", !activo);
+                });
+                renderCatalogo();
+            });
+        });
+    }
+
     renderCatalogo();
 
-    // Cuando Firebase notifica un cambio de stock desde cualquier cliente,
+    // Cuando el servidor notifica un cambio de stock,
     // re-renderiza el catálogo completo con datos frescos.
     // Esto evita que un usuario vea stock disponible que ya fue comprado.
     onStockChange(() => renderCatalogo());
@@ -42,7 +59,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     contenedor.innerHTML = "";
 
     // Siempre recalcula desde stock actual — nunca desde cache
-    const productos = getProductosCatalogo();
+    const todos = getProductosCatalogo();
+    const productos = categoriaActiva
+        ? todos.filter(p => (p.categoria || "").trim() === categoriaActiva)
+        : todos;
 
     if (productos.length === 0) {
         contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
@@ -56,14 +76,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const card = document.createElement("div");
         card.className = "card producto-card";
 
+        const imgSrc = "/" + String(producto.imagen || "").replace(/^\.?\//, "");
+
+        const precioHtml = producto.precio_original && producto.precio_original > producto.precio_referencia
+            ? `<p><del style="color:var(--color-text-muted); margin-right:6px;">$${formatearPrecio(producto.precio_original)}</del><strong style="color:var(--color-accent);">$${formatearPrecio(producto.precio_referencia)}</strong></p>`
+            : `<p><strong>$${formatearPrecio(producto.precio_referencia)}</strong></p>`;
+
         card.innerHTML = `
         <div class="producto-imagen">
-            <img src="./${producto.imagen}" alt="${producto.nombre}">
+            <img src="${imgSrc}" alt="${producto.nombre}">
         </div>
 
         <div class="producto-info">
             <h3>${producto.nombre}</h3>
-            <p><strong>$${formatearPrecio(producto.precio_referencia)}</strong></p>
+            ${precioHtml}
             <small>Stock disponible: ${stockActual}</small>
         </div>
 
