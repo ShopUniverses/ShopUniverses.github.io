@@ -256,8 +256,8 @@ canvas {
 
     /* RULETA */
     .wheel-wrapper {
-        width: 300px;
-        height: 300px;
+        width: min(84vw, 310px);
+        height: min(84vw, 310px);
         margin-bottom: 1.5rem;
     }
 

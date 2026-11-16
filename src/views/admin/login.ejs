@@ -10,7 +10,7 @@
   <form method="post" action="/admin/login" style="display:flex; flex-direction:column; gap:14px;">
     <label>
       <span>Correo electrónico</span>
-      <input type="email" name="email" required autocomplete="username" placeholder="admin@shopuniverses.com">
+      <input type="email" name="email" required autocomplete="username" value="<%= store.email %>" placeholder="<%= store.email %>">
     </label>
     <label>
       <span>Contraseña</span>

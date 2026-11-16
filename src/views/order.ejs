@@ -15,7 +15,7 @@
     <% if (order.status === 'pendiente') { %>
     <section class="card">
         <% if (order.paymentMethod === 'wompi' && wompi) { %>
-            <h2>💳 Completa tu pago seguro</h2>
+            <h2>✦ Completa tu pago seguro</h2>
             <p style="margin:10px 0 18px; color:var(--color-text-muted);">
                 Total a pagar: <strong style="color:var(--color-text);"><%= fmtCOP(order.total) %></strong>.
                 Tu inventario está reservado hasta el <%= fmtDate(order.expiresAt) %>.
@@ -29,7 +29,7 @@
                 </a>
             </div>
         <% } else if (order.paymentMethod === 'wompi') { %>
-            <h2>⏳ Confirmando pago en pasarela</h2>
+            <h2>✦ Confirmando pago en pasarela</h2>
             <p style="margin:10px 0 16px; color:var(--color-text-muted);">
                 Si ya realizaste el pago en Wompi, esta página se actualizará en cuanto recibamos la confirmación bancaria.
             </p>
@@ -37,7 +37,7 @@
                 <button type="button" class="secondary">Actualizar estado</button>
             </a>
         <% } else { %>
-            <h2>📲 Instrucciones de pago</h2>
+            <h2>✦ Instrucciones de pago</h2>
             <p style="margin:10px 0; white-space:pre-line;"><%= settings?.manualPaymentInfo || 'Transferencia Nequi o Bancolombia.' %></p>
             <p style="margin:10px 0;"><strong>Total a pagar: <%= fmtCOP(order.total) %></strong></p>
             <p style="margin:0 0 16px; color:var(--color-text-muted); font-size:0.9rem;">
@@ -52,21 +52,21 @@
     </section>
     <% } else if (order.status === 'pagado') { %>
     <section class="card" style="border-color:var(--color-accent);">
-        <h2>✅ ¡Pago recibido!</h2>
+        <h2>✨ ¡Pago recibido!</h2>
         <p style="color:var(--color-text-muted);">
             Confirmamos tu pago<%= order.paymentRef ? ` (Ref: ${order.paymentRef})` : '' %>. Estamos alistando tu pedido para envío.
         </p>
     </section>
     <% } else if (order.status === 'enviado') { %>
     <section class="card" style="border-color:var(--color-accent);">
-        <h2>🚚 Tu pedido va en camino</h2>
+        <h2>🚀 Tu pedido va en camino</h2>
         <% if (order.tracking) { %>
         <p>Guía de seguimiento: <strong><%= order.tracking %></strong></p>
         <% } %>
     </section>
     <% } else if (order.status === 'cancelado') { %>
     <section class="card">
-        <h2>❌ Pedido cancelado</h2>
+        <h2>☄️ Pedido cancelado</h2>
         <p style="margin-bottom:16px; color:var(--color-text-muted);">
             Motivo: <%= order.cancelReason || 'Cancelado' %>. Las unidades fueron devueltas al inventario.
         </p>
@@ -74,7 +74,7 @@
     </section>
     <% } %>
 
-    <div class="grid" style="grid-template-columns: 1.2fr 0.8fr; gap:24px;">
+    <div class="layout-sidebar">
         <section class="card">
             <h3>Productos del pedido</h3>
             <ul style="list-style:none; padding:0; margin:16px 0;">
@@ -83,7 +83,7 @@
                     <div>
                         <strong><%= it.nombre %></strong>
                         <small style="display:block;">
-                            <%= it.origen === 'spin' ? '🎡 Premio Spin' : 'Catálogo' %> · Cant. <%= it.qty %>
+                            <%= it.origen === 'spin' ? '🪐 Premio Spin' : 'Catálogo' %> · Cant. <%= it.qty %>
                         </small>
                     </div>
                     <span><%= fmtCOP(it.lineTotal) %></span>

@@ -19,7 +19,7 @@ const pqrsOf = (radicado) => db._data.get(`pqrs/${radicado}`);
 
 before(async () => {
   prevAdmin = { email: config.adminEmail, password: config.adminPassword };
-  config.adminEmail = 'admin@shopuniverses.com';
+  config.adminEmail = 'jaidimportando@gmail.com';
   config.adminPassword = 'ClaveAdminPrueba2026!';
 
   await new Promise((resolve) => {
@@ -141,6 +141,14 @@ test('Autenticación admin, protección CSRF, barra flotante y campañas/cupones
     password: 'clave-incorrecta',
   });
   assert.equal(badLogin.status, 401);
+
+  // Login válido con espacios accidentales en la contraseña entrega cookie y sesión
+  const paddedLogin = await postForm('/admin/login', {
+    email: 'jaidimportando@gmail.com',
+    password: `  ${config.adminPassword}  `,
+  });
+  assert.equal(paddedLogin.status, 302);
+  assert.equal(paddedLogin.headers.get('location'), '/admin');
 
   // Login válido entrega cookie y sesión
   const { cookie, csrf, dashHtml } = await loginAsAdmin();
