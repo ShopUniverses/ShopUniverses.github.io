@@ -4,6 +4,7 @@ import { config } from '../src/config.js';
 import { createFakeFirestore } from './helpers/fake-firestore.js';
 import { __setDbForTests } from '../src/lib/firebase.js';
 import { createOrder } from '../src/lib/orders.js';
+import { ensureAdminFromEnv, changeAdminPassword, verifyAdminCredentials } from '../src/lib/auth.js';
 import { app } from '../src/server.js';
 
 let server;
@@ -249,4 +250,26 @@ test('Ciclo logístico completo de pedido desde admin: pagado -> enviado con gu�
   );
   assert.equal(delivRes.status, 302);
   assert.equal(orderOf(order.code).status, 'entregado');
+});
+
+test('ensureAdminFromEnv crea el admin en Firestore y changeAdminPassword invalida la clave anterior', async () => {
+  const created = await ensureAdminFromEnv();
+  assert.equal(created, true);
+  assert.ok(db._data.get(`admins/${config.adminEmail}`)?.passwordHash);
+
+  // Segunda ejecución no sobrescribe ni duplica
+  const second = await ensureAdminFromEnv();
+  assert.equal(second, false);
+
+  const okBefore = await verifyAdminCredentials(config.adminEmail, config.adminPassword);
+  assert.equal(okBefore?.email, config.adminEmail);
+
+  await changeAdminPassword(config.adminEmail, config.adminPassword, 'NuevaClaveSegura2026!');
+
+  // La clave vieja ya no debe funcionar cuando Firestore tiene el nuevo hash
+  const oldRejected = await verifyAdminCredentials(config.adminEmail, config.adminPassword);
+  assert.equal(oldRejected, null);
+
+  const okAfter = await verifyAdminCredentials(config.adminEmail, 'NuevaClaveSegura2026!');
+  assert.equal(okAfter?.email, config.adminEmail);
 });

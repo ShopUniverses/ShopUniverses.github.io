@@ -2,6 +2,7 @@
 // ROUTES/ADMIN.JS — Panel Administrativo Seguro (/admin)
 // ========================================================
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { loadCatalog } from '../lib/catalog.js';
 import { getStockMap, setProductStock } from '../lib/inventory.js';
 import {
@@ -28,9 +29,21 @@ import {
   startAdminSession,
   clearAdminSession,
 } from '../lib/auth.js';
-import { stockLimiter, asyncHandler } from '../lib/http.js';
+import { asyncHandler } from '../lib/http.js';
 
 const router = Router();
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 20,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: (req, res) =>
+    res.status(429).render('admin/login', {
+      title: 'Acceso Administrativo',
+      error: 'Demasiados intentos fallidos. Espera unos minutos antes de volver a intentar.',
+    }),
+});
 
 router.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
@@ -46,7 +59,7 @@ router.get('/login', (req, res) => {
 
 router.post(
   '/login',
-  stockLimiter,
+  loginLimiter,
   asyncHandler(async (req, res) => {
     const admin = await verifyAdminCredentials(req.body?.email, req.body?.password);
     if (!admin) {

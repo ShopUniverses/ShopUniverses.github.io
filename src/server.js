@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
 import { fmtCOP, fmtDate } from './lib/util.js';
 import { legacyPublicCatalog } from './lib/catalog.js';
-import { loadAdmin } from './lib/auth.js';
+import { loadAdmin, ensureAdminFromEnv } from './lib/auth.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
 import storeRoutes from './routes/store.js';
@@ -93,7 +93,15 @@ app.use((req, res) => {
 // Inicio del servidor solo si este archivo se ejecuta directamente (no en Netlify ni en tests)
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isMain) {
+  await ensureAdminFromEnv();
   app.listen(config.port, config.host, () => {
-    console.log(`🚀 Servidor ShopUniverses corriendo en: http://${config.host}:${config.port}`);
+    const baseUrl = `http://${config.host}:${config.port}`;
+    console.log(`\n  Tienda ${config.store.name} lista en: ${baseUrl}`);
+    console.log(`  Panel administrativo:        ${baseUrl}/admin`);
+    console.log(`  Usuario admin configurado:   ${config.adminEmail}`);
+    if (!config.isProd && config.adminPassword) {
+      console.log(`  Clave inicial (.env):        ${config.adminPassword} (o la configurada en Firestore)`);
+    }
+    console.log('  (Para cambiar credenciales: npm run create-admin -- correo "nueva-clave")\n');
   });
 }
