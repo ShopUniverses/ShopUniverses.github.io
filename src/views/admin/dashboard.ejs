@@ -1,0 +1,79 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1>Resumen del Negocio</h1>
+  <div class="row">
+    <a class="btn secondary" href="/admin/campanas">⚡ Campañas & Cupones</a>
+    <a class="btn" href="/admin/pedidos">Ver pedidos</a>
+  </div>
+</div>
+
+<div class="grid cols-4" style="margin-bottom:20px;">
+  <div class="kpi">
+    <span>Ventas hoy</span>
+    <b><%= fmtCOP(today.total) %></b>
+    <small class="muted"><%= today.n %> pedidos pagados</small>
+  </div>
+  <div class="kpi">
+    <span>Ventas 30 días</span>
+    <b><%= fmtCOP(sales30d.total) %></b>
+    <small class="muted"><%= sales30d.n %> pedidos pagados</small>
+  </div>
+  <div class="kpi">
+    <span>Por cobrar</span>
+    <b><%= counts.pendiente || 0 %></b>
+    <small><a href="/admin/pedidos?estado=pendiente">pedidos pendientes</a></small>
+  </div>
+  <div class="kpi">
+    <span>Por enviar</span>
+    <b><%= counts.pagado || 0 %></b>
+    <small><a href="/admin/pedidos?estado=pagado">pagados sin enviar</a></small>
+  </div>
+</div>
+
+<% if (settings.flashSale && settings.flashSale.active) { %>
+<div class="card" style="border-color: var(--accent);">
+  <strong>⚡ Evento Flash Activo:</strong>
+  <span><%= settings.flashSale.title || 'Descuento Global' %> — <%= settings.flashSale.percent %>% OFF en toda la tienda</span>
+  <a href="/admin/campanas" style="margin-left:10px;">Gestionar</a>
+</div>
+<% } %>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Últimos pedidos</h2>
+    <% if (!recent.length) { %>
+      <p class="muted">Aún no hay pedidos registrados.</p>
+    <% } else { %>
+      <table>
+        <tr><th>Código</th><th>Cliente</th><th class="right">Total</th><th>Estado</th></tr>
+        <% recent.forEach(function (o) { %>
+        <tr>
+          <td><a href="/admin/pedidos/<%= o.code %>"><%= o.code %></a><br><small class="muted"><%= fmtDate(o.createdAt) %></small></td>
+          <td><%= o.customer?.name || '' %></td>
+          <td class="right"><%= fmtCOP(o.total) %></td>
+          <td><span class="badge <%= o.status %>"><%= o.status %></span></td>
+        </tr>
+        <% }); %>
+      </table>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <h2>Stock bajo (≤ 2 uds)</h2>
+    <% if (!lowStock.length) { %>
+      <p class="muted">Todo el inventario está saludable.</p>
+    <% } else { %>
+      <table>
+        <tr><th>Producto</th><th class="right">Stock</th><th class="right">Acción</th></tr>
+        <% lowStock.forEach(function (p) { %>
+        <tr>
+          <td><%= p.nombre %><br><small class="muted"><%= p.categoria %></small></td>
+          <td class="right"><%= p.stock === 0 ? 'Agotado' : p.stock + ' uds' %></td>
+          <td class="right"><a class="btn sm secondary" href="/admin/inventario">Ajustar</a></td>
+        </tr>
+        <% }); %>
+      </table>
+    <% } %>
+  </div>
+</div>
+<%- include('foot') %>

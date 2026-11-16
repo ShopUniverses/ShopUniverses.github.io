@@ -1,0 +1,26 @@
+<%- include('head') %>
+<div class="card login-card">
+  <h1 style="margin:0 0 6px; font-size:1.5rem;">Panel <%= store.name %></h1>
+  <p class="muted" style="margin:0 0 18px; font-size:0.9rem;">Acceso exclusivo para administración.</p>
+
+  <% if (locals.error) { %>
+  <div class="alert-err" role="alert"><%= error %></div>
+  <% } %>
+
+  <form method="post" action="/admin/login" style="display:flex; flex-direction:column; gap:14px;">
+    <label>
+      <span>Correo electrónico</span>
+      <input type="email" name="email" required autocomplete="username" placeholder="admin@shopuniverses.com">
+    </label>
+    <label>
+      <span>Contraseña</span>
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p style="margin:16px 0 0; text-align:center; font-size:0.85rem;">
+    <a href="/">← Volver a la tienda</a>
+  </p>
+</div>
+<%- include('foot') %>

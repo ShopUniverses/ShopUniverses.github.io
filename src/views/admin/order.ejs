@@ -1,0 +1,85 @@
+<%- include('head') %>
+<div class="page-head">
+  <div class="row">
+    <h1><%= order.code %></h1>
+    <span class="badge <%= order.status %>"><%= order.status %></span>
+  </div>
+  <a class="btn secondary" href="/admin/pedidos">← Volver a pedidos</a>
+</div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Cliente y Envío</h2>
+    <p><strong><%= order.customer?.name %></strong></p>
+    <p><%= order.customer?.email %> · <%= order.customer?.phone %></p>
+    <% if (order.customer?.document) { %><p class="muted">Documento: <%= order.customer.document %></p><% } %>
+    <p><%= order.customer?.address %><br><%= order.customer?.city %>, <%= order.customer?.department %></p>
+    <% if (order.customer?.notes) { %><p class="muted">Nota: <%= order.customer.notes %></p><% } %>
+  </div>
+
+  <div class="card">
+    <h2>Pago y Logística</h2>
+    <p>Método: <strong><%= order.paymentMethod %></strong><% if (order.paymentRef) { %> · Ref: <%= order.paymentRef %><% } %></p>
+    <p class="muted">Creado: <%= fmtDate(order.createdAt) %></p>
+    <% if (order.paidAt) { %><p class="muted">Pagado: <%= fmtDate(order.paidAt) %></p><% } %>
+    <% if (order.shippedAt) { %><p class="muted">Enviado: <%= fmtDate(order.shippedAt) %><% if (order.tracking) { %> · Guía: <strong><%= order.tracking %></strong><% } %></p><% } %>
+    <% if (order.cancelReason) { %><p style="color:#ff8e8e;">Cancelado: <%= order.cancelReason %></p><% } %>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Productos</h2>
+  <table>
+    <tr><th>Producto</th><th class="right">Cant.</th><th class="right">Subtotal</th></tr>
+    <% (order.items || []).forEach(function (it) { %>
+    <tr>
+      <td><%= it.nombre %> <small class="muted">(<%= it.origen %>)</small></td>
+      <td class="right"><%= it.qty %></td>
+      <td class="right"><%= fmtCOP(it.lineTotal) %></td>
+    </tr>
+    <% }); %>
+    <tr><td colspan="2" class="right muted">Subtotal</td><td class="right"><%= fmtCOP(order.subtotal) %></td></tr>
+    <% if (order.discount > 0) { %>
+    <tr><td colspan="2" class="right">Descuento <%= order.couponCode ? '(' + order.couponCode + ')' : '' %></td><td class="right">- <%= fmtCOP(order.discount) %></td></tr>
+    <% } %>
+    <tr><td colspan="2" class="right muted">Envío</td><td class="right"><%= fmtCOP(order.shipping) %></td></tr>
+    <tr><td colspan="2" class="right"><strong>Total</strong></td><td class="right"><strong><%= fmtCOP(order.total) %></strong></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Acciones del Pedido</h2>
+  <div class="row">
+    <% if (order.status === 'pendiente') { %>
+    <form method="post" action="/admin/pedidos/<%= order.code %>/pagado" class="row">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input name="paymentRef" placeholder="Referencia de pago" style="width:200px;">
+      <button type="submit">Marcar como pagado</button>
+    </form>
+    <% } %>
+
+    <% if (order.status === 'pagado') { %>
+    <form method="post" action="/admin/pedidos/<%= order.code %>/enviar" class="row">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input name="tracking" placeholder="Número de guía" style="width:200px;">
+      <button type="submit">Marcar como enviado</button>
+    </form>
+    <% } %>
+
+    <% if (order.status === 'enviado') { %>
+    <form method="post" action="/admin/pedidos/<%= order.code %>/entregado">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <button type="submit">Marcar como entregado</button>
+    </form>
+    <% } %>
+
+    <% if (order.status === 'pendiente' || order.status === 'pagado') { %>
+    <form method="post" action="/admin/pedidos/<%= order.code %>/cancelar" class="row">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input name="reason" placeholder="Motivo" style="width:180px;">
+      <button class="danger" type="submit">Cancelar y devolver stock</button>
+    </form>
+    <% } %>
+  </div>
+</div>
+<%- include('foot') %>

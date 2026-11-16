@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title><%= locals.title ? title + ' — ' : '' %>Panel <%= store.name %></title>
+<link rel="icon" href="/assets/img/favicon/favicon.ico" sizes="any">
+<style>
+  :root {
+    --bg: #07070d;
+    --panel: #111122;
+    --border: rgba(255,255,255,0.12);
+    --text: #eaeaf0;
+    --muted: #a3a3ba;
+    --primary: #6b3fa0;
+    --accent: #3dd6d0;
+    --danger: #ff4c4c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .shell { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+  .side { background: var(--panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+  .brand { font-weight: 800; font-size: 1.2rem; color: var(--text); letter-spacing: 0.5px; }
+  .brand small { color: var(--accent); font-weight: 500; }
+  .side nav { display: flex; flex-direction: column; gap: 6px; }
+  .side nav a { padding: 9px 12px; border-radius: 8px; color: var(--text); font-weight: 500; }
+  .side nav a.on, .side nav a:hover { background: rgba(107,63,160,0.28); text-decoration: none; }
+  .side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; border-top: 1px solid var(--border); padding-top: 14px; }
+  .main { padding: 28px; max-width: 1120px; width: 100%; }
+  .page-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+  .page-head h1 { margin: 0; font-size: 1.7rem; }
+  .grid { display: grid; gap: 16px; }
+  .cols-4 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .cols-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+  .card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+  .kpi span { font-size: 0.85rem; color: var(--muted); }
+  .kpi b { font-size: 1.5rem; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+  .right { text-align: right; }
+  .muted { color: var(--muted); }
+  .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 9px 14px; font-size: 0.9rem; cursor: pointer; display: inline-block; }
+  .btn.secondary, button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn.danger, button.danger { background: rgba(255,76,76,0.2); border: 1px solid var(--danger); color: #ffd6d6; }
+  .btn.sm, button.sm { padding: 5px 10px; font-size: 0.82rem; }
+  input, select, textarea { width: 100%; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--border); background: #090913; color: var(--text); font-size: 0.92rem; }
+  label { display: flex; flex-direction: column; gap: 5px; font-size: 0.88rem; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .badge { padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; text-transform: uppercase; background: rgba(255,255,255,0.1); }
+  .badge.pagado, .badge.entregado { background: rgba(61,214,208,0.2); color: var(--accent); }
+  .badge.pendiente { background: rgba(255,215,0,0.2); color: #ffd700; }
+  .badge.cancelado { background: rgba(255,76,76,0.2); color: #ff8e8e; }
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card { max-width: 390px; width: 100%; }
+  .alert-err { padding: 10px; border-radius: 8px; background: rgba(255,76,76,0.18); border: 1px solid var(--danger); color: #ffd6d6; margin-bottom: 14px; font-size: 0.9rem; }
+  @media (max-width: 780px) { .shell { grid-template-columns: 1fr; } .side { border-right: none; border-bottom: 1px solid var(--border); } }
+</style>
+</head>
+<body>
+<% if (locals.admin) { %>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="/admin"><%= store.name %> <small>admin</small></a>
+    <nav>
+      <% const nav = [
+        ['/admin', 'Resumen'],
+        ['/admin/pedidos', 'Pedidos'],
+        ['/admin/campanas', 'Campañas & Cupones'],
+        ['/admin/inventario', 'Inventario'],
+        ['/admin/ajustes', 'Ajustes']
+      ]; %>
+      <% nav.forEach(function (n) {
+        const on = n[0] === '/admin' ? currentPath === '/admin' || currentPath === '/admin/' : currentPath.startsWith(n[0]);
+      %>
+      <a href="<%= n[0] %>" class="<%= on ? 'on' : '' %>"><%= n[1] %></a>
+      <% }); %>
+    </nav>
+    <div class="side-foot">
+      <a href="/">Ver tienda ↗</a>
+      <form method="post" action="/admin/salir">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="secondary sm" type="submit">Cerrar sesión</button>
+      </form>
+      <span class="muted"><%= admin.email %></span>
+    </div>
+  </aside>
+  <main class="main">
+<% } else { %>
+<main class="login-wrap">
+<% } %>

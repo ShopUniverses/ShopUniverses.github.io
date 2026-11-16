@@ -1,0 +1,32 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1>Inventario en Vivo (Firestore)</h1>
+</div>
+
+<div class="card">
+  <table>
+    <tr>
+      <th>Producto</th>
+      <th>Categoría</th>
+      <th class="right">Precio</th>
+      <th class="right">Stock</th>
+      <th class="right">Actualizar</th>
+    </tr>
+    <% items.forEach(function (p) { %>
+    <tr>
+      <td><strong><%= p.nombre %></strong><br><small class="muted"><%= p.id %></small></td>
+      <td><%= p.categoria %></td>
+      <td class="right"><%= fmtCOP(p.precio_referencia) %></td>
+      <td class="right"><%= p.stockActual %> uds</td>
+      <td class="right">
+        <form method="post" action="/admin/inventario/<%= p.id %>/stock" class="row" style="justify-content:flex-end;">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <input type="number" name="stock" min="0" max="10000" value="<%= p.stockActual %>" style="width:90px;">
+          <button class="sm" type="submit">Guardar</button>
+        </form>
+      </td>
+    </tr>
+    <% }); %>
+  </table>
+</div>
+<%- include('foot') %>

@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
 import { fmtCOP, fmtDate } from './lib/util.js';
 import { legacyPublicCatalog } from './lib/catalog.js';
+import { loadAdmin } from './lib/auth.js';
 import apiRoutes from './routes/api.js';
+import adminRoutes from './routes/admin.js';
 import storeRoutes from './routes/store.js';
 
 export const app = express();
@@ -53,17 +55,21 @@ app.use((req, res, next) => {
   res.locals.store = config.store;
   res.locals.flashSale = null;
   res.locals.storeSettings = null;
+  res.locals.admin = null;
+  res.locals.csrf = '';
   res.locals.fmtCOP = fmtCOP;
   res.locals.fmtDate = fmtDate;
   res.locals.currentPath = req.path;
   next();
 });
+app.use(loadAdmin);
 
 // ---------------- API ----------------
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', store: config.store.name, version: '2.0.0', timestamp: new Date().toISOString() });
 });
 app.use('/api', apiRoutes);
+app.use('/admin', adminRoutes);
 
 // ---------------- Archivos estáticos (solo lista blanca) ----------------
 // IMPORTANTE: nunca servir la raíz completa del proyecto (expondría src/, package.json,
