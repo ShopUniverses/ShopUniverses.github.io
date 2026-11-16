@@ -1,0 +1,11 @@
+    <footer class="container section">
+        <small>
+            © <%= store.name %> — Importaciones & Ventas Online
+        </small>
+    </footer>
+
+    <% if (locals.scripts && Array.isArray(scripts)) { scripts.forEach(function (src) { %>
+    <script type="module" src="<%= src %>"></script>
+    <% }); } %>
+</body>
+</html>

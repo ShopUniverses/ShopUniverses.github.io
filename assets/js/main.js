@@ -37,11 +37,11 @@ function initNavigation() {
     }
 
     document.getElementById("btnIrSpin")?.addEventListener("click", () => {
-        window.location.href = "./spin.html";
+        window.location.href = "/spin";
     });
 
     document.getElementById("btnIrCatalogo")?.addEventListener("click", () => {
-        window.location.href = "./catalogo.html";
+        window.location.href = "/catalogo";
     });
 }
 

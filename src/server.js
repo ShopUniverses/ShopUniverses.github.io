@@ -4,12 +4,12 @@
 import express from 'express';
 import helmet from 'helmet';
 import path from 'node:path';
-import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
 import { fmtCOP, fmtDate } from './lib/util.js';
 import { legacyPublicCatalog } from './lib/catalog.js';
 import apiRoutes from './routes/api.js';
+import storeRoutes from './routes/store.js';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -74,20 +74,12 @@ app.get('/data/inventario.json', (req, res) => {
   res.set('Cache-Control', 'no-store').json(legacyPublicCatalog());
 });
 
-const PAGES = new Set(
-  fs.readdirSync(config.root).filter((f) => f.endsWith('.html')).map((f) => f.replace(/\.html$/, '')),
-);
-app.get(['/', '/:page'], (req, res, next) => {
-  const page = (req.params.page || 'index').replace(/\.html$/, '');
-  if (!PAGES.has(page)) return next();
-  res.sendFile(path.join(config.root, `${page}.html`), { maxAge: config.isProd ? '1h' : 0 });
-});
+// ---------------- Vistas SSR ----------------
+app.use('/', storeRoutes);
 
 // 404
 app.use((req, res) => {
-  const notFound = path.join(config.root, '404.html');
-  if (fs.existsSync(notFound)) return res.status(404).sendFile(notFound);
-  res.status(404).send('Página no encontrada');
+  res.status(404).render('notfound', { title: 'Página no encontrada', activeNav: '' });
 });
 
 // Inicio del servidor solo si este archivo se ejecuta directamente (no en Netlify ni en tests)

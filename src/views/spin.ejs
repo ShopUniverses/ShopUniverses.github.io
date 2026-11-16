@@ -1,0 +1,95 @@
+<%- include('partials/head', { title: 'Spin', activeNav: 'spin', extraCss: ['/assets/css/spin.css'] }) %>
+
+<header class="container section">
+    <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+        <a href="/">
+            <img
+                src="/assets/img/perfil/2.webp"
+                alt="Logo <%= store.name %>"
+                class="logo-header"
+                style="max-width:180px;"
+                loading="lazy"
+            >
+        </a>
+        <div>
+            <h1 style="margin:0; font-size:2.8rem; letter-spacing:1px; display: flex; align-items: center; gap: 15px;">
+                🎡 Roulette of the Universe
+            </h1>
+            <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
+                Gira la ruleta estándar o premium y gana productos exclusivos.<br>
+                ¡Tu destino está a un giro de distancia!.
+            </p>
+            <p>
+                Si no te gusta lo que obtienes, ¡Gira de Nuevo!
+                ¡No tiene costo adicional!
+                ¡Prueba la ruleta premium para mejores premios!
+            </p>
+        </div>
+    </div>
+</header>
+
+<main class="container spin">
+    <div class="spin__layout">
+        <div class="spin-visual-area">
+            <div class="spin-mode-selector">
+                <button class="spin-tab active" data-mode="estandar" type="button">
+                    Estándar ($25.000)
+                </button>
+                <button class="spin-tab" data-mode="premium" type="button">
+                    Premium ($8.000)
+                </button>
+            </div>
+
+            <div class="wheel-wrapper">
+                <div class="wheel-arrow"></div>
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                <div class="wheel-center">SPIN</div>
+            </div>
+
+            <div id="spinStatus" class="spin-status-message">
+                Selecciona un modo para comenzar
+            </div>
+        </div>
+
+        <aside class="spin-panel">
+            <div class="spin-panel__header">
+                <h3 class="spin-panel__title" id="panelTitle">Ruleta Estándar</h3>
+                <div class="spin-panel__counter">
+                    Giros restantes: <strong id="girosCounter">5</strong>
+                </div>
+            </div>
+
+            <button id="btnSpinAction" class="btn-spin-action" type="button"></button>
+
+            <div class="spin-rewards">
+                <h4>🎁 Premios en esta sesión</h4>
+                <p class="small">No confirmados hasta aceptar.</p>
+                <ul id="listaPremiosTemporales" class="spin-list">
+                    <li class="empty-msg">Aún no has girado</li>
+                </ul>
+            </div>
+
+            <div class="spin-info">
+                <button id="btnToggleLista" class="secondary small" type="button">Ver productos posibles</button>
+                <div id="lista-productos" class="spin-list is-hidden"></div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<div id="modalPremios" class="spin-modal">
+    <div class="spin-modal__content">
+        <h2>🎁 ¡Sesión Completada!</h2>
+        <p id="modalDescription">Has completado tus giros. ¿Qué deseas hacer?</p>
+
+        <ul id="modalListaPremios" class="spin-modal__list"></ul>
+
+        <div class="spin-modal__actions">
+            <button id="btnResetSpin" class="secondary" type="button">Volver a girar (Descartar)</button>
+            <button id="btnGoPremium" class="btn-premium-link" type="button" style="display:none;">Añadir Premium (+$8.000)</button>
+            <button id="btnAcceptSpin" class="btn-accept" type="button">Aceptar y Agregar al Carrito</button>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/foot', { scripts: ['/assets/js/data.js', '/assets/js/spin.js', '/assets/js/carrito.js', '/assets/js/main.js'] }) %>
