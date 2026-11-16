@@ -92,6 +92,17 @@ function initAdminAccess() {
         if (e.target === modal) close();
     });
 
+    modal.querySelectorAll("[data-toggle-password]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const targetId = btn.getAttribute("data-toggle-password");
+            const input = targetId ? document.getElementById(targetId) : null;
+            if (!input) return;
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+            btn.textContent = isPassword ? "Ocultar" : "Ver";
+        });
+    });
+
     document.addEventListener("keydown", (e) => {
         if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === "A") {
             e.preventDefault();

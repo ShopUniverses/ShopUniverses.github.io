@@ -21,6 +21,60 @@ function safeEqualStr(a, b) {
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
 
+/** Valida los requisitos mínimos de seguridad de una contraseña administrativa. */
+export function validatePassword(pw) {
+  if (typeof pw !== 'string' || pw.trim().length < 10) {
+    return 'La contraseña debe tener al menos 10 caracteres.';
+  }
+  if (pw.length > 200) return 'La contraseña es demasiado larga.';
+  return '';
+}
+
+/** Crea o actualiza un usuario administrador en Firestore con hash bcrypt. */
+export async function createAdmin(email, password, name = 'Administración') {
+  const normEmail = String(email || '').trim().toLowerCase();
+  const cleanPw = String(password || '').trim();
+  if (!normEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail)) {
+    throw new InventoryError('Correo electrónico inválido.', 400);
+  }
+  const bad = validatePassword(cleanPw);
+  if (bad) throw new InventoryError(bad, 400);
+
+  const doc = {
+    email: normEmail,
+    name: String(name || 'Administración').trim(),
+    passwordHash: bcrypt.hashSync(cleanPw, 12),
+    updatedAt: nowIso(),
+  };
+  await getDb().collection(ADMINS_COL).doc(normEmail).set(doc, { merge: true });
+  return { email: normEmail, name: doc.name };
+}
+
+/**
+ * Crea automáticamente el primer administrador en Firestore usando ADMIN_EMAIL y ADMIN_PASSWORD
+ * si la colección `admins` está vacía (modelo Kobra).
+ */
+export async function ensureAdminFromEnv() {
+  if (!isFirebaseConfigured() || !config.adminEmail || !config.adminPassword) return false;
+  try {
+    const existing = await getDb().collection(ADMINS_COL).limit(1).get();
+    if (existing.size > 0) return false;
+
+    const bad = validatePassword(config.adminPassword);
+    if (bad) {
+      console.warn(`[admin] ADMIN_PASSWORD no se usó: ${bad}`);
+      return false;
+    }
+
+    await createAdmin(config.adminEmail, config.adminPassword, 'Administración');
+    console.log(`[admin] Usuario administrador creado en Firestore: ${config.adminEmail}`);
+    return true;
+  } catch (err) {
+    console.warn('[admin] No se pudo verificar/crear admin en Firestore:', err.message);
+    return false;
+  }
+}
+
 /** Parsea las cookies de la cabecera HTTP Cookie. */
 export function parseCookies(cookieHeader = '') {
   const out = {};
@@ -49,16 +103,18 @@ export async function verifyAdminCredentials(email, password) {
     try {
       const snap = await getDb().collection(ADMINS_COL).doc(normEmail).get();
       if (snap.exists && snap.data()?.passwordHash) {
-        if (bcrypt.compareSync(pw, String(snap.data().passwordHash))) {
-          return { email: normEmail };
+        const ok = bcrypt.compareSync(pw, String(snap.data().passwordHash));
+        if (!ok && !process.env.NODE_TEST_CONTEXT) {
+          console.warn(`[auth] Contraseña incorrecta para administrador registrado: ${normEmail}`);
         }
+        return ok ? { email: normEmail } : null;
       }
     } catch (err) {
       console.warn('[auth] No se pudo consultar admins en Firestore:', err.message);
     }
   }
 
-  // Tiempo constante incluso si se usa el respaldo de .env
+  // Respaldo contra variables de entorno si aún no existe registro en Firestore
   bcrypt.compareSync(pw, DUMMY_HASH);
   const envEmail = String(config.adminEmail || '').trim().toLowerCase();
   const envPass = String(config.adminPassword || '').trim();
@@ -67,6 +123,13 @@ export async function verifyAdminCredentials(email, password) {
   const validEmails = new Set([envEmail, 'admin@shopuniverses.com'].filter(Boolean));
   const emailMatch = [...validEmails].some((allowed) => safeEqualStr(normEmail, allowed));
   const passMatch = crypto.timingSafeEqual(sha256(pw), sha256(envPass));
+
+  if ((!emailMatch || !passMatch) && !process.env.NODE_TEST_CONTEXT) {
+    console.warn(
+      `[auth] Login rechazado para "${normEmail}" (emailMatch=${emailMatch}, passMatch=${passMatch})`,
+    );
+  }
+
   return emailMatch && passMatch ? { email: normEmail } : null;
 }
 
@@ -77,15 +140,20 @@ export async function changeAdminPassword(email, currentPassword, newPassword) {
   if (!ok) {
     throw new InventoryError('La contraseña actual es incorrecta.', 401);
   }
-  if (typeof newPassword !== 'string' || newPassword.length < 10 || newPassword.length > 200) {
-    throw new InventoryError('La nueva contraseña debe tener al menos 10 caracteres.', 400);
+  const cleanNext = String(newPassword || '').trim();
+  const bad = validatePassword(cleanNext);
+  if (bad) {
+    throw new InventoryError(bad, 400);
   }
 
-  await getDb().collection(ADMINS_COL).doc(normEmail).set({
-    email: normEmail,
-    passwordHash: bcrypt.hashSync(newPassword, 10),
-    updatedAt: nowIso(),
-  });
+  await getDb().collection(ADMINS_COL).doc(normEmail).set(
+    {
+      email: normEmail,
+      passwordHash: bcrypt.hashSync(cleanNext, 12),
+      updatedAt: nowIso(),
+    },
+    { merge: true },
+  );
   return true;
 }
 

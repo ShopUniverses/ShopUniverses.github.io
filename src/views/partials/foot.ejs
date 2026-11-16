@@ -43,7 +43,10 @@
                 </label>
                 <label style="display:flex; flex-direction:column; gap:5px;">
                     <small>Contraseña</small>
-                    <input type="password" name="password" required autocomplete="current-password" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input id="modal-admin-password" type="password" name="password" required autocomplete="current-password" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
+                        <button type="button" class="secondary" data-toggle-password="modal-admin-password" style="padding:10px 12px; font-size:0.85rem;">Ver</button>
+                    </div>
                 </label>
                 <button type="submit" style="margin-top:4px;">Ingresar al Panel</button>
             </form>
