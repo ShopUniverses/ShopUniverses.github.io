@@ -1,5 +1,27 @@
+# Node.js & Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variables de entorno y llaves secretas
+.env
+.env.local
+.env.production
+serviceAccountKey.json
+*.pem
+
+# Archivos de compilación y datos locales
+data/uploads/
+.netlify/
+
+# Herramientas y temporales
 .zip
 graphify-out/
 .graphify/
 .gemini/
 .agents/
+.vscode/
+.idea/
+Thumbs.db
+[Dd]esktop.ini
