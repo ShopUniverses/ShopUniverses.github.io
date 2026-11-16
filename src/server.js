@@ -51,6 +51,8 @@ app.use(express.urlencoded({ extended: false, limit: '150kb' }));
 // Variables accesibles en todas las vistas EJS
 app.use((req, res, next) => {
   res.locals.store = config.store;
+  res.locals.flashSale = null;
+  res.locals.storeSettings = null;
   res.locals.fmtCOP = fmtCOP;
   res.locals.fmtDate = fmtDate;
   res.locals.currentPath = req.path;

@@ -12,7 +12,21 @@ export function createFakeFirestore(initial = {}) {
     return { id: ref.id, exists: v !== undefined, data: () => (v === undefined ? undefined : structuredClone(v)) };
   };
 
-  const docRef = (col, id) => ({ id, path: `${col}/${id}` });
+  const docRef = (col, id) => {
+    const ref = {
+      id,
+      path: `${col}/${id}`,
+      get: async () => snapOf(ref),
+      set: async (v, opts) => {
+        data.set(ref.path, opts?.merge ? { ...(data.get(ref.path) || {}), ...structuredClone(v) } : structuredClone(v));
+      },
+      update: async (v) => {
+        if (!data.has(ref.path)) throw new Error(`No document to update: ${ref.path}`);
+        data.set(ref.path, { ...data.get(ref.path), ...structuredClone(v) });
+      },
+    };
+    return ref;
+  };
 
   const listDocs = (col) =>
     [...data.keys()].filter((k) => k.startsWith(`${col}/`)).map((k) => snapOf(docRef(col, k.slice(col.length + 1))));

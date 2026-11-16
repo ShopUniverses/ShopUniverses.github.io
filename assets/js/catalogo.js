@@ -78,6 +78,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const imgSrc = "/" + String(producto.imagen || "").replace(/^\.?\//, "");
 
+        const precioHtml = producto.precio_original && producto.precio_original > producto.precio_referencia
+            ? `<p><del style="color:var(--color-text-muted); margin-right:6px;">$${formatearPrecio(producto.precio_original)}</del><strong style="color:var(--color-accent);">$${formatearPrecio(producto.precio_referencia)}</strong></p>`
+            : `<p><strong>$${formatearPrecio(producto.precio_referencia)}</strong></p>`;
+
         card.innerHTML = `
         <div class="producto-imagen">
             <img src="${imgSrc}" alt="${producto.nombre}">
@@ -85,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         <div class="producto-info">
             <h3>${producto.nombre}</h3>
-            <p><strong>$${formatearPrecio(producto.precio_referencia)}</strong></p>
+            ${precioHtml}
             <small>Stock disponible: ${stockActual}</small>
         </div>
 

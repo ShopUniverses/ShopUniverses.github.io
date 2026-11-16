@@ -17,6 +17,12 @@
 </head>
 <body>
 
+    <% if (locals.flashSale && flashSale.active && Number(flashSale.percent) > 0) { %>
+    <div id="flash-banner" style="background:linear-gradient(90deg,var(--color-primary),var(--color-accent)); color:#07070d; text-align:center; padding:8px 16px; font-weight:700; font-size:0.95rem; letter-spacing:0.4px;">
+        ⚡ <%= flashSale.title || '¡EVENTO FLASH ACTIVO!' %> — <%= flashSale.percent %>% DE DESCUENTO EN TODA LA TIENDA ⚡
+    </div>
+    <% } %>
+
     <nav class="nav" style="position:relative;">
         <div class="nav-brand">
             <a href="/"><%= store.name %></a>
