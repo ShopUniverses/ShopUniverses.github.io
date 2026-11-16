@@ -19,8 +19,8 @@ export const config = {
   sessionSecret: env.SESSION_SECRET || 'dev_secret_key_shopuniverses_2026',
   
   // Administrador inicial
-  adminEmail: (env.ADMIN_EMAIL || 'admin@shopuniverses.com').trim().toLowerCase(),
-  adminPassword: env.ADMIN_PASSWORD || 'CambiarEstaClaveSegura2026!',
+  adminEmail: (env.ADMIN_EMAIL || 'jaidimportando@gmail.com').trim().toLowerCase(),
+  adminPassword: env.ADMIN_PASSWORD || 'ShopUniverses2026!',
 
   // Google Firebase
   firebase: {
@@ -42,11 +42,11 @@ export const config = {
   // Información Legal del Comercio (Colombia)
   store: {
     name: env.STORE_NAME || 'ShopUniverses',
-    nit: env.STORE_NIT || 'Pendiente NIT',
+    nit: env.STORE_NIT || '',
     city: env.STORE_CITY || 'Bogotá D.C.',
     address: env.STORE_ADDRESS || 'Colombia',
     phone: env.STORE_PHONE || '573001234567',
-    email: env.STORE_EMAIL || 'contacto@shopuniverses.com',
+    email: env.STORE_EMAIL || 'jaidimportando@gmail.com',
     whatsapp: env.WHATSAPP_NUMBER || '573001234567',
     shippingFlat: Number(env.SHIPPING_FLAT || 12000),
     freeShippingMin: Number(env.FREE_SHIPPING_MIN || 100000),
