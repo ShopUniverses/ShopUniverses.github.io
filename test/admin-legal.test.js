@@ -87,6 +87,9 @@ test('Footer y rutas legales cumplen con SIC, Ley 1480/2439, Ley 1581/2300 y Dec
   assert.ok(homeHtml.includes('https://www.sic.gov.co'));
   assert.ok(homeHtml.includes('id="btn-admin-secret"'));
   assert.ok(homeHtml.includes('id="admin-secret-modal"'));
+  assert.ok(homeHtml.includes('id="cookie-banner"'));
+  assert.ok(homeHtml.includes('jaidimportando@gmail.com'));
+  assert.ok(homeHtml.includes('/assets/img/perfil/2.webp'));
 
   const termsRes = await fetch(`${base}/terminos-y-condiciones`);
   assert.equal(termsRes.status, 200);

@@ -45,7 +45,31 @@ function initNavigation() {
     });
 
     initAdminAccess();
+    initCookieBanner();
     initPqrsForm();
+}
+
+function initCookieBanner() {
+    const banner = document.getElementById("cookie-banner");
+    const acceptBtn = document.getElementById("btn-cookies-accept");
+    const essentialBtn = document.getElementById("btn-cookies-essential");
+    if (!banner) return;
+
+    const STORAGE_KEY = "su_cookie_consent";
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        banner.style.display = "block";
+    }
+
+    const saveChoice = (mode) => {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ mode, acceptedAt: new Date().toISOString() })
+        );
+        banner.style.display = "none";
+    };
+
+    acceptBtn?.addEventListener("click", () => saveChoice("all"));
+    essentialBtn?.addEventListener("click", () => saveChoice("essential"));
 }
 
 function initAdminAccess() {
