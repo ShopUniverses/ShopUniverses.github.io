@@ -1,0 +1,27 @@
+{
+  "name": "shopuniverses-store",
+  "version": "2.0.0",
+  "description": "Tienda web oficial de ShopUniverses con catálogo, ruleta gamificada, pasarela Wompi y panel administrativo",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.22.3",
+    "express-rate-limit": "^7.5.1",
+    "firebase-admin": "^12.7.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.5.0",
+    "serverless-http": "^3.2.0",
+    "sharp": "^0.35.5"
+  }
+}
