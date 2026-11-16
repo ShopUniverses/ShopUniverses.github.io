@@ -1,19 +1,19 @@
 <%- include('partials/head', { title: 'Finalizar compra', activeNav: 'carrito' }) %>
 
 <header class="container section" style="margin-bottom:24px;">
-    <h1 style="margin:0; font-size:2.4rem;">💳 Finalizar Compra</h1>
+    <h1 style="margin:0; font-size:2.4rem;">🚀 Finalizar Compra</h1>
     <p style="margin:8px 0 0; color:var(--color-text-muted);">
         Completa tus datos de envío en Colombia y elige tu método de pago seguro.
     </p>
 </header>
 
 <main class="container section">
-    <div class="grid" style="grid-template-columns: 1.2fr 0.8fr; align-items: start; gap: 30px;">
+    <div class="layout-sidebar">
 
         <form id="checkout-form" class="card" style="display:flex; flex-direction:column; gap:16px;" novalidate>
             <h3>1. Datos de envío</h3>
 
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-grid-2">
                 <label style="display:flex; flex-direction:column; gap:6px;">
                     <span>Nombre completo *</span>
                     <input id="name" name="name" required autocomplete="name" placeholder="Tu nombre completo" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
@@ -107,7 +107,7 @@
             </label>
         </form>
 
-        <aside class="card" style="position:sticky; top:20px; display:flex; flex-direction:column; gap:16px;">
+        <aside class="card sticky-panel" style="display:flex; flex-direction:column; gap:16px;">
             <h3>Resumen del pedido</h3>
             <ul id="checkout-lines" style="list-style:none; padding:0; margin:0;"></ul>
 

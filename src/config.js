@@ -20,7 +20,7 @@ export const config = {
   
   // Administrador inicial
   adminEmail: (env.ADMIN_EMAIL || 'jaidimportando@gmail.com').trim().toLowerCase(),
-  adminPassword: env.ADMIN_PASSWORD || 'ShopUniverses2026!',
+  adminPassword: (env.ADMIN_PASSWORD || 'ShopUniverses2026!').trim(),
 
   // Google Firebase
   firebase: {

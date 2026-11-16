@@ -1,10 +1,10 @@
     <footer class="container section" style="border-top:1px solid var(--color-border); padding-top:28px;">
         <div style="display:flex; flex-direction:column; gap:16px; font-size:0.9rem;">
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 10px 24px;">
-                <a href="/terminos-y-condiciones" style="text-decoration:none;">📜 Términos y Condiciones</a>
-                <a href="/politica-de-privacidad" style="text-decoration:none;">🔒 Política de Privacidad (Habeas Data)</a>
-                <a href="/reversion-de-pago" style="text-decoration:none;">↩️ Reversión de Pago y Retracto</a>
-                <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">🏛️ Superintendencia de Industria y Comercio (SIC)</a>
+                <a href="/terminos-y-condiciones" style="text-decoration:none;">✦ Términos y Condiciones</a>
+                <a href="/politica-de-privacidad" style="text-decoration:none;">✦ Política de Privacidad (Habeas Data)</a>
+                <a href="/reversion-de-pago" style="text-decoration:none;">✦ Reversión de Pago y Retracto</a>
+                <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">✦ Superintendencia de Industria y Comercio (SIC)</a>
             </div>
             <small>
                 <strong><%= store.name %></strong><% if (store.nit) { %> · NIT: <%= store.nit %><% } %> · <%= store.city %>, Colombia · Contacto: <a href="mailto:<%= store.email %>" style="text-decoration:none;"><%= store.email %></a>
@@ -13,7 +13,7 @@
                 <small>
                     © 2026 <%= store.name %> — Importaciones & Ventas Online
                 </small>
-                <button id="btn-admin-secret" type="button" aria-label="Acceso administrativo" title="Panel de Administración (Ctrl+Shift+A)" class="secondary" style="padding:4px 10px; font-size:0.78rem; opacity:0.55;">⚙️ Admin</button>
+                <button id="btn-admin-secret" type="button" aria-label="Acceso administrativo" title="Panel de Administración (Ctrl+Shift+A)" class="secondary" style="padding:4px 10px; font-size:0.78rem; opacity:0.55;">🪐 Admin</button>
             </div>
         </div>
     </footer>
@@ -21,7 +21,7 @@
     <div id="cookie-banner" role="region" aria-label="Aviso de cookies" style="display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%); width:calc(100% - 32px); max-width:780px; background:rgba(13,13,26,0.96); backdrop-filter:blur(12px); border:1px solid var(--color-accent); border-radius:12px; padding:16px 20px; z-index:2500; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
         <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px;">
             <div style="flex:1; min-width:240px; font-size:0.88rem;">
-                🍪 <strong>Uso de Cookies (Ley 1581 de 2012):</strong> Utilizamos cookies propias para el funcionamiento del carrito, la ruleta y la seguridad de tu compra. Consulta nuestra <a href="/politica-de-privacidad">Política de Tratamiento de Información</a>.
+                🪐 <strong>Uso de Cookies (Ley 1581 de 2012):</strong> Utilizamos cookies propias para el funcionamiento del carrito, la ruleta y la seguridad de tu compra. Consulta nuestra <a href="/politica-de-privacidad">Política de Tratamiento de Información</a>.
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button id="btn-cookies-essential" type="button" class="secondary" style="padding:8px 14px; font-size:0.85rem;">Solo esenciales</button>
@@ -39,7 +39,7 @@
             <form method="post" action="/admin/login" style="display:flex; flex-direction:column; gap:12px;">
                 <label style="display:flex; flex-direction:column; gap:5px;">
                     <small>Correo electrónico</small>
-                    <input type="email" name="email" required autocomplete="username" placeholder="<%= store.email %>" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
+                    <input type="email" name="email" required autocomplete="username" value="<%= store.email %>" placeholder="<%= store.email %>" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
                 </label>
                 <label style="display:flex; flex-direction:column; gap:5px;">
                     <small>Contraseña</small>
