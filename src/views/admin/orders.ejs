@@ -1,0 +1,38 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1>Pedidos</h1>
+  <div class="row">
+    <a class="btn sm <%= !activeStatus ? '' : 'secondary' %>" href="/admin/pedidos">Todos</a>
+    <a class="btn sm <%= activeStatus === 'pendiente' ? '' : 'secondary' %>" href="/admin/pedidos?estado=pendiente">Pendientes</a>
+    <a class="btn sm <%= activeStatus === 'pagado' ? '' : 'secondary' %>" href="/admin/pedidos?estado=pagado">Pagados</a>
+    <a class="btn sm <%= activeStatus === 'enviado' ? '' : 'secondary' %>" href="/admin/pedidos?estado=enviado">Enviados</a>
+    <a class="btn sm <%= activeStatus === 'entregado' ? '' : 'secondary' %>" href="/admin/pedidos?estado=entregado">Entregados</a>
+    <a class="btn sm <%= activeStatus === 'cancelado' ? '' : 'secondary' %>" href="/admin/pedidos?estado=cancelado">Cancelados</a>
+  </div>
+</div>
+
+<div class="card">
+  <% if (!orders.length) { %>
+    <p class="muted">No hay pedidos con este filtro.</p>
+  <% } else { %>
+    <table>
+      <tr>
+        <th>Código</th>
+        <th>Cliente</th>
+        <th>Método</th>
+        <th class="right">Total</th>
+        <th>Estado</th>
+      </tr>
+      <% orders.forEach(function (o) { %>
+      <tr>
+        <td><a href="/admin/pedidos/<%= o.code %>"><%= o.code %></a><br><small class="muted"><%= fmtDate(o.createdAt) %></small></td>
+        <td><%= o.customer?.name || '' %><br><small class="muted"><%= o.customer?.city || '' %>, <%= o.customer?.department || '' %></small></td>
+        <td><%= o.paymentMethod %></td>
+        <td class="right"><%= fmtCOP(o.total) %></td>
+        <td><span class="badge <%= o.status %>"><%= o.status %></span></td>
+      </tr>
+      <% }); %>
+    </table>
+  <% } %>
+</div>
+<%- include('foot') %>

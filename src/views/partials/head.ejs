@@ -17,6 +17,22 @@
 </head>
 <body>
 
+    <% if (locals.admin) { %>
+    <div id="admin-floating-bar" style="background:#15152b; border-bottom:1px solid var(--color-accent); padding:6px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.85rem;">
+        <span>⚡ <strong>Modo Administrador</strong> (<%= admin.email %>)</span>
+        <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+            <a href="/admin">Resumen</a>
+            <a href="/admin/pedidos">Pedidos</a>
+            <a href="/admin/campanas">Campañas & Cupones</a>
+            <a href="/admin/inventario">Inventario</a>
+            <form method="post" action="/admin/salir" style="margin:0;">
+                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                <button type="submit" class="secondary" style="padding:4px 10px; font-size:0.8rem;">Salir</button>
+            </form>
+        </div>
+    </div>
+    <% } %>
+
     <% if (locals.flashSale && flashSale.active && Number(flashSale.percent) > 0) { %>
     <div id="flash-banner" style="background:linear-gradient(90deg,var(--color-primary),var(--color-accent)); color:#07070d; text-align:center; padding:8px 16px; font-weight:700; font-size:0.95rem; letter-spacing:0.4px;">
         ⚡ <%= flashSale.title || '¡EVENTO FLASH ACTIVO!' %> — <%= flashSale.percent %>% DE DESCUENTO EN TODA LA TIENDA ⚡

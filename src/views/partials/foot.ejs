@@ -1,8 +1,40 @@
-    <footer class="container section">
-        <small>
-            © <%= store.name %> — Importaciones & Ventas Online
-        </small>
+    <footer class="container section" style="border-top:1px solid var(--color-border); padding-top:28px;">
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:0.9rem;">
+            <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:center;">
+                <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+                <a href="/politica-de-privacidad">Política de Privacidad (Habeas Data)</a>
+                <a href="/reversion-de-pago">Reversión de Pago y Retracto</a>
+                <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">Superintendencia de Industria y Comercio (SIC)</a>
+            </div>
+            <small>
+                <strong><%= store.name %></strong> · NIT/ID: <%= store.nit %> · <%= store.city %>, Colombia · Contacto: <%= store.email %>
+            </small>
+            <small>
+                © 2026 <%= store.name %> — Importaciones & Ventas Online
+                <button id="btn-admin-secret" type="button" aria-label="Acceso administrativo" title="Acceso administrativo" style="background:none; border:none; box-shadow:none; padding:2px 6px; opacity:0.18; color:var(--color-text-muted); font-size:0.85rem; cursor:pointer;">•</button>
+            </small>
+        </div>
     </footer>
+
+    <div id="admin-secret-modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+        <div class="card" style="max-width:380px; width:100%; background:#111122; position:relative;">
+            <div class="flex-between" style="margin-bottom:14px;">
+                <h3 id="admin-modal-title" style="margin:0; font-size:1.3rem;">Acceso Administrador</h3>
+                <button id="btn-close-admin-modal" type="button" class="secondary" style="padding:4px 10px;" aria-label="Cerrar">✕</button>
+            </div>
+            <form method="post" action="/admin/login" style="display:flex; flex-direction:column; gap:12px;">
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <small>Correo electrónico</small>
+                    <input type="email" name="email" required autocomplete="username" placeholder="admin@shopuniverses.com" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
+                </label>
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <small>Contraseña</small>
+                    <input type="password" name="password" required autocomplete="current-password" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#07070d; color:var(--color-text);">
+                </label>
+                <button type="submit" style="margin-top:4px;">Ingresar al Panel</button>
+            </form>
+        </div>
+    </div>
 
     <% if (locals.scripts && Array.isArray(scripts)) { scripts.forEach(function (src) { %>
     <script type="module" src="<%= src %>"></script>

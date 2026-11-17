@@ -182,3 +182,20 @@ export async function validateCoupon(rawCode, subtotal) {
   const coupon = await getCoupon(rawCode);
   return computeCouponDiscount(coupon, Math.max(0, Number(subtotal) || 0));
 }
+
+/** Activa o desactiva un cupón existente en Firestore. */
+export async function toggleCouponActive(rawCode) {
+  const coupon = await getCoupon(rawCode);
+  if (!coupon) {
+    throw new InventoryError('Cupón no encontrado.', 404);
+  }
+
+  const nextActive = !coupon.active;
+  const updatedAt = nowIso();
+  await getDb().collection(COUPONS_COL).doc(coupon.code).update({
+    active: nextActive,
+    updatedAt,
+  });
+
+  return { ...coupon, active: nextActive, updatedAt };
+}

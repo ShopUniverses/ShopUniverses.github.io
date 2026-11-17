@@ -1,0 +1,91 @@
+<%- include('../partials/head', { title: 'Reversión de Pago, Retracto y PQRS', activeNav: '' }) %>
+
+<main class="container section" style="max-width:860px; display:flex; flex-direction:column; gap:24px;">
+    <article class="card" style="display:flex; flex-direction:column; gap:14px;">
+        <h1 style="margin:0; font-size:2.1rem;">Reversión del Pago, Derecho de Retracto y PQRS</h1>
+        <p>
+            En cumplimiento del <strong>Artículo 51 de la Ley 1480 de 2011</strong> y el <strong>Decreto 587 de 2016</strong>,
+            cuando hayas pagado por medios electrónicos (tarjeta de crédito, débito, PSE o Nequi a través de pasarela)
+            podrás solicitar la <strong>reversión del pago</strong> dentro de los <strong>cinco (5) días hábiles</strong>
+            siguientes a la fecha en que tuviste noticia de la operación fraudulenta o no solicitada, o desde que debiste
+            recibir el producto o lo recibiste defectuoso.
+        </p>
+
+        <h3>Causales Legales de Reversión (Decreto 587 de 2016)</h3>
+        <ul style="list-style:disc; padding-left:20px;">
+            <li>Ser objeto de fraude.</li>
+            <li>Corresponder a una operación no solicitada por el consumidor.</li>
+            <li>El producto adquirido no haya sido recibido dentro del plazo acordado.</li>
+            <li>El producto entregado no corresponda a lo solicitado o no cumpla con las características atribuidas.</li>
+            <li>El producto entregado se encuentre defectuoso.</li>
+        </ul>
+
+        <p>
+            Para <strong>Derecho de Retracto (Art. 47 Ley 1480 / Ley 2439 de 2024)</strong>, dispones de 5 días hábiles desde
+            la entrega para solicitarlo y el reembolso se efectuará en máximo <strong>15 días calendario</strong>.
+        </p>
+    </article>
+
+    <section class="card">
+        <h2 style="margin-top:0;">Radicar Solicitud Formal</h2>
+        <form id="pqrs-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap:14px;">
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Tipo de solicitud *</span>
+                    <select name="type" required style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:#111122; color:var(--color-text);">
+                        <option value="reversion">Reversión del pago (Decreto 587/2016)</option>
+                        <option value="retracto">Derecho de retracto (Ley 2439/2024)</option>
+                        <option value="pqrs">Consulta / Reclamo / Habeas Data (PQRS)</option>
+                    </select>
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Código de pedido (si aplica)</span>
+                    <input name="orderCode" placeholder="Ej. SU-12345" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text); text-transform:uppercase;">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Nombre completo *</span>
+                    <input name="name" required placeholder="Tu nombre completo" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Correo electrónico *</span>
+                    <input name="email" type="email" required placeholder="correo@ejemplo.com" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Celular de contacto *</span>
+                    <input name="phone" type="tel" required placeholder="300 000 0000" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+
+                <label style="display:flex; flex-direction:column; gap:5px;">
+                    <span>Cédula / NIT</span>
+                    <input name="document" placeholder="Documento de identidad" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+                </label>
+            </div>
+
+            <label style="display:flex; flex-direction:column; gap:5px;">
+                <span>Causal o motivo principal *</span>
+                <input name="reason" required placeholder="Ej. Producto defectuoso / Retracto dentro de 5 días hábiles" style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);">
+            </label>
+
+            <label style="display:flex; flex-direction:column; gap:5px;">
+                <span>Detalle de la solicitud</span>
+                <textarea name="details" rows="4" maxlength="1000" placeholder="Describe brevemente lo sucedido..." style="padding:10px; border-radius:8px; border:1px solid var(--color-border); background:rgba(255,255,255,0.06); color:var(--color-text);"></textarea>
+            </label>
+
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="pqrs-accept" required>
+                <small style="color:var(--color-text);">
+                    He leído y acepto la <a href="/politica-de-privacidad">Política de Tratamiento de Información</a> para gestionar esta solicitud. *
+                </small>
+            </label>
+
+            <div id="pqrs-result" style="display:none; padding:12px; border-radius:8px;"></div>
+            <div><button type="submit" id="btn-submit-pqrs">Radicar Solicitud</button></div>
+        </form>
+    </section>
+</main>
+
+<%- include('../partials/foot', { scripts: ['/assets/js/main.js'] }) %>

@@ -47,6 +47,18 @@ router.get('/carrito', (req, res) => {
   res.render('cart', { title: 'Carrito', activeNav: 'carrito' });
 });
 
+router.get('/terminos-y-condiciones', (req, res) => {
+  res.render('legal/terms', { title: 'Términos y Condiciones', activeNav: '' });
+});
+
+router.get('/politica-de-privacidad', (req, res) => {
+  res.render('legal/privacy', { title: 'Política de Privacidad (Habeas Data)', activeNav: '' });
+});
+
+router.get('/reversion-de-pago', (req, res) => {
+  res.render('legal/reversal', { title: 'Reversión de Pago y PQRS', activeNav: '' });
+});
+
 router.get('/checkout', (req, res) => {
   res.render('checkout', {
     title: 'Finalizar compra',
