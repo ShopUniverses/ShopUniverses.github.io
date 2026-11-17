@@ -2,7 +2,8 @@
 // ROUTES/STORE.JS — Vistas públicas renderizadas en servidor (SSR)
 // ========================================================
 import { Router } from 'express';
-import { listCategories } from '../lib/catalog.js';
+import { listCategoriesAsync } from '../lib/catalog.js';
+import { getMediaById } from '../lib/images.js';
 import { getStoreSettings } from '../lib/promotions.js';
 import { DEPARTMENTS, getOrderByCode } from '../lib/orders.js';
 import { isWompiConfigured, buildWompiCheckoutConfig } from '../lib/payments/wompi.js';
@@ -31,13 +32,33 @@ router.get('/', (req, res) => {
   res.render('home', { title: null, activeNav: 'inicio' });
 });
 
-router.get('/catalogo', (req, res) => {
-  res.render('catalog', {
-    title: 'Catálogo',
-    activeNav: 'catalogo',
-    categories: listCategories(),
-  });
-});
+router.get(
+  '/catalogo',
+  asyncHandler(async (req, res) => {
+    res.render('catalog', {
+      title: 'Catálogo',
+      activeNav: 'catalogo',
+      categories: await listCategoriesAsync(),
+    });
+  }),
+);
+
+router.get(
+  '/media/:id.webp',
+  asyncHandler(async (req, res) => {
+    const id = String(req.params.id || '').trim();
+    if (!/^[a-f0-9]{16}$/.test(id)) {
+      return res.status(404).end();
+    }
+    const media = await getMediaById(id);
+    if (!media) {
+      return res.status(404).end();
+    }
+    res.set('Content-Type', media.contentType || 'image/webp');
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(media.buffer);
+  }),
+);
 
 router.get('/spin', (req, res) => {
   res.render('spin', { title: 'Spin', activeNav: 'spin' });

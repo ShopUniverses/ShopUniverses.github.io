@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
 import { fmtCOP, fmtDate } from './lib/util.js';
-import { legacyPublicCatalog } from './lib/catalog.js';
+import { legacyPublicCatalog, ensureCatalogSeeded } from './lib/catalog.js';
 import { loadAdmin, ensureAdminFromEnv } from './lib/auth.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
@@ -94,6 +94,7 @@ app.use((req, res) => {
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isMain) {
   await ensureAdminFromEnv();
+  await ensureCatalogSeeded();
   app.listen(config.port, config.host, () => {
     const baseUrl = `http://${config.host}:${config.port}`;
     console.log(`\n  Tienda ${config.store.name} lista en: ${baseUrl}`);
