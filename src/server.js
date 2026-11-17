@@ -2,6 +2,7 @@
 // SERVER.JS — Punto de Entrada y Configuración de Express
 // ========================================================
 import express from 'express';
+import ejs from 'ejs';
 import helmet from 'helmet';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +21,8 @@ if (config.behindProxy) {
   app.set('trust proxy', 1);
 }
 
-// Motor de vistas EJS (panel admin y vistas SSR en fases siguientes)
+// Motor de vistas EJS (registro explícito compatible con bundling esbuild)
+app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
 app.set('views', path.join(config.root, 'src', 'views'));
 
