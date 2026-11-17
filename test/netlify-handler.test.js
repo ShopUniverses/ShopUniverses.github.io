@@ -6,7 +6,7 @@ import { createFakeFirestore } from './helpers/fake-firestore.js';
 import { __setDbForTests } from '../src/lib/firebase.js';
 import { invalidateCatalogCache } from '../src/lib/catalog.js';
 import { saveMediaToFirestore } from '../src/lib/images.js';
-import { handler } from '../netlify/functions/api.js';
+import { handler } from '../netlify/functions/api.mjs';
 
 let db;
 
