@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 function resolveRoot() {
-  const here = path.dirname(fileURLToPath(import.meta.url));
+  const metaUrl = typeof import.meta !== 'undefined' ? import.meta.url : '';
+  const here = metaUrl ? path.dirname(fileURLToPath(metaUrl)) : process.cwd();
   const candidates = [
     path.resolve(here, '..'),
     path.resolve(here, '..', '..'),
@@ -42,9 +43,9 @@ export const config = {
   behindProxy: env.BEHIND_PROXY === '1' || env.NODE_ENV === 'production' || Boolean(env.NETLIFY || env.AWS_LAMBDA_FUNCTION_NAME),
   sessionSecret: env.SESSION_SECRET || 'dev_secret_key_shopuniverses_2026',
   
-  // Administrador inicial
+  // Administrador inicial (configurar ADMIN_PASSWORD en .env o Netlify)
   adminEmail: (env.ADMIN_EMAIL || 'jaidimportando@gmail.com').trim().toLowerCase(),
-  adminPassword: (env.ADMIN_PASSWORD || 'ShopUniverses2026!').trim(),
+  adminPassword: (env.ADMIN_PASSWORD || '').trim(),
 
   // Google Firebase
   firebase: {

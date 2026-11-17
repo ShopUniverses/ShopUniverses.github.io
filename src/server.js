@@ -93,8 +93,12 @@ app.use((req, res) => {
 });
 
 // Inicio del servidor solo si este archivo se ejecuta directamente (no en Netlify ni en tests)
-const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
-if (isMain) {
+const metaUrl = typeof import.meta !== 'undefined' ? import.meta.url : '';
+const isMain = Boolean(
+  metaUrl && process.argv[1] && fileURLToPath(metaUrl) === path.resolve(process.argv[1]),
+);
+
+async function startLocalServer() {
   await ensureAdminFromEnv();
   await ensureCatalogSeeded();
   app.listen(config.port, config.host, () => {
@@ -107,4 +111,8 @@ if (isMain) {
     }
     console.log('  (Para cambiar credenciales: npm run create-admin -- correo "nueva-clave")\n');
   });
+}
+
+if (isMain) {
+  startLocalServer();
 }
