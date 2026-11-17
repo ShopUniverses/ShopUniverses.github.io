@@ -45,7 +45,31 @@ function initNavigation() {
     });
 
     initAdminAccess();
+    initCookieBanner();
     initPqrsForm();
+}
+
+function initCookieBanner() {
+    const banner = document.getElementById("cookie-banner");
+    const acceptBtn = document.getElementById("btn-cookies-accept");
+    const essentialBtn = document.getElementById("btn-cookies-essential");
+    if (!banner) return;
+
+    const STORAGE_KEY = "su_cookie_consent";
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        banner.style.display = "block";
+    }
+
+    const saveChoice = (mode) => {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ mode, acceptedAt: new Date().toISOString() })
+        );
+        banner.style.display = "none";
+    };
+
+    acceptBtn?.addEventListener("click", () => saveChoice("all"));
+    essentialBtn?.addEventListener("click", () => saveChoice("essential"));
 }
 
 function initAdminAccess() {
@@ -66,6 +90,17 @@ function initAdminAccess() {
     closeBtn?.addEventListener("click", close);
     modal.addEventListener("click", (e) => {
         if (e.target === modal) close();
+    });
+
+    modal.querySelectorAll("[data-toggle-password]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const targetId = btn.getAttribute("data-toggle-password");
+            const input = targetId ? document.getElementById(targetId) : null;
+            if (!input) return;
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+            btn.textContent = isPassword ? "Ocultar" : "Ver";
+        });
     });
 
     document.addEventListener("keydown", (e) => {

@@ -1,7 +1,7 @@
 <%- include('partials/head', { title: 'Spin', activeNav: 'spin', extraCss: ['/assets/css/spin.css'] }) %>
 
 <header class="container section">
-    <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+    <div class="hero-header">
         <a href="/">
             <img
                 src="/assets/img/perfil/2.webp"
@@ -12,8 +12,8 @@
             >
         </a>
         <div>
-            <h1 style="margin:0; font-size:2.8rem; letter-spacing:1px; display: flex; align-items: center; gap: 15px;">
-                🎡 Roulette of the Universe
+            <h1 style="margin:0; font-size:2.8rem; letter-spacing:1px;">
+                🪐 Roulette of the Universe
             </h1>
             <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
                 Gira la ruleta estándar o premium y gana productos exclusivos.<br>
@@ -62,7 +62,7 @@
             <button id="btnSpinAction" class="btn-spin-action" type="button"></button>
 
             <div class="spin-rewards">
-                <h4>🎁 Premios en esta sesión</h4>
+                <h4>✨ Premios en esta sesión</h4>
                 <p class="small">No confirmados hasta aceptar.</p>
                 <ul id="listaPremiosTemporales" class="spin-list">
                     <li class="empty-msg">Aún no has girado</li>
@@ -79,7 +79,7 @@
 
 <div id="modalPremios" class="spin-modal">
     <div class="spin-modal__content">
-        <h2>🎁 ¡Sesión Completada!</h2>
+        <h2>✨ ¡Sesión Completada!</h2>
         <p id="modalDescription">Has completado tus giros. ¿Qué deseas hacer?</p>
 
         <ul id="modalListaPremios" class="spin-modal__list"></ul>

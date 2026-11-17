@@ -59,6 +59,10 @@
   .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
   .login-card { max-width: 390px; width: 100%; }
   .alert-err { padding: 10px; border-radius: 8px; background: rgba(255,76,76,0.18); border: 1px solid var(--danger); color: #ffd6d6; margin-bottom: 14px; font-size: 0.9rem; }
+  .alert-ok { padding: 10px 12px; border-radius: 8px; background: rgba(61,214,208,0.14); border: 1px solid var(--accent); color: #d8fffe; margin-bottom: 14px; font-size: 0.9rem; }
+  .thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); background: #090913; }
+  .check-row { display: flex; flex-direction: row; align-items: center; gap: 8px; cursor: pointer; }
+  .check-row input[type="checkbox"] { width: auto; }
   @media (max-width: 780px) { .shell { grid-template-columns: 1fr; } .side { border-right: none; border-bottom: 1px solid var(--border); } }
 </style>
 </head>
@@ -71,6 +75,7 @@
       <% const nav = [
         ['/admin', 'Resumen'],
         ['/admin/pedidos', 'Pedidos'],
+        ['/admin/productos', 'Productos'],
         ['/admin/campanas', 'Campañas & Cupones'],
         ['/admin/inventario', 'Inventario'],
         ['/admin/ajustes', 'Ajustes']

@@ -2,7 +2,7 @@
 // ROUTES/API.JS — API pública de catálogo y stock
 // ========================================================
 import { Router } from 'express';
-import { loadCatalog, toPublicProduct } from '../lib/catalog.js';
+import { getCatalog, toPublicProduct } from '../lib/catalog.js';
 import { getStockMap, reserveStock, releaseReservation, extendReservations, sweepExpiredIfDue } from '../lib/inventory.js';
 import { rollSpinSession, acceptSpinSession } from '../lib/spin.js';
 import { getStoreSettings, validateCoupon } from '../lib/promotions.js';
@@ -24,7 +24,7 @@ router.get(
   '/catalog',
   asyncHandler(async (req, res) => {
     await sweepExpiredIfDue();
-    const { config: cfg, productos } = loadCatalog();
+    const { config: cfg, productos } = await getCatalog({ includeInactive: false });
     const [stock, settings] = await Promise.all([getStockMap(), getStoreSettings()]);
     res.json({
       config: { spin: cfg.spin },

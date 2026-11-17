@@ -16,11 +16,13 @@
 // ========================================================
 import crypto from 'node:crypto';
 import { getDb } from './firebase.js';
-import { getProduct } from './catalog.js';
+import { getCatalog, getProduct, getProductAsync } from './catalog.js';
 import { config } from '../config.js';
+import { nowIso } from './util.js';
 
 const STOCK = 'stock';
 const RESERVATIONS = 'reservations';
+const MOVEMENTS = 'stock_movements';
 const MAX_LINES = 50;
 const MAX_QTY_PER_LINE = 20;
 
@@ -41,7 +43,7 @@ function safeEqual(a, b) {
 }
 
 /** Valida y agrupa los ítems recibidos del cliente: [{ id, qty }]. */
-export function normalizeItems(items) {
+export function normalizeItems(items, byId = null) {
   if (!Array.isArray(items) || items.length === 0) throw new InventoryError('El carrito está vacío.');
   if (items.length > MAX_LINES) throw new InventoryError('Demasiados productos en una sola orden.');
 
@@ -49,7 +51,8 @@ export function normalizeItems(items) {
   for (const it of items) {
     const id = typeof it?.id === 'string' ? it.id.trim() : '';
     const qty = Number(it?.qty);
-    if (!id || !getProduct(id)) throw new InventoryError(`Producto inválido: ${id || '(vacío)'}`);
+    const prod = byId ? byId.get(id) : getProduct(id);
+    if (!id || !prod) throw new InventoryError(`Producto inválido: ${id || '(vacío)'}`);
     if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY_PER_LINE) {
       throw new InventoryError(`Cantidad inválida para ${id}.`);
     }
@@ -80,7 +83,8 @@ export async function reserveStock(
   rawItems,
   { source = 'catalogo', holdMinutes = config.store.holdMinutes, reservationId = null, token: providedToken = null } = {},
 ) {
-  const items = normalizeItems(rawItems);
+  const { byId } = await getCatalog({ includeInactive: false });
+  const items = normalizeItems(rawItems, byId);
   const db = getDb();
   const token = providedToken || crypto.randomBytes(24).toString('base64url');
   const resRef = reservationId ? db.collection(RESERVATIONS).doc(String(reservationId)) : db.collection(RESERVATIONS).doc();
@@ -238,10 +242,53 @@ export function __resetSweepForTests() {
   _lastSweep = 0;
 }
 
-/** Uso interno (admin): fija la cantidad disponible de un producto en Firestore. */
-export async function setProductStock(productId, rawQty) {
+/** Registra un movimiento de inventario en la colección `stock_movements` (Kardex). */
+export async function recordStockMovement({
+  productId,
+  productName = '',
+  previousStock = 0,
+  newStock = 0,
+  delta = 0,
+  reason = 'ajuste_admin',
+  note = '',
+  actor = '',
+}) {
+  const id = `mov_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+  const entry = {
+    id,
+    productId: String(productId || '').trim(),
+    productName: String(productName || '').trim(),
+    previousStock: Number(previousStock) || 0,
+    newStock: Number(newStock) || 0,
+    delta: Number(delta) || 0,
+    reason: String(reason || 'ajuste_admin').trim(),
+    note: String(note || '').trim().slice(0, 200),
+    actor: String(actor || '').trim(),
+    createdAt: nowIso(),
+  };
+  await getDb().collection(MOVEMENTS).doc(id).set(entry);
+  return entry;
+}
+
+/** Lista los últimos movimientos del Kardex ordenados del más reciente al más antiguo. */
+export async function listStockMovements(limit = 30) {
+  const snap = await getDb().collection(MOVEMENTS).get();
+  const rows = [];
+  snap.forEach((d) => rows.push(d.data()));
+  return rows
+    .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))
+    .slice(0, limit);
+}
+
+/** Uso interno (admin): fija la cantidad disponible de un producto en Firestore y registra Kardex. */
+export async function setProductStock(
+  productId,
+  rawQty,
+  { reason = 'ajuste_admin', note = '', actor = '' } = {},
+) {
   const id = typeof productId === 'string' ? productId.trim() : '';
-  if (!id || !getProduct(id)) {
+  const prod = id ? await getProductAsync(id, { includeInactive: true }) : null;
+  if (!prod) {
     throw new InventoryError('Producto no encontrado.', 404);
   }
 
@@ -250,6 +297,24 @@ export async function setProductStock(productId, rawQty) {
     throw new InventoryError('Cantidad de stock inválida.', 400);
   }
 
-  await getDb().collection(STOCK).doc(id).set({ Cantidad: qty }, { merge: true });
-  return { id, stock: qty };
+  const stockRef = getDb().collection(STOCK).doc(id);
+  const snap = await stockRef.get();
+  const previousStock = snap.exists ? Number(snap.data().Cantidad) || 0 : 0;
+
+  await stockRef.set({ Cantidad: qty }, { merge: true });
+
+  if (qty !== previousStock) {
+    await recordStockMovement({
+      productId: id,
+      productName: prod.nombre,
+      previousStock,
+      newStock: qty,
+      delta: qty - previousStock,
+      reason,
+      note,
+      actor,
+    });
+  }
+
+  return { id, stock: qty, previousStock };
 }

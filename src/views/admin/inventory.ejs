@@ -1,6 +1,7 @@
 <%- include('head') %>
 <div class="page-head">
   <h1>Inventario en Vivo (Firestore)</h1>
+  <a class="btn secondary" href="/admin/productos">Administrar catálogo</a>
 </div>
 
 <div class="card">
@@ -19,8 +20,9 @@
       <td class="right"><%= fmtCOP(p.precio_referencia) %></td>
       <td class="right"><%= p.stockActual %> uds</td>
       <td class="right">
-        <form method="post" action="/admin/inventario/<%= p.id %>/stock" class="row" style="justify-content:flex-end;">
+        <form method="post" action="/admin/inventario/<%= encodeURIComponent(p.id) %>/stock" class="row" style="justify-content:flex-end;">
           <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <input type="text" name="note" placeholder="Motivo / nota" style="width:150px;">
           <input type="number" name="stock" min="0" max="10000" value="<%= p.stockActual %>" style="width:90px;">
           <button class="sm" type="submit">Guardar</button>
         </form>
@@ -28,5 +30,39 @@
     </tr>
     <% }); %>
   </table>
+</div>
+
+<div class="card">
+  <h2>Historial de movimientos (Kardex)</h2>
+  <% if (!locals.movements || movements.length === 0) { %>
+    <p class="muted">Aún no hay movimientos registrados.</p>
+  <% } else { %>
+    <table>
+      <tr>
+        <th>Fecha</th>
+        <th>Producto</th>
+        <th class="right">Anterior</th>
+        <th class="right">Nuevo</th>
+        <th class="right">Cambio</th>
+        <th>Motivo</th>
+        <th>Responsable</th>
+      </tr>
+      <% movements.forEach(function (m) { %>
+      <tr>
+        <td><small><%= fmtDate(m.createdAt) %></small></td>
+        <td><strong><%= m.productName || m.productId %></strong></td>
+        <td class="right"><%= m.previousStock %></td>
+        <td class="right"><%= m.newStock %></td>
+        <td class="right">
+          <span class="badge <%= m.delta > 0 ? 'pagado' : m.delta < 0 ? 'cancelado' : '' %>">
+            <%= m.delta > 0 ? '+' + m.delta : m.delta %>
+          </span>
+        </td>
+        <td><%= m.reason %><% if (m.note) { %> — <small class="muted"><%= m.note %></small><% } %></td>
+        <td><small class="muted"><%= m.actor || '-' %></small></td>
+      </tr>
+      <% }); %>
+    </table>
+  <% } %>
 </div>
 <%- include('foot') %>

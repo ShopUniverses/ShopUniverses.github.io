@@ -10,11 +10,14 @@
   <form method="post" action="/admin/login" style="display:flex; flex-direction:column; gap:14px;">
     <label>
       <span>Correo electrónico</span>
-      <input type="email" name="email" required autocomplete="username" placeholder="admin@shopuniverses.com">
+      <input type="email" name="email" required autocomplete="username" value="<%= store.email %>" placeholder="<%= store.email %>">
     </label>
     <label>
       <span>Contraseña</span>
-      <input type="password" name="password" required autocomplete="current-password">
+      <div class="row" style="flex-wrap:nowrap;">
+        <input id="admin-login-password" type="password" name="password" required autocomplete="current-password">
+        <button type="button" class="secondary sm" data-toggle-password="admin-login-password">Ver</button>
+      </div>
     </label>
     <button type="submit">Ingresar</button>
   </form>
@@ -23,4 +26,5 @@
     <a href="/">← Volver a la tienda</a>
   </p>
 </div>
+<script type="module" src="/assets/js/admin-login.js"></script>
 <%- include('foot') %>

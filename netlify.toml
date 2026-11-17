@@ -1,3 +1,5 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 [build]
   command = "npm run build"
   functions = "netlify/functions"
@@ -7,14 +9,21 @@
   NODE_VERSION = "22"
 
 [functions]
-  # El catálogo base y las vistas EJS viajan junto a la función serverless
+  node_bundler = "esbuild"
+  # El catálogo semilla y las vistas EJS viajan junto a la función serverless
   included_files = ["data/inventario.json", "src/views/**"]
   external_node_modules = ["sharp", "firebase-admin"]
 
-# API y panel administrativo -> función Express
+# API, imágenes WebP y panel administrativo -> función Express
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/media/*"
+  to = "/.netlify/functions/api"
   status = 200
   force = true
 
@@ -36,7 +45,7 @@
   to = "/.netlify/functions/api"
   status = 200
 
-# Encabezados de seguridad para todo el sitio estático
+# Encabezados de seguridad para archivos estáticos en CDN
 [[headers]]
   for = "/*"
   [headers.values]

@@ -1,7 +1,7 @@
 <%- include('partials/head', { title: 'Catálogo', activeNav: 'catalogo' }) %>
 
 <header class="container section">
-    <div style="display:flex; justify-content:center; align-items:center; gap:32px; text-align:left;">
+    <div class="hero-header">
         <a href="/">
             <img
                 src="/assets/img/perfil/2.webp"
@@ -13,7 +13,7 @@
         </a>
         <div>
             <h1 style="margin:0; font-size:2.6rem; letter-spacing:1px;">
-                🛍️ Catálogo ShopUniverses
+                🌌 Catálogo ShopUniverses
             </h1>
             <p style="margin:8px 0 0; font-size:1.15rem; line-height:1.5;">
                 Explora nuestros productos disponibles<br>
@@ -23,20 +23,32 @@
 </header>
 
 <main class="container">
-    <% if (categories && categories.length > 0) { %>
-    <div id="categoria-filtros" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px;">
-        <button type="button" data-categoria="" class="categoria-btn active">Todos</button>
-        <% categories.forEach(function (cat) { %>
-        <button type="button" data-categoria="<%= cat %>" class="categoria-btn secondary"><%= cat %></button>
-        <% }); %>
-    </div>
-    <% } %>
+    <div id="categoria-filtros" class="catalog-toolbar">
+        <input
+            id="filtro-busqueda"
+            type="search"
+            placeholder="Buscar producto en el universo..."
+            aria-label="Buscar producto"
+        >
 
-    <section
-        id="catalogo"
-        class="grid"
-        style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
-    </section>
+        <select id="filtro-categoria" aria-label="Filtrar por categoría">
+            <option value="" data-categoria="">Todas las categorías</option>
+            <% if (categories && categories.length > 0) { categories.forEach(function (cat) { %>
+            <option value="<%= cat %>" data-categoria="<%= cat %>"><%= cat %></option>
+            <% }); } %>
+        </select>
+
+        <select id="filtro-orden" aria-label="Ordenar productos">
+            <option value="relevancia">Ordenar: Destacados</option>
+            <option value="precio-asc">Precio: Menor a Mayor</option>
+            <option value="precio-desc">Precio: Mayor a Menor</option>
+            <option value="nombre-asc">Nombre: A - Z</option>
+        </select>
+
+        <small id="catalogo-contador" class="catalog-toolbar__count"></small>
+    </div>
+
+    <section id="catalogo" class="grid"></section>
 </main>
 
 <%- include('partials/foot', { scripts: ['/assets/js/data.js', '/assets/js/carrito.js', '/assets/js/main.js', '/assets/js/catalogo.js'] }) %>

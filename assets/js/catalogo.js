@@ -1,12 +1,12 @@
 /*
 CATALOGO.JS
-Render del catálogo con imagen, contador y stock seguro
+Render del catálogo con buscador, filtro de categorías, orden y stock seguro
 */
 import {
     cargarInventario,
     getProductosCatalogo,
     obtenerStock,
-    onStockChange       // ← tiempo real
+    onStockChange
 } from "./data.js";
 
 import {
@@ -15,62 +15,92 @@ import {
 } from "./carrito.js";
 
 let categoriaActiva = "";
+let textoBusqueda = "";
+let ordenActivo = "relevancia";
 
-// Sin cache fijo — getProductosCatalogo() siempre lee stock fresco
-document.addEventListener("DOMContentLoaded", async () => {
+async function initCatalogo() {
+    if (!document.getElementById("catalogo")) return;
+
     await cargarInventario();
     inicializarCarrito();
 
-    const filtros = document.getElementById("categoria-filtros");
-    if (filtros) {
-        filtros.querySelectorAll("[data-categoria]").forEach(btn => {
-            btn.addEventListener("click", () => {
-                categoriaActiva = btn.dataset.categoria || "";
-                filtros.querySelectorAll("[data-categoria]").forEach(b => {
-                    const activo = (b.dataset.categoria || "") === categoriaActiva;
-                    b.classList.toggle("active", activo);
-                    b.classList.toggle("secondary", !activo);
-                });
-                renderCatalogo();
-            });
-        });
-    }
+    const selCat = document.getElementById("filtro-categoria");
+    const inpBusq = document.getElementById("filtro-busqueda");
+    const selOrd = document.getElementById("filtro-orden");
+
+    selCat?.addEventListener("change", () => {
+        categoriaActiva = selCat.value || "";
+        renderCatalogo();
+    });
+
+    inpBusq?.addEventListener("input", () => {
+        textoBusqueda = (inpBusq.value || "").trim().toLowerCase();
+        renderCatalogo();
+    });
+
+    selOrd?.addEventListener("change", () => {
+        ordenActivo = selOrd.value || "relevancia";
+        renderCatalogo();
+    });
 
     renderCatalogo();
-
-    // Cuando el servidor notifica un cambio de stock,
-    // re-renderiza el catálogo completo con datos frescos.
-    // Esto evita que un usuario vea stock disponible que ya fue comprado.
     onStockChange(() => renderCatalogo());
-});
+}
 
-    /* ===============================
-    UTILIDAD DE PRECIO
-    =============================== */
-    function formatearPrecio(valor) {
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCatalogo);
+} else {
+    initCatalogo();
+}
+
+/* ===============================
+UTILIDAD DE PRECIO
+=============================== */
+function formatearPrecio(valor) {
     return valor.toLocaleString("es-CO");
-    }
+}
 
-    /* ===============================
-    RENDER DEL CATÁLOGO
-    =============================== */
-    function renderCatalogo() {
+/* ===============================
+RENDER DEL CATÁLOGO
+=============================== */
+function renderCatalogo() {
     const contenedor = document.getElementById("catalogo");
+    const contadorEl = document.getElementById("catalogo-contador");
+    if (!contenedor) return;
+
     contenedor.innerHTML = "";
 
-    // Siempre recalcula desde stock actual — nunca desde cache
-    const todos = getProductosCatalogo();
-    const productos = categoriaActiva
-        ? todos.filter(p => (p.categoria || "").trim() === categoriaActiva)
-        : todos;
+    let productos = getProductosCatalogo().slice();
+
+    if (categoriaActiva) {
+        productos = productos.filter(p => (p.categoria || "").trim() === categoriaActiva);
+    }
+
+    if (textoBusqueda) {
+        productos = productos.filter(p =>
+            (p.nombre || "").toLowerCase().includes(textoBusqueda) ||
+            (p.categoria || "").toLowerCase().includes(textoBusqueda)
+        );
+    }
+
+    if (ordenActivo === "precio-asc") {
+        productos.sort((a, b) => (a.precio_referencia || 0) - (b.precio_referencia || 0));
+    } else if (ordenActivo === "precio-desc") {
+        productos.sort((a, b) => (b.precio_referencia || 0) - (a.precio_referencia || 0));
+    } else if (ordenActivo === "nombre-asc") {
+        productos.sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es"));
+    }
+
+    if (contadorEl) {
+        contadorEl.textContent = `${productos.length} producto${productos.length === 1 ? "" : "s"}`;
+    }
 
     if (productos.length === 0) {
-        contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
+        contenedor.innerHTML = "<p>No hay productos disponibles con esos filtros.</p>";
         return;
     }
 
     productos.forEach(producto => {
-        // Stock leído en este momento exacto, no capturado en closure
         const stockActual = obtenerStock()[producto.id] ?? 0;
 
         const card = document.createElement("div");
@@ -102,10 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <button class="agregar" disabled>Agregar al carrito</button>
         </div>
         `;
-        
-        /* ===============================
-        LÓGICA DEL CONTADOR
-        =============================== */
+
         let cantidad = 0;
 
         const spanCantidad = card.querySelector(".cantidad");
@@ -126,35 +153,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         btnMenos.onclick = () => {
-        if (cantidad > 0) {
-            cantidad--;
-            spanCantidad.textContent = cantidad;
-            actualizarBoton();
-            actualizarStockVisual();
-        }
+            if (cantidad > 0) {
+                cantidad--;
+                spanCantidad.textContent = cantidad;
+                actualizarBoton();
+                actualizarStockVisual();
+            }
         };
 
         btnMas.onclick = () => {
-        if (cantidad < stockActual) {
-            cantidad++;
-            spanCantidad.textContent = cantidad;
-            actualizarBoton();
-            actualizarStockVisual();
-        }
+            if (cantidad < stockActual) {
+                cantidad++;
+                spanCantidad.textContent = cantidad;
+                actualizarBoton();
+                actualizarStockVisual();
+            }
         };
 
         btnAgregar.onclick = async () => {
-        if (cantidad === 0) return;
+            if (cantidad === 0) return;
 
-        btnAgregar.disabled = true;
-        btnAgregar.textContent = 'Agregando...';
+            btnAgregar.disabled = true;
+            btnAgregar.textContent = "Agregando...";
 
-        for (let i = 0; i < cantidad; i++) {
-            await agregarProductoCatalogo(producto);
-        }
+            for (let i = 0; i < cantidad; i++) {
+                await agregarProductoCatalogo(producto);
+            }
 
-        alert(`Agregaste ${cantidad} unidad(es) al carrito`);
-        renderCatalogo(); // 🔄 refresca stock visual con datos actualizados
+            alert(`Agregaste ${cantidad} unidad(es) al carrito`);
+            renderCatalogo();
         };
 
         contenedor.appendChild(card);

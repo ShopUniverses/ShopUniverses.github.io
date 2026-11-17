@@ -4,6 +4,7 @@ import { config } from '../src/config.js';
 import { createFakeFirestore } from './helpers/fake-firestore.js';
 import { __setDbForTests } from '../src/lib/firebase.js';
 import { createOrder } from '../src/lib/orders.js';
+import { ensureAdminFromEnv, changeAdminPassword, verifyAdminCredentials } from '../src/lib/auth.js';
 import { app } from '../src/server.js';
 
 let server;
@@ -19,7 +20,7 @@ const pqrsOf = (radicado) => db._data.get(`pqrs/${radicado}`);
 
 before(async () => {
   prevAdmin = { email: config.adminEmail, password: config.adminPassword };
-  config.adminEmail = 'admin@shopuniverses.com';
+  config.adminEmail = 'jaidimportando@gmail.com';
   config.adminPassword = 'ClaveAdminPrueba2026!';
 
   await new Promise((resolve) => {
@@ -87,6 +88,9 @@ test('Footer y rutas legales cumplen con SIC, Ley 1480/2439, Ley 1581/2300 y Dec
   assert.ok(homeHtml.includes('https://www.sic.gov.co'));
   assert.ok(homeHtml.includes('id="btn-admin-secret"'));
   assert.ok(homeHtml.includes('id="admin-secret-modal"'));
+  assert.ok(homeHtml.includes('id="cookie-banner"'));
+  assert.ok(homeHtml.includes('jaidimportando@gmail.com'));
+  assert.ok(homeHtml.includes('/assets/img/perfil/2.webp'));
 
   const termsRes = await fetch(`${base}/terminos-y-condiciones`);
   assert.equal(termsRes.status, 200);
@@ -138,6 +142,14 @@ test('Autenticación admin, protección CSRF, barra flotante y campañas/cupones
     password: 'clave-incorrecta',
   });
   assert.equal(badLogin.status, 401);
+
+  // Login válido con espacios accidentales en la contraseña entrega cookie y sesión
+  const paddedLogin = await postForm('/admin/login', {
+    email: 'jaidimportando@gmail.com',
+    password: `  ${config.adminPassword}  `,
+  });
+  assert.equal(paddedLogin.status, 302);
+  assert.equal(paddedLogin.headers.get('location'), '/admin');
 
   // Login válido entrega cookie y sesión
   const { cookie, csrf, dashHtml } = await loginAsAdmin();
@@ -238,4 +250,26 @@ test('Ciclo logístico completo de pedido desde admin: pagado -> enviado con gu�
   );
   assert.equal(delivRes.status, 302);
   assert.equal(orderOf(order.code).status, 'entregado');
+});
+
+test('ensureAdminFromEnv crea el admin en Firestore y changeAdminPassword invalida la clave anterior', async () => {
+  const created = await ensureAdminFromEnv();
+  assert.equal(created, true);
+  assert.ok(db._data.get(`admins/${config.adminEmail}`)?.passwordHash);
+
+  // Segunda ejecución no sobrescribe ni duplica
+  const second = await ensureAdminFromEnv();
+  assert.equal(second, false);
+
+  const okBefore = await verifyAdminCredentials(config.adminEmail, config.adminPassword);
+  assert.equal(okBefore?.email, config.adminEmail);
+
+  await changeAdminPassword(config.adminEmail, config.adminPassword, 'NuevaClaveSegura2026!');
+
+  // La clave vieja ya no debe funcionar cuando Firestore tiene el nuevo hash
+  const oldRejected = await verifyAdminCredentials(config.adminEmail, config.adminPassword);
+  assert.equal(oldRejected, null);
+
+  const okAfter = await verifyAdminCredentials(config.adminEmail, 'NuevaClaveSegura2026!');
+  assert.equal(okAfter?.email, config.adminEmail);
 });
