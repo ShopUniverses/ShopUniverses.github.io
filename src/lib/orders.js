@@ -4,7 +4,7 @@
 import crypto from 'node:crypto';
 import { config } from '../config.js';
 import { getDb } from './firebase.js';
-import { loadCatalog, getProduct } from './catalog.js';
+import { getCatalog } from './catalog.js';
 import {
   InventoryError,
   confirmReservation,
@@ -135,7 +135,7 @@ export async function createOrder({
   }
 
   const { customer, consent } = validateCustomer(rawCustomer);
-  const { config: catalogCfg } = loadCatalog();
+  const { config: catalogCfg, byId: productMap } = await getCatalog({ includeInactive: true });
   const settings = await getStoreSettings();
 
   const orderItems = [];
@@ -162,7 +162,7 @@ export async function createOrder({
 
     if (tipo === 'producto') {
       const id = typeof rawItem?.id === 'string' ? rawItem.id.trim() : '';
-      const prod = getProduct(id);
+      const prod = productMap.get(id) || null;
       if (!prod) throw new InventoryError(`Producto inválido: ${id || '(vacío)'}`, 400);
 
       const unitPrice =

@@ -1,0 +1,110 @@
+<%- include('head') %>
+<div class="page-head">
+  <h1><%= isNew ? 'Nuevo producto' : 'Editar producto' %></h1>
+  <a class="btn secondary" href="/admin/productos">Volver a productos</a>
+</div>
+
+<% if (locals.error) { %>
+  <div class="alert-err"><%= error %></div>
+<% } %>
+
+<div class="card">
+  <form
+    method="post"
+    action="<%= isNew ? '/admin/productos/nuevo' : '/admin/productos/' + encodeURIComponent(product.id) %>"
+    enctype="multipart/form-data"
+    class="grid cols-2"
+  >
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+
+    <label>
+      Nombre del producto
+      <input type="text" name="nombre" required minlength="2" value="<%= product.nombre || '' %>">
+    </label>
+
+    <label>
+      Identificador (slug URL)
+      <% if (isNew) { %>
+        <input type="text" name="id" value="<%= product.id || '' %>" placeholder="Opcional (se genera desde el nombre)">
+      <% } else { %>
+        <input type="text" value="<%= product.id %>" disabled>
+      <% } %>
+    </label>
+
+    <label>
+      Categoría
+      <input type="text" name="categoria" list="categorias-list" required value="<%= product.categoria || '' %>">
+      <datalist id="categorias-list">
+        <% categories.forEach(function (c) { %>
+          <option value="<%= c %>">
+        <% }); %>
+      </datalist>
+    </label>
+
+    <label>
+      Stock en inventario (unidades)
+      <input type="number" name="stock" min="0" max="10000" required value="<%= stockActual %>">
+    </label>
+
+    <label>
+      Precio de venta al público (COP)
+      <input type="number" name="precio_referencia" min="0" step="100" required value="<%= product.precio_referencia ?? 0 %>">
+    </label>
+
+    <label>
+      Costo unitario interno (COP, privado)
+      <input type="number" name="costo" min="0" step="100" value="<%= product.costo ?? 0 %>">
+    </label>
+
+    <div>
+      <label>
+        Subir imagen del producto (PNG, JPG o WebP, máx. 5 MB)
+        <input type="file" name="foto" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <small class="muted">Se optimiza automáticamente a WebP y se guarda en Firestore sin necesidad de repositorio externo.</small>
+    </div>
+
+    <div>
+      <label>
+        Ruta o URL actual de imagen
+        <input type="text" name="imagen" value="<%= product.imagen || '' %>" placeholder="/assets/img/perfil/2.webp">
+      </label>
+      <% if (product.imagen) { %>
+        <div class="row" style="margin-top:8px;">
+          <img class="thumb" src="<%= product.imagen %>" alt="Vista previa">
+          <small class="muted"><%= product.imagen %></small>
+        </div>
+      <% } %>
+    </div>
+
+    <label>
+      Peso de probabilidad en ruleta (mín. 1)
+      <input type="number" name="peso_spin" min="1" max="1000" value="<%= product.peso_spin ?? 10 %>">
+    </label>
+
+    <div style="display:flex;flex-direction:column;gap:8px;justify-content:center;">
+      <label class="check-row">
+        <input type="checkbox" name="catalogo" value="on" <%= product.flags?.catalogo ? 'checked' : '' %>>
+        Visible en el Catálogo
+      </label>
+      <label class="check-row">
+        <input type="checkbox" name="spin_estandar" value="on" <%= product.flags?.spin_estandar ? 'checked' : '' %>>
+        Disponible en Ruleta Estándar
+      </label>
+      <label class="check-row">
+        <input type="checkbox" name="spin_premium" value="on" <%= product.flags?.spin_premium ? 'checked' : '' %>>
+        Disponible en Ruleta Premium
+      </label>
+      <label class="check-row">
+        <input type="checkbox" name="activo" value="on" <%= product.activo === false ? '' : 'checked' %>>
+        Producto activo y disponible al público
+      </label>
+    </div>
+
+    <div class="row" style="grid-column: 1 / -1; margin-top:8px;">
+      <button type="submit"><%= isNew ? 'Crear producto' : 'Guardar cambios' %></button>
+      <a class="btn secondary" href="/admin/productos">Cancelar</a>
+    </div>
+  </form>
+</div>
+<%- include('foot') %>

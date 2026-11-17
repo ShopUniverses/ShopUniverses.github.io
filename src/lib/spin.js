@@ -8,7 +8,7 @@
 // ========================================================
 import crypto from 'node:crypto';
 import { config } from '../config.js';
-import { loadCatalog, getProduct } from './catalog.js';
+import { getCatalog } from './catalog.js';
 import { getStockMap, reserveStock, InventoryError } from './inventory.js';
 
 const SPIN_TTL_MS = 10 * 60_000;
@@ -32,7 +32,7 @@ export async function rollSpinSession(mode) {
     throw new InventoryError('Modo de ruleta inválido.', 400);
   }
 
-  const { config: cfg, productos } = loadCatalog();
+  const { config: cfg, productos } = await getCatalog({ includeInactive: false });
   const stockMap = await getStockMap();
 
   const maxGiros = mode === 'estandar' ? Number(cfg.spin.productos_por_spin) || 5 : 1;
@@ -125,9 +125,10 @@ export async function acceptSpinSession(spinToken) {
     throw new InventoryError('La sesión de ruleta expiró. Gira de nuevo.', 410);
   }
 
+  const { config: cfg, byId } = await getCatalog({ includeInactive: true });
   const counts = new Map();
   for (const id of payload.prizes) {
-    if (typeof id !== 'string' || !getProduct(id)) {
+    if (typeof id !== 'string' || !byId.get(id)) {
       throw new InventoryError('Token de ruleta inválido.', 400);
     }
     counts.set(id, (counts.get(id) || 0) + 1);
@@ -144,11 +145,10 @@ export async function acceptSpinSession(spinToken) {
     token: resToken,
   });
 
-  const { config: cfg } = loadCatalog();
   const precioPaquete = payload.mode === 'estandar' ? Number(cfg.spin.precio_base) : Number(cfg.spin.premium_precio);
 
   const prizes = payload.prizes.map((id) => {
-    const p = getProduct(id);
+    const p = byId.get(id);
     return {
       id: p.id,
       nombre: p.nombre,

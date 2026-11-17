@@ -1,0 +1,158 @@
+<%- include('head') %>
+<div class="page-head">
+  <div>
+    <h1>Productos (<%= totalCount %>)</h1>
+    <small class="muted">
+      Origen activo: <strong><%= catalogSource === 'firestore' ? 'Firestore en vivo' : 'Semilla local (pendiente de sincronizar)' %></strong>
+    </small>
+  </div>
+  <div class="row">
+    <a class="btn" href="/admin/productos/nuevo">+ Nuevo producto</a>
+    <a class="btn secondary" href="/admin/productos/plantilla.csv">Descargar CSV</a>
+    <a class="btn secondary" href="/admin/productos/exportar.json">Exportar JSON</a>
+  </div>
+</div>
+
+<% if (locals.flashOk) { %>
+  <div class="alert-ok"><%= flashOk %></div>
+<% } %>
+
+<% if (locals.importError) { %>
+  <div class="alert-err"><%= importError %></div>
+<% } %>
+
+<% if (locals.importSummary) { %>
+  <div class="alert-ok">
+    <strong>Carga masiva completada:</strong>
+    <%= importSummary.created %> creados,
+    <%= importSummary.updated %> actualizados,
+    <%= importSummary.skipped %> omitidos,
+    <%= importSummary.errors.length %> con error (de <%= importSummary.total %> filas).
+    <% if (importSummary.errors.length > 0) { %>
+      <ul style="margin:8px 0 0;padding-left:18px;">
+        <% importSummary.errors.slice(0, 15).forEach(function (er) { %>
+          <li>Fila <%= er.row %> (<%= er.id %>): <%= er.message %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (catalogSource !== 'firestore') { %>
+  <div class="card">
+    <div class="row" style="justify-content:space-between;">
+      <div>
+        <strong>Catálogo aún usando semilla estática</strong>
+        <p class="muted" style="margin:4px 0 0;">Sincroniza los productos iniciales a Firestore para administrarlos directamente sin editar archivos.</p>
+      </div>
+      <form method="post" action="/admin/productos/semilla">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button type="submit">Migrar catálogo inicial a Firestore</button>
+      </form>
+    </div>
+  </div>
+<% } %>
+
+<div class="card">
+  <h2>Carga masiva desde archivo (CSV o JSON)</h2>
+  <p class="muted" style="margin-top:0;">
+    Puedes descargar el archivo CSV arriba, editar precios, stock o agregar productos nuevos en Excel y subirlo aquí.
+    Columnas compatibles: <code>id;nombre;categoria;precio_referencia;costo;stock;catalogo;spin_estandar;spin_premium;peso_spin;activo;imagen</code>.
+  </p>
+  <form method="post" action="/admin/productos/importar" enctype="multipart/form-data" class="grid cols-2" style="align-items:end;">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <label>
+      Archivo CSV o JSON (máx. 2 MB)
+      <input type="file" name="archivo" accept=".csv,.json,text/csv,application/json" required>
+    </label>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label class="check-row">
+        <input type="checkbox" name="overwrite" value="on" checked>
+        Sobrescribir productos existentes
+      </label>
+      <label class="check-row">
+        <input type="checkbox" name="updateStock" value="on" checked>
+        Actualizar inventario (stock) incluido en el archivo
+      </label>
+      <div>
+        <button type="submit">Importar archivo</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <form method="get" action="/admin/productos" class="row" style="margin-bottom:14px;">
+    <input type="text" name="q" value="<%= queryText %>" placeholder="Buscar por nombre o slug..." style="max-width:260px;">
+    <select name="categoria" style="max-width:220px;">
+      <option value="">Todas las categorías</option>
+      <% categories.forEach(function (c) { %>
+        <option value="<%= c %>" <%= activeCategory === c ? 'selected' : '' %>><%= c %></option>
+      <% }); %>
+    </select>
+    <button type="submit" class="secondary">Filtrar</button>
+    <% if (queryText || activeCategory) { %>
+      <a class="btn secondary" href="/admin/productos">Limpiar</a>
+    <% } %>
+  </form>
+
+  <table>
+    <tr>
+      <th>Producto</th>
+      <th>Categoría</th>
+      <th class="right">Precio / Costo</th>
+      <th class="right">Stock</th>
+      <th>Canales</th>
+      <th>Estado</th>
+      <th class="right">Acciones</th>
+    </tr>
+    <% if (items.length === 0) { %>
+      <tr>
+        <td colspan="7" class="muted">No hay productos que coincidan con el filtro.</td>
+      </tr>
+    <% } %>
+    <% items.forEach(function (p) { %>
+    <tr>
+      <td>
+        <div class="row" style="flex-wrap:nowrap;">
+          <img class="thumb" src="<%= p.imagen %>" alt="">
+          <div>
+            <strong><%= p.nombre %></strong><br>
+            <small class="muted"><%= p.id %></small>
+          </div>
+        </div>
+      </td>
+      <td><%= p.categoria %></td>
+      <td class="right">
+        <strong><%= fmtCOP(p.precio_referencia) %></strong><br>
+        <small class="muted">Costo: <%= fmtCOP(p.costo || 0) %></small>
+      </td>
+      <td class="right"><%= p.stockActual %> uds</td>
+      <td>
+        <% if (p.flags?.catalogo) { %><span class="badge">Catálogo</span><% } %>
+        <% if (p.flags?.spin_estandar) { %><span class="badge">Spin</span><% } %>
+        <% if (p.flags?.spin_premium) { %><span class="badge">Premium</span><% } %>
+      </td>
+      <td>
+        <% if (p.activo === false) { %>
+          <span class="badge cancelado">Oculto</span>
+        <% } else { %>
+          <span class="badge pagado">Activo</span>
+        <% } %>
+      </td>
+      <td class="right">
+        <div class="row" style="justify-content:flex-end;">
+          <a class="btn secondary sm" href="/admin/productos/<%= encodeURIComponent(p.id) %>">Editar</a>
+          <form method="post" action="/admin/productos/<%= encodeURIComponent(p.id) %>/toggle">
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
+            <button type="submit" class="sm <%= p.activo === false ? '' : 'danger' %>">
+              <%= p.activo === false ? 'Activar' : 'Ocultar' %>
+            </button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <% }); %>
+  </table>
+</div>
+<%- include('foot') %>
